@@ -63,3 +63,30 @@ void Renderer::ResizeWindow(int newWidth, int newHeight)
 	m_windowWidth = newWidth;
 	m_windowHeight = newHeight;
 }
+
+// Scene
+bool Renderer::ClearScene(bool pixel, bool depth, bool stencil)
+{
+	GLbitfield clear(0);
+
+	if (pixel)
+		clear |= GL_COLOR_BUFFER_BIT;
+	if (depth)
+		clear |= GL_DEPTH_BUFFER_BIT;
+	if (stencil)
+		clear |= GL_STENCIL_BUFFER_BIT;
+
+	glClear(clear);
+
+	return true;
+}
+
+void Renderer::SetColourMask(bool red, bool green, bool blue, bool alpha)
+{
+	glColorMask(red, green, blue, alpha);
+}
+
+void Renderer::SetClearColour(float red, float green, float blue, float alpha)
+{
+	glClearColor(red, green, blue, alpha);
+}

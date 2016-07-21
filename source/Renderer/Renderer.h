@@ -38,6 +38,11 @@ public:
 	// Resize
 	void ResizeWindow(int newWidth, int newHeight);
 
+	// Scene
+	bool ClearScene(bool pixel = true, bool depth = true, bool stencil = true);
+	void SetColourMask(bool red, bool green, bool blue, bool alpha);
+	void SetClearColour(float red, float green, float blue, float alpha);
+
 protected:
 	/* Protected methods */
 
