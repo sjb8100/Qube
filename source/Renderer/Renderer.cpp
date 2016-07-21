@@ -9,6 +9,7 @@
 // Copyright (c) 2005-2016, Steven Ball
 // ******************************************************************************
 
+#include "../glew/include/GL/glew.h"
 #include "Renderer.h"
 
 #include <iostream>
@@ -41,6 +42,15 @@ Renderer::Renderer(int width, int height)
 {
 	m_windowWidth = width;
 	m_windowHeight = height;
+
+	glewExperimental = GL_TRUE;
+	GLenum err = glewInit();
+	if (err != GLEW_OK)
+	{
+		cout << "Failed to initialize GLEW" << endl;
+		cout << "Error:" << glewGetErrorString(err) << endl;
+		return;
+	}
 }
 
 Renderer::~Renderer()
