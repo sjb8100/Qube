@@ -7,6 +7,7 @@
   - [ ] Internal list of lines passed per frame.
   - [ ] Clear list each frame but draw via a shader and vertex buffer.
   - [ ] Add functionality for debug bounding boxes, spheres, etc.
+- [ ] Add better logging and output for errors and information.
 - [ ] Better media support, maybe add SDL lib support?
 - [ ] GUI Lib?
 - [ ] Better font support in renderer.
