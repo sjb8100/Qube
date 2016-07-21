@@ -4,10 +4,21 @@
     <Filter Include="source">
       <UniqueIdentifier>{792a1ca7-31b7-40d9-bea3-0f081adccee6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\Renderer">
+      <UniqueIdentifier>{bc1422bd-6904-464f-bbbf-f790605d1cea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\main.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Renderer\Renderer.cpp">
+      <Filter>source\Renderer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\source\Renderer\Renderer.h">
+      <Filter>source\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

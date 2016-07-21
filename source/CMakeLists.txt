@@ -2,12 +2,14 @@ set(SRCS
     "main.cpp"
 	)
 
-#add_subdirectory(utils)
+add_subdirectory(Renderer)
 	
 source_group("source" FILES ${SRCS})
+source_group("source\\renderer" FILES ${RENDERER_SRCS})
 
 add_executable(Qube
                ${SRCS}
+               ${RENDERER_SRCS}
                )
 
 include_directories(".")			   
