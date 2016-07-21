@@ -83,10 +83,6 @@ void QubeGame::UpdateNamePicking()
 {
 }
 
-void QubeGame::UpdateLights(float dt)
-{
-}
-
 void QubeGame::UpdateGameGUI(float dt)
 {
 }

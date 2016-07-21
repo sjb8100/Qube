@@ -117,7 +117,6 @@ public:
 	// Updating
 	void Update();
 	void UpdateNamePicking();
-	void UpdateLights(float dt);
 	void UpdateGameGUI(float dt);
 
 	// Rendering
