@@ -84,7 +84,6 @@ void QubeGame::KeyPressed(int key, int scancode, int mods)
 {
 	switch (key)
 	{
-		// Movement
 		case GLFW_KEY_W:
 		{
 			m_bKeyboardForward = true;
@@ -134,7 +133,6 @@ void QubeGame::KeyReleased(int key, int scancode, int mods)
 {
 	switch (key)
 	{
-		// Movement
 		case GLFW_KEY_W:
 		{
 			m_bKeyboardForward = false;
