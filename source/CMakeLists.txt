@@ -1,19 +1,32 @@
 set(SRCS
-    "main.cpp"
-	)
+    "main.cpp")
 
 add_subdirectory(Renderer)
-	
+add_subdirectory(glew)
+add_subdirectory(glm)
+
 source_group("source" FILES ${SRCS})
 source_group("source\\renderer" FILES ${RENDERER_SRCS})
+source_group("source\\glew\\src" FILES ${GLEW_SRCS})
+source_group("source\\glew\\include\\GL" FILES ${GLEW_HEADERS})
+source_group("source\\glm" FILES ${GLM_SRCS})
+source_group("source\\glm\\detail" FILES ${GLM_DETAIL_SRCS})
+source_group("source\\glm\\gtc" FILES ${GLM_GTC_SRCS})
+source_group("source\\glm\\gtx" FILES ${GLM_GTX_SRCS})
 
 add_executable(Qube
                ${SRCS}
                ${RENDERER_SRCS}
-               )
+               ${GLEW_SRCS}
+               ${GLEW_HEADERS}
+               ${GLM_SRCS}
+               ${GLM_DETAIL_SRCS}
+               ${GLM_GTC_SRCS}
+               ${GLM_GTX_SRCS})
 
 include_directories(".")			   
 include_directories("glfw\\include")
+include_directories("glew\\include")
 
 if(MSVC)
 target_link_libraries(Qube "opengl32.lib")

@@ -154,10 +154,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\source\glew\src\glew.c" />
     <ClCompile Include="..\..\source\main.cpp" />
     <ClCompile Include="..\..\source\Renderer\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\source\glew\include\GL\glew.h" />
+    <ClInclude Include="..\..\source\glew\include\GL\glxew.h" />
+    <ClInclude Include="..\..\source\glew\include\GL\wglew.h" />
     <ClInclude Include="..\..\source\Renderer\Renderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

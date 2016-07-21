@@ -7,6 +7,18 @@
     <Filter Include="source\Renderer">
       <UniqueIdentifier>{bc1422bd-6904-464f-bbbf-f790605d1cea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\glew">
+      <UniqueIdentifier>{a819bbe6-bbee-4ff6-8d09-8ab50a46d251}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\glew\include">
+      <UniqueIdentifier>{9a08e214-62e8-4341-8119-29ced9c08e47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\glew\include\GL">
+      <UniqueIdentifier>{680fd7bb-2941-49aa-884c-fa12cc048687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\glew\source">
+      <UniqueIdentifier>{7d5582dc-45e0-4b8a-a6fa-a9b1592aeb7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\main.cpp">
@@ -15,10 +27,22 @@
     <ClCompile Include="..\..\source\Renderer\Renderer.cpp">
       <Filter>source\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\glew\src\glew.c">
+      <Filter>source\glew\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\Renderer\Renderer.h">
       <Filter>source\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\glew\include\GL\glew.h">
+      <Filter>source\glew\include\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\glew\include\GL\glxew.h">
+      <Filter>source\glew\include\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\glew\include\GL\wglew.h">
+      <Filter>source\glew\include\GL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
