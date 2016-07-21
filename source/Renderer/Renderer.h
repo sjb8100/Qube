@@ -15,6 +15,9 @@
 
 #pragma once
 
+#include <glm/vec3.hpp>
+using namespace glm;
+
 #ifdef _WIN32
 #include <windows.h>
 #endif //_WIN32

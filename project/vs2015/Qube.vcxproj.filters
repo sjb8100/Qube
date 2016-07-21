@@ -34,6 +34,9 @@
     <Filter Include="source\glm\simd">
       <UniqueIdentifier>{e95f6eea-68f5-47a5-9a99-31c3cbee927c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\ini">
+      <UniqueIdentifier>{a0c69ba6-d402-4a04-bafa-db93c0946480}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\main.cpp">
@@ -47,6 +50,36 @@
     </ClCompile>
     <ClCompile Include="..\..\source\glm\detail\glm.cpp">
       <Filter>source\glm\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QubeCamera.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QubeControls.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QubeGame.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QubeInput.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QubeRender.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QubeSettings.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QubeUpdate.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QubeWindow.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ini\ini.c">
+      <Filter>source\ini</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ini\INIReader.cpp">
+      <Filter>source\ini</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -499,6 +532,21 @@
     </ClInclude>
     <ClInclude Include="..\..\source\glm\vector_relational.hpp">
       <Filter>source\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\QubeGame.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\QubeSettings.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\QubeWindow.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ini\ini.h">
+      <Filter>source\ini</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ini\INIReader.h">
+      <Filter>source\ini</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

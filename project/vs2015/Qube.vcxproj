@@ -156,7 +156,17 @@
   <ItemGroup>
     <ClCompile Include="..\..\source\glew\src\glew.c" />
     <ClCompile Include="..\..\source\glm\detail\glm.cpp" />
+    <ClCompile Include="..\..\source\ini\ini.c" />
+    <ClCompile Include="..\..\source\ini\INIReader.cpp" />
     <ClCompile Include="..\..\source\main.cpp" />
+    <ClCompile Include="..\..\source\QubeCamera.cpp" />
+    <ClCompile Include="..\..\source\QubeControls.cpp" />
+    <ClCompile Include="..\..\source\QubeGame.cpp" />
+    <ClCompile Include="..\..\source\QubeInput.cpp" />
+    <ClCompile Include="..\..\source\QubeRender.cpp" />
+    <ClCompile Include="..\..\source\QubeSettings.cpp" />
+    <ClCompile Include="..\..\source\QubeUpdate.cpp" />
+    <ClCompile Include="..\..\source\QubeWindow.cpp" />
     <ClCompile Include="..\..\source\Renderer\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -309,6 +319,11 @@
     <ClInclude Include="..\..\source\glm\vec3.hpp" />
     <ClInclude Include="..\..\source\glm\vec4.hpp" />
     <ClInclude Include="..\..\source\glm\vector_relational.hpp" />
+    <ClInclude Include="..\..\source\ini\ini.h" />
+    <ClInclude Include="..\..\source\ini\INIReader.h" />
+    <ClInclude Include="..\..\source\QubeGame.h" />
+    <ClInclude Include="..\..\source\QubeSettings.h" />
+    <ClInclude Include="..\..\source\QubeWindow.h" />
     <ClInclude Include="..\..\source\Renderer\Renderer.h" />
   </ItemGroup>
   <ItemGroup>

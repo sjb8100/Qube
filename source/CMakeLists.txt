@@ -1,9 +1,21 @@
 set(SRCS
-    "main.cpp")
+    "main.cpp"
+    "QubeGame.h"
+    "QubeGame.cpp"
+    "QubeWindow.h"
+    "QubeWindow.cpp"
+    "QubeInput.cpp"
+    "QubeControls.cpp"
+    "QubeCamera.cpp"
+    "QubeRender.cpp"
+    "QubeUpdate.cpp"
+    "QubeSettings.h"
+    "QubeSettings.cpp")
 
 add_subdirectory(Renderer)
 add_subdirectory(glew)
 add_subdirectory(glm)
+add_subdirectory(ini)
 
 source_group("source" FILES ${SRCS})
 source_group("source\\renderer" FILES ${RENDERER_SRCS})
@@ -13,6 +25,7 @@ source_group("source\\glm" FILES ${GLM_SRCS})
 source_group("source\\glm\\detail" FILES ${GLM_DETAIL_SRCS})
 source_group("source\\glm\\gtc" FILES ${GLM_GTC_SRCS})
 source_group("source\\glm\\gtx" FILES ${GLM_GTX_SRCS})
+source_group("source\\ini" FILES ${INI_SRCS})
 
 add_executable(Qube
                ${SRCS}
@@ -22,7 +35,8 @@ add_executable(Qube
                ${GLM_SRCS}
                ${GLM_DETAIL_SRCS}
                ${GLM_GTC_SRCS}
-               ${GLM_GTX_SRCS})
+               ${GLM_GTX_SRCS}
+               ${INI_SRCS})
 
 include_directories(".")			   
 include_directories("glfw\\include")
