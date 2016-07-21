@@ -1,0 +1,9 @@
+dependencies:
+    pre:
+test:
+    pre:
+        - sudo apt-get install libxxf86vm-dev  # required by GLFW-b
+        - cmake .  # generate the project files
+    override:
+        - make;  # make the project
+    post:
