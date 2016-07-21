@@ -34,6 +34,9 @@ void QubeGame::Render()
 		// Don't call any render functions if minimized
 		return;
 	}
+
+	// Pass render call to the window class, allow to swap buffers
+	m_pQubeWindow->Render();
 }
 
 void QubeGame::RenderDebugInformation()
