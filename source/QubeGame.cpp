@@ -188,14 +188,7 @@ void QubeGame::ResizeWindow(int width, int height)
 
 void QubeGame::CloseWindow()
 {
-	if (m_gameMode == GameMode_Game)
-	{
-		// TODO : Show quit popup
-	}
-	else
-	{
-		m_bGameQuit = true;
-	}
+	m_bGameQuit = true;
 }
 
 void QubeGame::UpdateJoySticks()
