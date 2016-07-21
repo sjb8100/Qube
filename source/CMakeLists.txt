@@ -1,0 +1,67 @@
+set(SRCS
+    "main.cpp"
+	)
+
+#add_subdirectory(utils)
+	
+source_group("source" FILES ${SRCS})
+
+add_executable(Qube
+               ${SRCS}
+               )
+
+include_directories(".")			   
+
+if(MSVC)
+target_link_libraries(Qube "opengl32.lib")
+target_link_libraries(Qube "winmm.lib")
+elseif(UNIX)
+target_link_libraries(Qube "GL")
+target_link_libraries(Qube "GLU")
+	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+		#target_link_libraries(Qube debug "${CMAKE_CURRENT_SOURCE_DIR}/freetype/libs/linux/libfreetype261_64.a")
+	else()
+		#target_link_libraries(Qube debug "${CMAKE_CURRENT_SOURCE_DIR}/glfw/libs/linux/d/libglfw3.a")
+	endif()
+target_link_libraries(Qube "X11")
+target_link_libraries(Qube "Xrandr")
+target_link_libraries(Qube "Xi")
+target_link_libraries(Qube "Xxf86vm")
+target_link_libraries(Qube "Xcursor")
+target_link_libraries(Qube "Xinerama")
+target_link_libraries(Qube "pthread")
+target_link_libraries(Qube "dl")
+endif()
+
+if(MSVC11)
+	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+		#target_link_libraries(Qube debug "${CMAKE_CURRENT_SOURCE_DIR}\\glfw\\libs\\2012\\d\\glfw3_64.lib")
+	else()
+		#target_link_libraries(Qube debug "${CMAKE_CURRENT_SOURCE_DIR}\\glfw\\libs\\2012\\d\\glfw3.lib")
+	endif()
+endif(MSVC11)
+if(MSVC12)
+	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+		#target_link_libraries(Qube debug "${CMAKE_CURRENT_SOURCE_DIR}\\glfw\\libs\\2013\\d\\glfw3_64.lib")
+	else()
+		#target_link_libraries(Qube debug "${CMAKE_CURRENT_SOURCE_DIR}\\glfw\\libs\\2013\\d\\glfw3.lib")
+	endif()
+endif(MSVC12)
+if(MSVC14)
+	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+		#target_link_libraries(Qube debug "${CMAKE_CURRENT_SOURCE_DIR}\\glfw\\libs\\2015\\d\\glfw3_64.lib")
+	else()
+		#target_link_libraries(Qube debug "${CMAKE_CURRENT_SOURCE_DIR}\\glfw\\libs\\2015\\d\\glfw3.lib")
+	endif()
+endif(MSVC14)
+
+if(MSVC)
+	set_target_properties(Qube PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../../")
+	set_target_properties(Qube PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG "../../")
+	set_target_properties(Qube PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE "../../")
+	
+	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+endif(MSVC)
+
+set(CMAKE_CONFIGURATION_TYPES Debug Release)
