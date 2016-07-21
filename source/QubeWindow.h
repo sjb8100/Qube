@@ -50,6 +50,7 @@ public:
 	void Update(float dt);
 	void Render();
 
+	// Initialize window context
 	void InitializeWindowContext(GLFWwindow* window);
 
 	// Windows dimensions
@@ -59,6 +60,9 @@ public:
 
 	// Minimized
 	bool GetMinimized();
+
+	// Title
+	void SetWindowTitle(const char* title);
 
 	// Cursor
 	int GetCursorX();

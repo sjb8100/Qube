@@ -181,6 +181,12 @@ bool QubeWindow::GetMinimized()
 	return m_minimized;
 }
 
+// Title
+void QubeWindow::SetWindowTitle(const char* title)
+{
+	glfwSetWindowTitle(m_pWindow, title);
+}
+
 // Cursor position
 int QubeWindow::GetCursorX()
 {
