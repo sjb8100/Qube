@@ -35,6 +35,14 @@ void QubeGame::Render()
 		return;
 	}
 
+	// Start the scene
+	m_pRenderer->SetClearColour(0.2f, 0.3f, 0.4f, 1.0f);
+	m_pRenderer->ClearScene();
+
+	// Render debug information
+	RenderDebugInformation();
+
+
 	// Pass render call to the window class, allow to swap buffers
 	m_pQubeWindow->Render();
 }
