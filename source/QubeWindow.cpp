@@ -111,7 +111,7 @@ void QubeWindow::Destroy()
 
 void QubeWindow::Update(float dt)
 {
-	// Updae the cursor positions
+	// Update the cursor positions
 	double x;
 	double y;
 	glfwGetCursorPos(m_pWindow, &x, &y);
