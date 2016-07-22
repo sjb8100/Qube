@@ -160,6 +160,12 @@
     <ClCompile Include="..\..\source\ini\ini.c" />
     <ClCompile Include="..\..\source\ini\INIReader.cpp" />
     <ClCompile Include="..\..\source\main.cpp" />
+    <ClCompile Include="..\..\source\Maths\3dmaths.cpp" />
+    <ClCompile Include="..\..\source\Maths\Bezier3.cpp" />
+    <ClCompile Include="..\..\source\Maths\Bezier4.cpp" />
+    <ClCompile Include="..\..\source\Maths\Line3D.cpp" />
+    <ClCompile Include="..\..\source\Maths\matrix4x4.cpp" />
+    <ClCompile Include="..\..\source\Maths\Plane3D.cpp" />
     <ClCompile Include="..\..\source\QubeCamera.cpp" />
     <ClCompile Include="..\..\source\QubeControls.cpp" />
     <ClCompile Include="..\..\source\QubeGame.cpp" />
@@ -324,6 +330,8 @@
     <ClInclude Include="..\..\source\glm\vector_relational.hpp" />
     <ClInclude Include="..\..\source\ini\ini.h" />
     <ClInclude Include="..\..\source\ini\INIReader.h" />
+    <ClInclude Include="..\..\source\Maths\3dGeometry.h" />
+    <ClInclude Include="..\..\source\Maths\3dmaths.h" />
     <ClInclude Include="..\..\source\QubeGame.h" />
     <ClInclude Include="..\..\source\QubeSettings.h" />
     <ClInclude Include="..\..\source\QubeWindow.h" />

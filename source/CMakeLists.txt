@@ -17,6 +17,7 @@ add_subdirectory(glew)
 add_subdirectory(glm)
 add_subdirectory(ini)
 add_subdirectory(freetype)
+add_subdirectory(Maths)
 
 source_group("source" FILES ${SRCS})
 source_group("source\\renderer" FILES ${RENDERER_SRCS})
@@ -28,6 +29,7 @@ source_group("source\\glm\\gtc" FILES ${GLM_GTC_SRCS})
 source_group("source\\glm\\gtx" FILES ${GLM_GTX_SRCS})
 source_group("source\\ini" FILES ${INI_SRCS})
 source_group("source\\freetype" FILES ${FREETYPE_SRCS})
+source_group("source\\maths" FILES ${MATHS_SRCS})
 
 add_executable(Qube
                ${SRCS}
@@ -39,7 +41,8 @@ add_executable(Qube
                ${GLM_GTC_SRCS}
                ${GLM_GTX_SRCS}
                ${INI_SRCS}
-               ${FREETYPE_SRCS})
+               ${FREETYPE_SRCS}
+			   )
 
 include_directories(".")			   
 include_directories("glfw\\include")
