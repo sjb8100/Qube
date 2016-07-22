@@ -168,6 +168,7 @@
     <ClCompile Include="..\..\source\QubeSettings.cpp" />
     <ClCompile Include="..\..\source\QubeUpdate.cpp" />
     <ClCompile Include="..\..\source\QubeWindow.cpp" />
+    <ClCompile Include="..\..\source\Renderer\colour.cpp" />
     <ClCompile Include="..\..\source\Renderer\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -326,6 +327,7 @@
     <ClInclude Include="..\..\source\QubeGame.h" />
     <ClInclude Include="..\..\source\QubeSettings.h" />
     <ClInclude Include="..\..\source\QubeWindow.h" />
+    <ClInclude Include="..\..\source\Renderer\colour.h" />
     <ClInclude Include="..\..\source\Renderer\Renderer.h" />
   </ItemGroup>
   <ItemGroup>

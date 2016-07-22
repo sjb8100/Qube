@@ -87,6 +87,9 @@
     <ClCompile Include="..\..\source\freetype\freetypefont.cpp">
       <Filter>source\freetype</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Renderer\colour.cpp">
+      <Filter>source\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\Renderer\Renderer.h">
@@ -556,6 +559,9 @@
     </ClInclude>
     <ClInclude Include="..\..\source\freetype\freetypefont.h">
       <Filter>source\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\Renderer\colour.h">
+      <Filter>source\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
