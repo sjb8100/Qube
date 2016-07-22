@@ -21,7 +21,7 @@ using namespace glm;
 #include <vector>
 using namespace std;
 
-#include "Camera.h"
+#include "camera.h"
 #include "Shader.h"
 #include "colour.h"
 #include "viewport.h"
