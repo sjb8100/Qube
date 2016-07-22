@@ -59,5 +59,5 @@ void QubeGame::RenderDebugInformation()
 	sprintf(lBuildInfo, "RELEASE %s", m_pQubeSettings->m_version.c_str());
 #endif //defined(_DEBUG) || defined(NDEBUG)
 
-	m_pRenderer->RenderFreeTypeText(m_pDefaultFont, 15.0f, 15.0f, 1.0f, Colour(0.75f, 0.75f, 0.75f), 1.0f, lBuildInfo);
+	m_pRenderer->RenderFreeTypeText(m_pDefaultFont, 0.0f, 0.0f, 1.0f, Colour(0.75f, 0.75f, 0.75f), 1.0f, lBuildInfo);
 }
