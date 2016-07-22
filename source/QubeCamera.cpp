@@ -14,8 +14,23 @@
 // Camera controls
 void QubeGame::UpdateCamera(float dt)
 {
+	m_pGameCamera->SetPosition(m_pGameCamera->GetFakePosition());
 }
 
 void QubeGame::UpdateCameraZoom(float dt)
 {
+	// Make sure we gradually move inwards/outwards
+	float camDiff = fabs(m_cameraDistance - m_maxCameraDistance);
+	float changeAmount = 0.0f;
+	if (m_cameraDistance < m_maxCameraDistance)
+	{
+		changeAmount = camDiff * dt;
+	}
+	else if (m_cameraDistance >= m_maxCameraDistance)
+	{
+		changeAmount = -camDiff * dt;
+	}
+
+	m_cameraDistance += changeAmount;
+	m_pGameCamera->Zoom(changeAmount, true);
 }

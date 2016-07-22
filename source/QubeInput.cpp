@@ -14,6 +14,8 @@
 #include <time.h>
 using namespace std;
 
+#include <glm/glm.hpp>
+
 #include "QubeGame.h"
 
 
@@ -184,23 +186,20 @@ void QubeGame::CharacterEntered(int keyCode)
 
 void QubeGame::MouseLeftPressed()
 {
-	if (IsCursorOn() == false)
+	m_currentX = m_pQubeWindow->GetCursorX();
+	m_currentY = m_pQubeWindow->GetCursorY();
+	m_pressedX = m_currentX;
+	m_pressedY = m_currentY;
+
+	if (m_gameMode == GameMode_Debug || m_cameraMode == CameraMode_Debug)
 	{
-		m_currentX = m_pQubeWindow->GetCursorX();
-		m_currentY = m_pQubeWindow->GetCursorY();
-		m_pressedX = m_currentX;
-		m_pressedY = m_currentY;
-
-		if (m_gameMode == GameMode_Debug || m_cameraMode == CameraMode_Debug)
+		// Turn cursor off
+		if (IsCursorOn() == true)
 		{
-			// Turn cursor off
-			if (IsCursorOn() == true)
-			{
-				TurnCursorOff(false);
-			}
-
-			m_bCameraRotate = true;
+			TurnCursorOff(false);
 		}
+
+		m_bCameraRotate = true;
 	}
 }
 
@@ -245,25 +244,15 @@ void QubeGame::MouseScroll(double x, double y)
 {
 	GameMode gameMode = GetGameMode();
 
-	if (IsCursorOn() == false)
-	{
-		m_maxCameraDistance += (float)(-y*0.5f);
+	m_maxCameraDistance += (float)(-y*0.5f);
 
-		WrapCameraZoomValue();
-	}
+	WrapCameraZoomValue();
 }
 
 void QubeGame::WrapCameraZoomValue()
 {
-	float minAmount = 1.5f;
-	float maxAmount = 15.0f;
-
-	// Camera rotation modes
-	if (m_gameMode == GameMode_Game && m_cameraMode == CameraMode_MouseRotate)
-	{
-		minAmount = 1.0f;
-		maxAmount = 15.0f;
-	}
+	float minAmount = m_pGameCamera->GetMinZoomAmount();
+	float maxAmount = m_pGameCamera->GetMaxZoomAmount();
 
 	if (m_maxCameraDistance <= minAmount)
 	{
@@ -279,15 +268,104 @@ void QubeGame::WrapCameraZoomValue()
 // Mouse controls
 void QubeGame::MouseCameraRotate()
 {
+	int x = m_pQubeWindow->GetCursorX();
+	int y = m_pQubeWindow->GetCursorY();
+
+	float changeX;
+	float changeY;
+
+	// The mouse hasn't moved so just return
+	if ((m_currentX == x) && (m_currentY == y))
+	{
+		return;
+	}
+
+	// Calculate and scale down the change in position
+	changeX = (x - m_currentX) / 5.0f;
+	changeY = (y - m_currentY) / 5.0f;
+
+	// Upside down
+	if (m_pGameCamera->GetUp().y < 0.0f)
+	{
+		changeX = -changeX;
+	}
+
+	// Limit the rotation, so we can't go 'over' or 'under' the player with our rotations
+	vec3 cameraFacing = m_pGameCamera->GetFacing();
+	float dotResult = acos(dot(cameraFacing, vec3(0.0f, 1.0f, 0.0f)));
+	float rotationDegrees = RadToDeg(dotResult) - 90.0f;
+	float limitAngle = 75.0f;
+	if ((rotationDegrees > limitAngle && changeY < 0.0f) || (rotationDegrees < -limitAngle && changeY > 0.0f))
+	{
+		changeY = 0.0f;
+	}
+
+	m_pGameCamera->RotateAroundPoint(changeY*0.75f, 0.0f, 0.0f, true);
+	m_pGameCamera->RotateAroundPointY(-changeX*0.75f, true);
+
+	m_currentX = x;
+	m_currentY = y;
 }
 
 // Joystick controls
 void QubeGame::JoystickCameraMove(float dt)
 {
+	float axisX = m_pQubeWindow->GetJoystickAxisValue(0, 0);
+	float axisY = m_pQubeWindow->GetJoystickAxisValue(0, 1);
+
+	// Dead zones
+	if (fabs(axisX) < m_pQubeWindow->GetJoystickAnalogDeadZone())
+	{
+		axisX = 0.0f;
+	}
+	if (fabs(axisY) < m_pQubeWindow->GetJoystickAnalogDeadZone())
+	{
+		axisY = 0.0f;
+	}
+
+	float changeX = axisX * 10.0f * dt;
+	float changeY = axisY * 10.0f * dt;
+
+	m_pGameCamera->Fly(-changeY);
+	m_pGameCamera->Strafe(changeX);
 }
 
 void QubeGame::JoystickCameraRotate(float dt)
 {
+	float axisX = m_pQubeWindow->GetJoystickAxisValue(0, 4);
+	float axisY = m_pQubeWindow->GetJoystickAxisValue(0, 3);
+
+	// Dead zones
+	if (fabs(axisX) < m_pQubeWindow->GetJoystickAnalogDeadZone())
+	{
+		axisX = 0.0f;
+	}
+	if (fabs(axisY) < m_pQubeWindow->GetJoystickAnalogDeadZone())
+	{
+		axisY = 0.0f;
+	}
+
+	float changeX = axisX * 150.0f * dt;
+	float changeY = axisY * 150.0f * dt;
+
+	// Upside down
+	if (m_pGameCamera->GetUp().y < 0.0f)
+	{
+		changeX = -changeX;
+	}
+
+	// Limit the rotation, so we can't go 'over' or 'under' the player with our rotations
+	vec3 cameraFacing = m_pGameCamera->GetFacing();
+	float dotResult = acos(dot(cameraFacing, vec3(0.0f, 1.0f, 0.0f)));
+	float rotationDegrees = RadToDeg(dotResult) - 90.0f;
+	float limitAngle = 75.0f;
+	if ((rotationDegrees > limitAngle && changeY < 0.0f) || (rotationDegrees < -limitAngle && changeY > 0.0f))
+	{
+		changeY = 0.0f;
+	}
+
+	m_pGameCamera->RotateAroundPoint(changeY, 0.0f, 0.0f, true);
+	m_pGameCamera->RotateAroundPointY(-changeX, true);
 }
 
 void QubeGame::JoystickCameraZoom(float dt)

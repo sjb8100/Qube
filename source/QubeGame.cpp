@@ -106,7 +106,7 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 
 	/* Create camera */
 	m_pGameCamera = new Camera(m_pRenderer);
-	m_pGameCamera->SetPosition(vec3(0.0f, 2.0f, 5.0f));
+	m_pGameCamera->SetPosition(vec3(5.0f, 5.0f, 5.0f));
 	m_pGameCamera->SetZoomAmount(5.0f);
 	m_pGameCamera->SetFakePosition(m_pGameCamera->GetPosition());
 	m_pGameCamera->SetFacing(vec3(0.0f, 0.0f, -1.0f));

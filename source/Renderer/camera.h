@@ -40,6 +40,8 @@ public:
 	const vec3 GetUp() const { return m_up; }
 	const vec3 GetRight() const { return m_right; }
 	const vec3 GetView() const { return (m_position + (m_facing*m_zoomAmount)); }
+	const float GetMinZoomAmount() const { return m_minZoomAmount; }
+	const float GetMaxZoomAmount() const { return m_maxZoomAmount; }
 	const float GetZoomAmount() const { return m_zoomAmount; }
 
 	// Camera movement

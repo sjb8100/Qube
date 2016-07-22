@@ -240,7 +240,7 @@ void Renderer::DrawLine(vec3 lineSart, vec3 lineEnd, Colour lineStartColour, Col
 	m_vpLines.push_back(pNewLine);
 }
 
-void Renderer::RenderLines()
+void Renderer::RenderLines(Camera* pCamera)
 {
 	// Num vertices
 	unsigned int numVertices = (unsigned int)m_vpLines.size() * 2;
@@ -304,9 +304,9 @@ void Renderer::RenderLines()
 	// Create transformations
 	glm::mat4 view;
 	glm::mat4 projection;
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -1.0f));
-	//projection = glm::perspective(45.0f, (GLfloat)m_windowWidth / (GLfloat)m_windowHeight, 0.1f, 100.0f);
-	projection = glm::ortho(0.0f, (GLfloat)m_windowWidth, 0.0f, (GLfloat)m_windowHeight, 0.1f, 1000.0f);
+	view = glm::lookAt(pCamera->GetPosition(), pCamera->GetView(), pCamera->GetUp());
+	projection = glm::perspective(45.0f, (GLfloat)m_windowWidth / (GLfloat)m_windowHeight, 0.01f, 1000.0f);
+	//projection = glm::ortho(0.0f, (GLfloat)m_windowWidth, 0.0f, (GLfloat)m_windowHeight, 0.01f, 1000.0f);
 	
 	// Get their uniform location
 	GLint modelLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "model");

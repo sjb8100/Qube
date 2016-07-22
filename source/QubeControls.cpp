@@ -35,6 +35,31 @@ void QubeGame::UpdateKeyboardControls(float dt)
 
 	if (gameMode == GameMode_Debug || m_cameraMode == CameraMode_Debug)
 	{
+		// Keyboard camera movements
+		if (m_bKeyboardForward)
+		{
+			m_pGameCamera->Fly(20.0f * dt, true);
+		}
+		if (m_bKeyboardBackward)
+		{
+			m_pGameCamera->Fly(-20.0f * dt, true);
+		}
+		if (m_bKeyboardStrafeLeft)
+		{
+			m_pGameCamera->Strafe(-20.0f * dt, true);
+		}
+		if (m_bKeyboardStrafeRight)
+		{
+			m_pGameCamera->Strafe(20.0f * dt, true);
+		}
+		if (m_bKeyboardUp)
+		{
+			m_pGameCamera->Levitate(20.0f * dt, true);
+		}
+		if (m_bKeyboardDown)
+		{
+			m_pGameCamera->Levitate(-20.0f * dt, true);
+		}
 	}
 }
 

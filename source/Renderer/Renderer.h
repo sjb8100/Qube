@@ -21,6 +21,7 @@ using namespace glm;
 #include <vector>
 using namespace std;
 
+#include "Camera.h"
 #include "Shader.h"
 #include "colour.h"
 #include "viewport.h"
@@ -87,7 +88,7 @@ public:
 	// Rendering
 	void ResetLines();
 	void DrawLine(vec3 lineSart, vec3 lineEnd, Colour lineStartColour, Colour lineEndColour);
-	void RenderLines();
+	void RenderLines(Camera* pCamera);
 
 protected:
 	/* Protected methods */
