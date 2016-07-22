@@ -19,9 +19,6 @@
 #include <iostream>
 using namespace std;
 
-
-GLuint VBO, VAO, EBO;
-
 // GL ERROR CHECK
 int CheckGLErrors(const char *file, int line)
 {
@@ -277,9 +274,12 @@ void Renderer::RenderLines(Camera* pCamera)
 		indicesBuffer[i] = i;
 	}
 
+	GLuint VBO, VAO, EBO;
+
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
+
 	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
 	glBindVertexArray(VAO);
 
@@ -306,7 +306,6 @@ void Renderer::RenderLines(Camera* pCamera)
 	glm::mat4 projection;
 	view = glm::lookAt(pCamera->GetPosition(), pCamera->GetView(), pCamera->GetUp());
 	projection = glm::perspective(45.0f, (GLfloat)m_windowWidth / (GLfloat)m_windowHeight, 0.01f, 1000.0f);
-	//projection = glm::ortho(0.0f, (GLfloat)m_windowWidth, 0.0f, (GLfloat)m_windowHeight, 0.01f, 1000.0f);
 	
 	// Get their uniform location
 	GLint modelLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "model");
@@ -317,7 +316,6 @@ void Renderer::RenderLines(Camera* pCamera)
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	// Note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
 
 	glBindVertexArray(VAO);
 

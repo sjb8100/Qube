@@ -29,7 +29,6 @@ inline float RadToDeg(const float radians)
 	return (radians * 180) / PI;
 }
 
-
 // Constructor
 Camera::Camera(Renderer* pRenderer)
 {
