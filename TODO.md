@@ -2,7 +2,7 @@
 
 - [ ] Remove all fixed function pipeline.
 - [ ] Remove all intermediate mode calls.
-- [ ] Remove all vector lists and returning indices.
+- [x] Remove all vector lists and returning indices.
 - [ ] Add a way to do debug renders of lines, quads, etc
   - [ ] Internal list of lines passed per frame.
   - [ ] Clear list each frame but draw via a shader and vertex buffer.
@@ -12,4 +12,4 @@
 - [ ] GUI Lib?
 - [ ] Better font support in renderer.
 - [ ] C++ 11?
-- [ ] Latest versions of glfw and glm.
+- [x] Latest versions of glfw and glm.
