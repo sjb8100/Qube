@@ -1,17 +1,12 @@
 // ******************************************************************************
-//
 // Filename:	freetypefont.cpp
-// Project:		Vox
+// Project:		Qube
 // Author:		Steven Ball
-//
-// Purpose:
-//   
 //
 // Revision History:
 //   Initial Revision - 11/10/08
 //
-// Copyright (c) 2005-20015, Steven Ball
-//
+// Copyright (c) 2005-20016, Steven Ball
 // ******************************************************************************
 
 #include "freetypefont.h"

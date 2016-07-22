@@ -1,17 +1,15 @@
 // ******************************************************************************
-//
 // Filename:	freetypefont.h
-// Project:		Vox
+// Project:		Qube
 // Author:		Steven Ball
 //
 // Purpose:
-//   
+//   A font container class that is a wrapper around FreeType font rendering.
 //
 // Revision History:
 //   Initial Revision - 11/10/08
 //
-// Copyright (c) 2005-2015, Steven Ball
-//
+// Copyright (c) 2005-2016, Steven Ball
 // ******************************************************************************
 
 #pragma once
