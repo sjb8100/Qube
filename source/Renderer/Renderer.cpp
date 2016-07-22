@@ -90,3 +90,76 @@ void Renderer::SetClearColour(float red, float green, float blue, float alpha)
 {
 	glClearColor(red, green, blue, alpha);
 }
+
+// Text and font rendering
+FreeTypeFont* Renderer::CreateFreeTypeFont(const char *fontName, int fontSize, bool noAutoHint)
+{
+	FreeTypeFont* font = new FreeTypeFont();
+
+	// Build the new freetype font
+	font->BuildFont(fontName, fontSize, noAutoHint);
+
+	return font;
+}
+
+void Renderer::RenderFreeTypeText(FreeTypeFont* pFont, float x, float y, float z, Colour colour, float scale, const char *inText, ...)
+{
+	char		outText[8192];
+	va_list		ap;  // Pointer to list of arguments
+
+	if (inText == NULL)
+	{
+		return;  // Early return if there is no text
+	}
+
+	// Loop through variable argument list and add them to the string
+	va_start(ap, inText);
+		vsprintf(outText, inText, ap);
+	va_end(ap);
+
+	glColor4fv(colour.GetRGBA());
+
+	// Add on the descent value, so we don't draw letters with underhang out of bounds. (e.g - g, y, q and p)
+	y -= GetFreeTypeTextDescent(pFont);
+
+	// HACK : The descent has rounding errors and is usually off by about 1 pixel
+	y -= 1;
+
+	glPushMatrix();
+		glTranslatef(x, y, 0);
+		pFont->DrawString(outText, scale);
+	glPopMatrix();
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+int Renderer::GetFreeTypeTextWidth(FreeTypeFont* pFont, const char *inText, ...)
+{
+	char outText[8192];
+	va_list ap;
+
+	if (inText == NULL)
+		return 0;
+
+	// Loop through variable argument list and add them to the string
+	va_start(ap, inText);
+		vsprintf(outText, inText, ap);
+	va_end(ap);
+
+	return pFont->GetTextWidth(outText);
+}
+
+int Renderer::GetFreeTypeTextHeight(FreeTypeFont* pFont, const char *inText, ...)
+{
+	return pFont->GetCharHeight('a');
+}
+
+int Renderer::GetFreeTypeTextAscent(FreeTypeFont* pFont)
+{
+	return pFont->GetAscent();
+}
+
+int Renderer::GetFreeTypeTextDescent(FreeTypeFont* pFont)
+{
+	return pFont->GetDescent();
+}

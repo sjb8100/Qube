@@ -24,6 +24,9 @@ using namespace glm;
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include "colour.h"
+#include "../freetype/freetypefont.h"
+
 #pragma comment (lib, "opengl32")
 #pragma comment (lib, "glu32")
 
@@ -42,6 +45,14 @@ public:
 	bool ClearScene(bool pixel = true, bool depth = true, bool stencil = true);
 	void SetColourMask(bool red, bool green, bool blue, bool alpha);
 	void SetClearColour(float red, float green, float blue, float alpha);
+
+	// Text and font rendering
+	FreeTypeFont* CreateFreeTypeFont(const char *fontName, int fontSize, bool noAutoHint = false);
+	void RenderFreeTypeText(FreeTypeFont* pFont, float x, float y, float z, Colour colour, float scale, const char *inText, ...);
+	int GetFreeTypeTextWidth(FreeTypeFont* pFont, const char *inText, ...);
+	int GetFreeTypeTextHeight(FreeTypeFont* pFont, const char *inText, ...);
+	int GetFreeTypeTextAscent(FreeTypeFont* pFont);
+	int GetFreeTypeTextDescent(FreeTypeFont* pFont);
 
 protected:
 	/* Protected methods */
