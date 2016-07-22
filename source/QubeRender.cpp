@@ -39,6 +39,9 @@ void QubeGame::Render()
 	m_pRenderer->SetClearColour(0.2f, 0.3f, 0.4f, 1.0f);
 	m_pRenderer->ClearScene();
 
+	// Set viewport
+	m_pRenderer->SetViewport(m_pDefaultViewport);
+
 	// Render debug information
 	RenderDebugInformation();
 

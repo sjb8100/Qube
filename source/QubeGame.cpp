@@ -104,6 +104,9 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	m_cameraMode = CameraMode_Debug;
 	m_previousCameraMode = CameraMode_Debug;
 
+	/* Create viewports */
+	m_pDefaultViewport = m_pRenderer->CreateViewport(0, 0, m_windowWidth, m_windowHeight, 60.0f);
+
 	/* Create fonts */
 	m_pDefaultFont = m_pRenderer->CreateFreeTypeFont("media/fonts/arial.ttf", 12);
 
@@ -123,6 +126,7 @@ void QubeGame::Destroy()
 {
 	if (c_instance)
 	{
+		delete m_pDefaultViewport;
 		delete m_pDefaultFont;
 
 		delete m_pRenderer;

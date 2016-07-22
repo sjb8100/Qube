@@ -220,6 +220,9 @@ private:
 	bool m_keyboardMovement;
 	bool m_gamepadMovement;
 
+	// View ports
+	Viewport* m_pDefaultViewport;
+
 	// Fonts
 	FreeTypeFont* m_pDefaultFont;
 

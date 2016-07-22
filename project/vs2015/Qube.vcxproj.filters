@@ -590,6 +590,9 @@
     <ClInclude Include="..\..\source\Maths\3dmaths.h">
       <Filter>source\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\Renderer\viewport.h">
+      <Filter>source\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\source\glm\detail\func_common.inl">

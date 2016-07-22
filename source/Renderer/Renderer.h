@@ -25,6 +25,7 @@ using namespace glm;
 #include <GL/glu.h>
 
 #include "colour.h"
+#include "viewport.h"
 #include "../freetype/freetypefont.h"
 
 #pragma comment (lib, "opengl32")
@@ -45,6 +46,11 @@ public:
 	bool ClearScene(bool pixel = true, bool depth = true, bool stencil = true);
 	void SetColourMask(bool red, bool green, bool blue, bool alpha);
 	void SetClearColour(float red, float green, float blue, float alpha);
+
+	// Viewport
+	Viewport* CreateViewport(int bottom, int left, int width, int height, float fov);
+	void ResizeViewport(Viewport* pViewport, int bottom, int left, int width, int height, float fov);
+	void SetViewport(Viewport* pViewport);
 
 	// Text and font rendering
 	FreeTypeFont* CreateFreeTypeFont(const char *fontName, int fontSize, bool noAutoHint = false);
@@ -68,8 +74,13 @@ protected:
 
 private:
 	/* Private members */
+	// Window dimensions
 	int m_windowWidth;
 	int m_windowHeight;
+
+	// Clipping planes
+	float m_clipNear;
+	float m_clipFar;
 };
 
 int CheckGLErrors(char *file, int line);

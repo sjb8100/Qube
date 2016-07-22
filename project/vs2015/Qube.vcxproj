@@ -337,6 +337,7 @@
     <ClInclude Include="..\..\source\QubeWindow.h" />
     <ClInclude Include="..\..\source\Renderer\colour.h" />
     <ClInclude Include="..\..\source\Renderer\Renderer.h" />
+    <ClInclude Include="..\..\source\Renderer\viewport.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\source\glm\detail\func_common.inl" />

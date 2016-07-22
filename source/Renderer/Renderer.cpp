@@ -10,6 +10,7 @@
 // ******************************************************************************
 
 #include "../glew/include/GL/glew.h"
+#include "../Maths/3dmaths.h"
 #include "Renderer.h"
 
 #include <iostream>
@@ -40,8 +41,13 @@ int CheckGLErrors(const char *file, int line)
 
 Renderer::Renderer(int width, int height)
 {
+	// Window dimensions
 	m_windowWidth = width;
 	m_windowHeight = height;
+
+	// Default clipping planes
+	m_clipNear = 0.1f;
+	m_clipFar = 10000.0f;
 
 	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
@@ -89,6 +95,116 @@ void Renderer::SetColourMask(bool red, bool green, bool blue, bool alpha)
 void Renderer::SetClearColour(float red, float green, float blue, float alpha)
 {
 	glClearColor(red, green, blue, alpha);
+}
+
+// Viewport
+Viewport* Renderer::CreateViewport(int bottom, int left, int width, int height, float fov)
+{
+	Viewport* pViewport = new Viewport();
+
+	pViewport->Bottom = bottom;
+	pViewport->Left = left;
+	pViewport->Width = width;
+	pViewport->Height = height;
+	pViewport->Fov = fov;
+	pViewport->Aspect = (float)width / (float)height;
+
+	// Create the perspective projection for the viewport
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluPerspective(fov, pViewport->Aspect, m_clipNear, m_clipFar);
+	float mat[16];
+	glGetFloatv(GL_PROJECTION_MATRIX, mat);
+	pViewport->Perspective = mat;
+	glPopMatrix();
+
+	// Create the orthographic projection matrix for the viewport
+	float coordright = 1.0f;
+	float coordleft = -1.0f;
+	float coordtop = 1.0f;
+	float coordbottom = -1.0f;
+
+	memset(&(pViewport->Orthographic), 0, sizeof(Matrix4x4));
+	pViewport->Orthographic.m[0] = 2.0f / (coordright - coordleft);
+	pViewport->Orthographic.m[5] = 2.0f / (coordtop - coordbottom);
+	pViewport->Orthographic.m[10] = -2.0f / (m_clipFar - m_clipNear);
+	pViewport->Orthographic.m[12] = -(coordright + coordleft) / (coordright - coordleft);
+	pViewport->Orthographic.m[13] = -(coordtop + coordbottom) / (coordtop - coordbottom);
+	pViewport->Orthographic.m[14] = -(m_clipFar + m_clipNear) / (m_clipFar - m_clipNear);
+	pViewport->Orthographic.m[15] = 1.0f;
+
+	// Create the 2d projection matrix for the viewport
+	coordright = (float)m_windowWidth;
+	coordleft = 0.0f;
+	coordtop = (float)m_windowHeight;
+	coordbottom = 0.0f;
+
+	memset(&(pViewport->Projection2d), 0, sizeof(Matrix4x4));
+	pViewport->Projection2d.m[0] = 2.0f / (coordright - coordleft);
+	pViewport->Projection2d.m[5] = 2.0f / (coordtop - coordbottom);
+	pViewport->Projection2d.m[10] = -2.0f / (m_clipFar - m_clipNear);
+	pViewport->Projection2d.m[12] = -(coordright + coordleft) / (coordright - coordleft);
+	pViewport->Projection2d.m[13] = -(coordtop + coordbottom) / (coordtop - coordbottom);
+	pViewport->Projection2d.m[14] = -(m_clipFar + m_clipNear) / (m_clipFar - m_clipNear);
+	pViewport->Projection2d.m[15] = 1.0f;
+
+	return pViewport;
+}
+
+void Renderer::ResizeViewport(Viewport* pViewport, int bottom, int left, int width, int height, float fov)
+{
+	pViewport->Bottom = bottom;
+	pViewport->Left = left;
+	pViewport->Width = width;
+	pViewport->Height = height;
+	pViewport->Fov = fov;
+	pViewport->Aspect = (float)width / (float)height;
+
+	// Create the perspective projection for the viewport
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluPerspective(pViewport->Fov, pViewport->Aspect, m_clipNear, m_clipFar);
+	float mat[16];
+	glGetFloatv(GL_PROJECTION_MATRIX, mat);
+	pViewport->Perspective = mat;
+	glPopMatrix();
+
+	// Create the orthographic projection matrix for the viewport
+	float coordright = 1.0f;
+	float coordleft = -1.0f;
+	float coordtop = 1.0f;
+	float coordbottom = -1.0f;
+
+	memset(&(pViewport->Orthographic), 0, sizeof(Matrix4x4));
+	pViewport->Orthographic.m[0] = 2.0f / (coordright - coordleft);
+	pViewport->Orthographic.m[5] = 2.0f / (coordtop - coordbottom);
+	pViewport->Orthographic.m[10] = -2.0f / (m_clipFar - m_clipNear);
+	pViewport->Orthographic.m[12] = -(coordright + coordleft) / (coordright - coordleft);
+	pViewport->Orthographic.m[13] = -(coordtop + coordbottom) / (coordtop - coordbottom);
+	pViewport->Orthographic.m[14] = -(m_clipFar + m_clipNear) / (m_clipFar - m_clipNear);
+	pViewport->Orthographic.m[15] = 1.0f;
+
+	// Create the 2d projection matrix for the viewport
+	coordright = (float)m_windowWidth;
+	coordleft = 0.0f;
+	coordtop = (float)m_windowHeight;
+	coordbottom = 0.0f;
+
+	memset(&(pViewport->Projection2d), 0, sizeof(Matrix4x4));
+	pViewport->Projection2d.m[0] = 2.0f / (coordright - coordleft);
+	pViewport->Projection2d.m[5] = 2.0f / (coordtop - coordbottom);
+	pViewport->Projection2d.m[10] = -2.0f / (m_clipFar - m_clipNear);
+	pViewport->Projection2d.m[12] = -(coordright + coordleft) / (coordright - coordleft);
+	pViewport->Projection2d.m[13] = -(coordtop + coordbottom) / (coordtop - coordbottom);
+	pViewport->Projection2d.m[14] = -(m_clipFar + m_clipNear) / (m_clipFar - m_clipNear);
+	pViewport->Projection2d.m[15] = 1.0f;
+}
+
+void Renderer::SetViewport(Viewport* pViewport)
+{
+	glViewport(pViewport->Left, pViewport->Bottom, pViewport->Width, pViewport->Height);
 }
 
 // Text and font rendering
