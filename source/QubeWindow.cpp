@@ -79,6 +79,14 @@ void QubeWindow::Create()
 		exit(EXIT_FAILURE);
 	}
 
+	/* Set the OpenGL versions */
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	/* Resizable window */
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+
 	/* Initialize any rendering params */
 	int samples = 8;
 	glfwWindowHint(GLFW_SAMPLES, samples);
