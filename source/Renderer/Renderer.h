@@ -21,20 +21,28 @@ using namespace glm;
 #include <vector>
 using namespace std;
 
+#include "Shader.h"
+#include "colour.h"
+#include "viewport.h"
+#include "../freetype/freetypefont.h"
+#include "../Maths/3dmaths.h"
+
 #ifdef _WIN32
 #include <windows.h>
 #endif //_WIN32
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#include "colour.h"
-#include "viewport.h"
-#include "../freetype/freetypefont.h"
-#include "../Maths/3dmaths.h"
-
 #pragma comment (lib, "opengl32")
 #pragma comment (lib, "glu32")
 
+
+class PositionColorVertex
+{
+public:
+	float x, y, z;		// Position.
+	float r, g, b, a;	// Colour
+};
 
 class Line
 {
@@ -51,6 +59,9 @@ public:
 	/* Public methods */
 	Renderer(int width, int height);
 	~Renderer();
+
+	// Setup
+	void SetupShaders();
 
 	// Resize
 	void ResizeWindow(int newWidth, int newHeight);
@@ -99,6 +110,9 @@ private:
 	// Clipping planes
 	float m_clipNear;
 	float m_clipFar;
+
+	// Shaders
+	Shader* m_pPositionColorShader;
 
 	// Rendering
 	vector<Line*> m_vpLines;

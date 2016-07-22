@@ -12,7 +12,6 @@
 #include "QubeGame.h"
 #include <glm/detail/func_geometric.hpp>
 
-
 // Rendering
 void QubeGame::PreRender()
 {
@@ -39,11 +38,15 @@ void QubeGame::Render()
 	m_pRenderer->SetClearColour(0.2f, 0.3f, 0.4f, 1.0f);
 	m_pRenderer->ClearScene();
 
+	m_pRenderer->ResetLines();
+
 	// Set viewport
 	m_pRenderer->SetViewport(m_pDefaultViewport);
 
-	m_pRenderer->ResetLines();
-	m_pRenderer->DrawLine(vec3(0.0f, 0.0f, 0.0f), vec3(50.0f, 50.0f, 50.0f), Colour(1.0f, 0.0f, 0.0f), Colour(0.0f, 1.0f, 0.0f));
+	m_pRenderer->DrawLine(vec3(0.0f, 0.0f, 0.0f), vec3(m_windowWidth, m_windowHeight, 0.0f), Colour(1.0f, 0.0f, 0.0f), Colour(0.0f, 1.0f, 0.0f));
+	m_pRenderer->DrawLine(vec3(10.0f, 5.0f, 0.0f), vec3(10.0f, 300.0f, 0.0f), Colour(1.0f, 1.0f, 1.0f), Colour(1.0f, 1.0f, 1.0f));
+	m_pRenderer->DrawLine(vec3(10.0f, 5.0f, 0.0f), vec3(300.0f, 5.0f, 0.0f), Colour(1.0f, 1.0f, 1.0f), Colour(1.0f, 1.0f, 1.0f));
+
 	m_pRenderer->RenderLines();
 
 	// Render debug information

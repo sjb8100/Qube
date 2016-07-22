@@ -12,9 +12,15 @@
 #include "../glew/include/GL/glew.h"
 #include "Renderer.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <iostream>
 using namespace std;
 
+
+GLuint VBO, VAO, EBO;
 
 // GL ERROR CHECK
 int CheckGLErrors(const char *file, int line)
@@ -48,14 +54,6 @@ Renderer::Renderer(int width, int height)
 	m_clipNear = 0.1f;
 	m_clipFar = 10000.0f;
 
-	// Depth buffer
-	glEnable(GL_DEPTH_TEST);
-	glClearDepth(1.0f);
-	glDepthFunc(GL_LESS);
-
-	// Stencil buffer
-	glClearStencil(0);
-
 	// Glew init
 	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
@@ -65,11 +63,22 @@ Renderer::Renderer(int width, int height)
 		cout << "Error:" << glewGetErrorString(err) << endl;
 		return;
 	}
+
+	// Setup the shaders
+	SetupShaders();
 }
 
 Renderer::~Renderer()
 {
 	ResetLines();
+
+	delete m_pPositionColorShader;
+}
+
+// Setup
+void Renderer::SetupShaders()
+{
+	m_pPositionColorShader = new Shader("media/shaders/PositionColor.vertex", "media/shaders/PositionColor.fragment");
 }
 
 // Resize
@@ -233,41 +242,87 @@ void Renderer::DrawLine(vec3 lineSart, vec3 lineEnd, Colour lineStartColour, Col
 
 void Renderer::RenderLines()
 {
-	// Calculate the stride
-	GLsizei totalStride = sizeof(float) * 7;  // x, y, z, r, g, b, a
-
+	// Num vertices
 	unsigned int numVertices = (unsigned int)m_vpLines.size() * 2;
-	float *pVA = new float[numVertices * 7];
 
+	// Vertices
+	PositionColorVertex* linesBuffer;
+	linesBuffer = new PositionColorVertex[numVertices];
 	int arrayCounter = 0;
-	for (unsigned int i = 0; i < m_vpLines.size(); i++)
+	for (unsigned int i = 0; i < (unsigned int)m_vpLines.size(); i++)
 	{
-		pVA[arrayCounter + 0] = m_vpLines[i]->m_lineStart.x;
-		pVA[arrayCounter + 1] = m_vpLines[i]->m_lineStart.y;
-		pVA[arrayCounter + 2] = m_vpLines[i]->m_lineStart.z;
-		pVA[arrayCounter + 3] = m_vpLines[i]->m_lineStartColour.GetRed();
-		pVA[arrayCounter + 4] = m_vpLines[i]->m_lineStartColour.GetGreen();
-		pVA[arrayCounter + 5] = m_vpLines[i]->m_lineStartColour.GetBlue();
-		pVA[arrayCounter + 6] = m_vpLines[i]->m_lineStartColour.GetAlpha();
-		pVA[arrayCounter + 7] = m_vpLines[i]->m_lineEnd.x;
-		pVA[arrayCounter + 8] = m_vpLines[i]->m_lineEnd.y;
-		pVA[arrayCounter + 9] = m_vpLines[i]->m_lineEnd.z;
-		pVA[arrayCounter + 10] = m_vpLines[i]->m_lineEndColour.GetRed();
-		pVA[arrayCounter + 11] = m_vpLines[i]->m_lineEndColour.GetGreen();
-		pVA[arrayCounter + 12] = m_vpLines[i]->m_lineEndColour.GetBlue();
-		pVA[arrayCounter + 13] = m_vpLines[i]->m_lineEndColour.GetAlpha();
+		linesBuffer[arrayCounter + 0].x = m_vpLines[i]->m_lineStart.x;
+		linesBuffer[arrayCounter + 0].y = m_vpLines[i]->m_lineStart.y;
+		linesBuffer[arrayCounter + 0].z = m_vpLines[i]->m_lineStart.z;
+		linesBuffer[arrayCounter + 0].r = m_vpLines[i]->m_lineStartColour.GetRed();
+		linesBuffer[arrayCounter + 0].g = m_vpLines[i]->m_lineStartColour.GetGreen();
+		linesBuffer[arrayCounter + 0].b = m_vpLines[i]->m_lineStartColour.GetBlue();
+		linesBuffer[arrayCounter + 0].a = m_vpLines[i]->m_lineStartColour.GetAlpha();
+		linesBuffer[arrayCounter + 1].x = m_vpLines[i]->m_lineEnd.x;
+		linesBuffer[arrayCounter + 1].y = m_vpLines[i]->m_lineEnd.y;
+		linesBuffer[arrayCounter + 1].z = m_vpLines[i]->m_lineEnd.z;
+		linesBuffer[arrayCounter + 1].r = m_vpLines[i]->m_lineEndColour.GetRed();
+		linesBuffer[arrayCounter + 1].g = m_vpLines[i]->m_lineEndColour.GetGreen();
+		linesBuffer[arrayCounter + 1].b = m_vpLines[i]->m_lineEndColour.GetBlue();
+		linesBuffer[arrayCounter + 1].a = m_vpLines[i]->m_lineEndColour.GetAlpha();
 
-		arrayCounter += 14;
+		arrayCounter += 2;
 	}
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, totalStride, pVA);
+	// Indices
+	GLuint* indicesBuffer;
+	indicesBuffer = new GLuint[numVertices];
+	for (unsigned int i = 0; i < numVertices; i++)
+	{
+		indicesBuffer[i] = i;
+	}
 
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_FLOAT, totalStride, &pVA[3]);
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+	glBindVertexArray(VAO);
 
-	glDrawArrays(GL_POINTS, 0, numVertices);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(PositionColorVertex)*numVertices, linesBuffer, GL_STATIC_DRAW);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*numVertices, indicesBuffer, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 7, (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 7, (GLvoid*)(sizeof(GLfloat) * 3));
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
+
+	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
+
+	// Use shader
+	m_pPositionColorShader->UseShader();
+
+	// Create transformations
+	glm::mat4 view;
+	glm::mat4 projection;
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -1.0f));
+	//projection = glm::perspective(45.0f, (GLfloat)m_windowWidth / (GLfloat)m_windowHeight, 0.1f, 100.0f);
+	projection = glm::ortho(0.0f, (GLfloat)m_windowWidth, 0.0f, (GLfloat)m_windowHeight, 0.1f, 1000.0f);
+	// Get their uniform location
+	GLint modelLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "model");
+	GLint viewLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "view");
+	GLint projLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "projection");
+	// Pass the matrices to the shader
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+	// Note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+
+	glBindVertexArray(VAO);
+
+	glm::mat4 model;
+	model = glm::translate(model, vec3(0.0f, 0.0f, 0.0f));
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+	glDrawElements(GL_LINES, numVertices, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }

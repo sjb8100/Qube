@@ -111,6 +111,9 @@
     <ClCompile Include="..\..\source\Maths\Plane3D.cpp">
       <Filter>source\Maths</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Renderer\Shader.cpp">
+      <Filter>source\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\Renderer\Renderer.h">
@@ -591,6 +594,9 @@
       <Filter>source\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\Renderer\viewport.h">
+      <Filter>source\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\Renderer\Shader.h">
       <Filter>source\Renderer</Filter>
     </ClInclude>
   </ItemGroup>

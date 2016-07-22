@@ -176,6 +176,7 @@
     <ClCompile Include="..\..\source\QubeWindow.cpp" />
     <ClCompile Include="..\..\source\Renderer\colour.cpp" />
     <ClCompile Include="..\..\source\Renderer\Renderer.cpp" />
+    <ClCompile Include="..\..\source\Renderer\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\freetype\freetypefont.h" />
@@ -337,6 +338,7 @@
     <ClInclude Include="..\..\source\QubeWindow.h" />
     <ClInclude Include="..\..\source\Renderer\colour.h" />
     <ClInclude Include="..\..\source\Renderer\Renderer.h" />
+    <ClInclude Include="..\..\source\Renderer\Shader.h" />
     <ClInclude Include="..\..\source\Renderer\viewport.h" />
   </ItemGroup>
   <ItemGroup>
