@@ -237,6 +237,26 @@ void Renderer::DrawLine(vec3 lineSart, vec3 lineEnd, Colour lineStartColour, Col
 	m_vpLines.push_back(pNewLine);
 }
 
+void Renderer::DrawCube(vec3 pos, float length, float height, float width, Colour color)
+{
+	float half_length = length*0.5f;
+	float half_height = height*0.5f;
+	float half_width = width*0.5f;
+
+	DrawLine(pos+vec3(-half_length, -half_height, -half_width), pos+vec3(half_length, -half_height, -half_width), color, color);
+	DrawLine(pos + vec3(-half_length, half_height, -half_width), pos + vec3(half_length, half_height, -half_width), color, color);
+	DrawLine(pos + vec3(-half_length, -half_height, -half_width), pos + vec3(-half_length, half_height, -half_width), color, color);
+	DrawLine(pos + vec3(half_length, -half_height, -half_width), pos + vec3(half_length, half_height, -half_width), color, color);
+	DrawLine(pos + vec3(-half_length, -half_height, half_width), pos + vec3(half_length, -half_height, half_width), color, color);
+	DrawLine(pos + vec3(-half_length, half_height, half_width), pos + vec3(half_length, half_height, half_width), color, color);
+	DrawLine(pos + vec3(-half_length, -half_height, half_width), pos + vec3(-half_length, half_height, half_width), color, color);
+	DrawLine(pos + vec3(half_length, -half_height, half_width), pos + vec3(half_length, half_height, half_width), color, color);
+	DrawLine(pos + vec3(-half_length, -half_height, -half_width), pos + vec3(-half_length, -half_height, half_width), color, color);
+	DrawLine(pos + vec3(half_length, -half_height, -half_width), pos + vec3(half_length, -half_height, half_width), color, color);
+	DrawLine(pos + vec3(-half_length, half_height, -half_width), pos + vec3(-half_length, half_height, half_width), color, color);
+	DrawLine(pos + vec3(half_length, half_height, -half_width), pos + vec3(half_length, half_height, half_width), color, color);
+}
+
 void Renderer::RenderLines(Camera* pCamera)
 {
 	// Num vertices

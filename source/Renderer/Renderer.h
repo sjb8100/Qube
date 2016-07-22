@@ -88,6 +88,7 @@ public:
 	// Rendering
 	void ResetLines();
 	void DrawLine(vec3 lineSart, vec3 lineEnd, Colour lineStartColour, Colour lineEndColour);
+	void DrawCube(vec3 pos, float length, float height, float width, Colour color);
 	void RenderLines(Camera* pCamera);
 
 protected:
