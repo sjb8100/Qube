@@ -42,6 +42,7 @@ add_executable(Qube
                ${GLM_GTX_SRCS}
                ${INI_SRCS}
                ${FREETYPE_SRCS}
+               ${MATHS_SRCS}
 			   )
 
 include_directories(".")			   
