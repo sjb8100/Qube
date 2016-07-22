@@ -78,12 +78,9 @@ public:
 	void SetViewport(Viewport* pViewport);
 
 	// Text and font rendering
-	FreeTypeFont* CreateFreeTypeFont(const char *fontName, int fontSize, bool noAutoHint = false);
+	FreeTypeFont* CreateFreeTypeFont(const char *fontName, int fontSize);
 	void RenderFreeTypeText(FreeTypeFont* pFont, float x, float y, float z, Colour colour, float scale, const char *inText, ...);
 	int GetFreeTypeTextWidth(FreeTypeFont* pFont, const char *inText, ...);
-	int GetFreeTypeTextHeight(FreeTypeFont* pFont, const char *inText, ...);
-	int GetFreeTypeTextAscent(FreeTypeFont* pFont);
-	int GetFreeTypeTextDescent(FreeTypeFont* pFont);
 
 	// Rendering
 	void ResetLines();
@@ -115,6 +112,7 @@ private:
 
 	// Shaders
 	Shader* m_pPositionColorShader;
+	Shader* m_pTextShader;
 
 	// Rendering
 	vector<Line*> m_vpLines;

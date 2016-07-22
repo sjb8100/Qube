@@ -76,6 +76,7 @@ Renderer::~Renderer()
 void Renderer::SetupShaders()
 {
 	m_pPositionColorShader = new Shader("media/shaders/PositionColor.vertex", "media/shaders/PositionColor.fragment");
+	m_pTextShader = new Shader("media/shaders/Text.vertex", "media/shaders/Text.fragment");
 }
 
 // Resize
@@ -143,77 +144,81 @@ void Renderer::SetViewport(Viewport* pViewport)
 }
 
 // Text and font rendering
-FreeTypeFont* Renderer::CreateFreeTypeFont(const char *fontName, int fontSize, bool noAutoHint)
+FreeTypeFont* Renderer::CreateFreeTypeFont(const char *fontName, int fontSize)
 {
 	FreeTypeFont* font = new FreeTypeFont();
 
 	// Build the new freetype font
-	font->BuildFont(fontName, fontSize, noAutoHint);
+	font->BuildFont(fontName, fontSize);
 
 	return font;
 }
 
 void Renderer::RenderFreeTypeText(FreeTypeFont* pFont, float x, float y, float z, Colour colour, float scale, const char *inText, ...)
 {
-	char		outText[8192];
-	va_list		ap;  // Pointer to list of arguments
-
-	if (inText == NULL)
-	{
-		return;  // Early return if there is no text
-	}
-
-	// Loop through variable argument list and add them to the string
+	char outText[8192];
+	va_list ap;  // Pointer to list of arguments
 	va_start(ap, inText);
 		vsprintf(outText, inText, ap);
 	va_end(ap);
 
-	glColor4fv(colour.GetRGBA());
+	// Activate corresponding render state	
+	m_pTextShader->UseShader();
+	glUniform3f(glGetUniformLocation(m_pTextShader->GetShader(), "textColor"), colour.GetRed(), colour.GetGreen(), colour.GetBlue());
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(pFont->VAO);
 
-	// Add on the descent value, so we don't draw letters with underhang out of bounds. (e.g - g, y, q and p)
-	y -= GetFreeTypeTextDescent(pFont);
+	mat4 projection = ortho(0.0f, static_cast<GLfloat>(m_windowWidth), 0.0f, static_cast<GLfloat>(m_windowHeight));
+	glUniformMatrix4fv(glGetUniformLocation(m_pTextShader->GetShader(), "projection"), 1, GL_FALSE, value_ptr(projection));
 
-	// HACK : The descent has rounding errors and is usually off by about 1 pixel
-	y -= 1;
+	// Set OpenGL options
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glPushMatrix();
-		glTranslatef(x, y, 0);
-		pFont->DrawString(outText, scale);
-	glPopMatrix();
+	// Iterate through all characters
+	std::string::const_iterator c;
+	string text = inText;
+	for (c = text.begin(); c != text.end(); c++)
+	{
+		Character ch = pFont->Characters[*c];
 
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GLfloat xpos = x + ch.Bearing.x * scale;
+		GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+
+		GLfloat w = ch.Size.x * scale;
+		GLfloat h = ch.Size.y * scale;
+		// Update VBO for each character
+		GLfloat vertices[6][4] = {
+			{ xpos,     ypos + h,   0.0, 0.0 },
+			{ xpos,     ypos,       0.0, 1.0 },
+			{ xpos + w, ypos,       1.0, 1.0 },
+
+			{ xpos,     ypos + h,   0.0, 0.0 },
+			{ xpos + w, ypos,       1.0, 1.0 },
+			{ xpos + w, ypos + h,   1.0, 0.0 }
+		};
+		// Render glyph texture over quad
+		glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+		// Update content of VBO memory
+		glBindBuffer(GL_ARRAY_BUFFER, pFont->VBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // Be sure to use glBufferSubData and not glBufferData
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		// Render quad
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+		x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+	}
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 int Renderer::GetFreeTypeTextWidth(FreeTypeFont* pFont, const char *inText, ...)
 {
-	char outText[8192];
-	va_list ap;
-
-	if (inText == NULL)
-		return 0;
-
-	// Loop through variable argument list and add them to the string
-	va_start(ap, inText);
-		vsprintf(outText, inText, ap);
-	va_end(ap);
-
-	return pFont->GetTextWidth(outText);
+	return 0;
 }
 
-int Renderer::GetFreeTypeTextHeight(FreeTypeFont* pFont, const char *inText, ...)
-{
-	return pFont->GetCharHeight('a');
-}
-
-int Renderer::GetFreeTypeTextAscent(FreeTypeFont* pFont)
-{
-	return pFont->GetAscent();
-}
-
-int Renderer::GetFreeTypeTextDescent(FreeTypeFont* pFont)
-{
-	return pFont->GetDescent();
-}
 
 // Rendering
 void Renderer::ResetLines()
@@ -322,10 +327,10 @@ void Renderer::RenderLines(Camera* pCamera)
 	m_pPositionColorShader->UseShader();
 
 	// Create transformations
-	glm::mat4 view;
-	glm::mat4 projection;
-	view = glm::lookAt(pCamera->GetPosition(), pCamera->GetView(), pCamera->GetUp());
-	projection = glm::perspective(45.0f, (GLfloat)m_windowWidth / (GLfloat)m_windowHeight, 0.01f, 1000.0f);
+	mat4 view;
+	mat4 projection;
+	view = lookAt(pCamera->GetPosition(), pCamera->GetView(), pCamera->GetUp());
+	projection = perspective(45.0f, (GLfloat)m_windowWidth / (GLfloat)m_windowHeight, 0.01f, 1000.0f);
 	
 	// Get their uniform location
 	GLint modelLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "model");
@@ -333,15 +338,15 @@ void Renderer::RenderLines(Camera* pCamera)
 	GLint projLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "projection");
 
 	// Pass the matrices to the shader
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, value_ptr(view));
 	// Note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
-	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, value_ptr(projection));
 
 	glBindVertexArray(VAO);
 
-	glm::mat4 model;
-	model = glm::translate(model, vec3(0.0f, 0.0f, 0.0f));
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+	mat4 model;
+	model = translate(model, vec3(0.0f, 0.0f, 0.0f));
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));
 
 	glDrawElements(GL_LINES, numVertices, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

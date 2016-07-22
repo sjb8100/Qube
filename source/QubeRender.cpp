@@ -52,7 +52,7 @@ void QubeGame::Render()
 	m_pRenderer->RenderLines(m_pGameCamera);
 
 	// Render debug information
-	//RenderDebugInformation();
+	RenderDebugInformation();
 
 
 	// Pass render call to the window class, allow to swap buffers
@@ -68,5 +68,10 @@ void QubeGame::RenderDebugInformation()
 	sprintf(lBuildInfo, "RELEASE %s", m_pQubeSettings->m_version.c_str());
 #endif //defined(_DEBUG) || defined(NDEBUG)
 
-	m_pRenderer->RenderFreeTypeText(m_pDefaultFont, 0.0f, 0.0f, 1.0f, Colour(0.75f, 0.75f, 0.75f), 1.0f, lBuildInfo);
+	char lFPSBuff[128];
+	float fpsWidthOffset = 65.0f;
+	sprintf(lFPSBuff, "FPS: %.0f", m_fps);
+
+	m_pRenderer->RenderFreeTypeText(m_pDefaultFont, 10.0f, 10.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f), 1.0f, lBuildInfo);
+	m_pRenderer->RenderFreeTypeText(m_pDefaultFont, m_windowWidth - fpsWidthOffset, 10.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f), 1.0f, lFPSBuff);
 }
