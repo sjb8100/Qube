@@ -44,6 +44,8 @@ public:
 	const float GetMaxZoomAmount() const { return m_maxZoomAmount; }
 	const float GetZoomAmount() const { return m_zoomAmount; }
 
+	void SetupCameraFromPositionAndView(vec3 pos, vec3 view, vec3 upRef);
+
 	// Camera movement
 	void Fly(const float speed, bool useFakePosition = false);
 	void Move(const float speed, bool useFakePosition = false);
@@ -64,7 +66,7 @@ private:
 	// The camera's world position
 	vec3 m_position;
 
-	// 
+	// Camera's faked position
 	vec3 m_fakePosition;
 
 	// Local up vector

@@ -45,6 +45,21 @@ Camera::Camera(Renderer* pRenderer)
 	m_maxZoomAmount = 100.0f;
 }
 
+void Camera::SetupCameraFromPositionAndView(vec3 pos, vec3 view, vec3 upRef)
+{
+	// The up value passed is re-calculated since the original is just a reference to get the right vector
+	vec3 facing = normalize(view - pos);
+	vec3 right = normalize(cross(facing, upRef));
+	vec3 up = normalize(cross(right, facing));
+
+	SetPosition(pos);
+	SetFacing(facing);
+	SetUp(up);
+	SetRight(right);
+
+	m_zoomAmount = length(view - pos);
+}
+
 // Camera movement
 void Camera::Fly(const float speed, bool useFakePosition)
 {
