@@ -10,7 +10,6 @@
 // ******************************************************************************
 
 #include "../glew/include/GL/glew.h"
-#include "../Maths/3dmaths.h"
 #include "Renderer.h"
 
 #include <iostream>

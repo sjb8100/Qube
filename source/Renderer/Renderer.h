@@ -27,6 +27,7 @@ using namespace glm;
 #include "colour.h"
 #include "viewport.h"
 #include "../freetype/freetypefont.h"
+#include "../Maths/3dmaths.h"
 
 #pragma comment (lib, "opengl32")
 #pragma comment (lib, "glu32")
