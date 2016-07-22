@@ -44,8 +44,8 @@ void QubeGame::Render()
 	m_pRenderer->SetViewport(m_pDefaultViewport);
 
 	m_pRenderer->DrawLine(vec3(0.0f, 0.0f, 0.0f), vec3(m_windowWidth, m_windowHeight, 0.0f), Colour(1.0f, 0.0f, 0.0f), Colour(0.0f, 1.0f, 0.0f));
-	m_pRenderer->DrawLine(vec3(10.0f, 5.0f, 0.0f), vec3(10.0f, 300.0f, 0.0f), Colour(1.0f, 1.0f, 1.0f), Colour(1.0f, 1.0f, 1.0f));
-	m_pRenderer->DrawLine(vec3(10.0f, 5.0f, 0.0f), vec3(300.0f, 5.0f, 0.0f), Colour(1.0f, 1.0f, 1.0f), Colour(1.0f, 1.0f, 1.0f));
+	m_pRenderer->DrawLine(vec3(10.0f, 10.0f, 0.0f), vec3(10.0f, 300.0f, 0.0f), Colour(1.0f, 1.0f, 1.0f), Colour(1.0f, 1.0f, 1.0f));
+	m_pRenderer->DrawLine(vec3(10.0f, 10.0f, 0.0f), vec3(300.0f, 10.0f, 0.0f), Colour(1.0f, 1.0f, 1.0f), Colour(1.0f, 1.0f, 1.0f));
 
 	m_pRenderer->RenderLines();
 

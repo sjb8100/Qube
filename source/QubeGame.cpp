@@ -104,6 +104,15 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	m_cameraMode = CameraMode_Debug;
 	m_previousCameraMode = CameraMode_Debug;
 
+	/* Create camera */
+	m_pGameCamera = new Camera(m_pRenderer);
+	m_pGameCamera->SetPosition(vec3(0.0f, 2.0f, 5.0f));
+	m_pGameCamera->SetZoomAmount(5.0f);
+	m_pGameCamera->SetFakePosition(m_pGameCamera->GetPosition());
+	m_pGameCamera->SetFacing(vec3(0.0f, 0.0f, -1.0f));
+	m_pGameCamera->SetUp(vec3(0.0f, 1.0f, 0.0f));
+	m_pGameCamera->SetRight(vec3(1.0f, 0.0f, 0.0f));
+
 	/* Create viewports */
 	m_pDefaultViewport = m_pRenderer->CreateViewport(0, 0, m_windowWidth, m_windowHeight, 60.0f);
 
@@ -126,6 +135,7 @@ void QubeGame::Destroy()
 {
 	if (c_instance)
 	{
+		delete m_pGameCamera;
 		delete m_pDefaultViewport;
 		delete m_pDefaultFont;
 

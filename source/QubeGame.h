@@ -19,6 +19,7 @@
 #pragma once
 
 #include "Renderer/Renderer.h"
+#include "Renderer/camera.h"
 #include "QubeWindow.h"
 #include "QubeSettings.h"
 
@@ -219,6 +220,9 @@ private:
 	// Movement
 	bool m_keyboardMovement;
 	bool m_gamepadMovement;
+
+	// Game camera
+	Camera* m_pGameCamera;
 
 	// View ports
 	Viewport* m_pDefaultViewport;

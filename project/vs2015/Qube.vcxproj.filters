@@ -114,6 +114,9 @@
     <ClCompile Include="..\..\source\Renderer\Shader.cpp">
       <Filter>source\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Renderer\camera.cpp">
+      <Filter>source\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\Renderer\Renderer.h">
@@ -597,6 +600,9 @@
       <Filter>source\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\Renderer\Shader.h">
+      <Filter>source\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\Renderer\camera.h">
       <Filter>source\Renderer</Filter>
     </ClInclude>
   </ItemGroup>

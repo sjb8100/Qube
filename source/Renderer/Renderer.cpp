@@ -307,10 +307,12 @@ void Renderer::RenderLines()
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -1.0f));
 	//projection = glm::perspective(45.0f, (GLfloat)m_windowWidth / (GLfloat)m_windowHeight, 0.1f, 100.0f);
 	projection = glm::ortho(0.0f, (GLfloat)m_windowWidth, 0.0f, (GLfloat)m_windowHeight, 0.1f, 1000.0f);
+	
 	// Get their uniform location
 	GLint modelLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "model");
 	GLint viewLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "view");
 	GLint projLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "projection");
+
 	// Pass the matrices to the shader
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	// Note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
