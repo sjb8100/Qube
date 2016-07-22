@@ -48,6 +48,15 @@ Renderer::Renderer(int width, int height)
 	m_clipNear = 0.1f;
 	m_clipFar = 10000.0f;
 
+	// Depth buffer
+	glEnable(GL_DEPTH_TEST);
+	glClearDepth(1.0f);
+	glDepthFunc(GL_LESS);
+
+	// Stencil buffer
+	glClearStencil(0);
+
+	// Glew init
 	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
@@ -60,6 +69,7 @@ Renderer::Renderer(int width, int height)
 
 Renderer::~Renderer()
 {
+	ResetLines();
 }
 
 // Resize
@@ -108,46 +118,6 @@ Viewport* Renderer::CreateViewport(int bottom, int left, int width, int height, 
 	pViewport->Fov = fov;
 	pViewport->Aspect = (float)width / (float)height;
 
-	// Create the perspective projection for the viewport
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	gluPerspective(fov, pViewport->Aspect, m_clipNear, m_clipFar);
-	float mat[16];
-	glGetFloatv(GL_PROJECTION_MATRIX, mat);
-	pViewport->Perspective = mat;
-	glPopMatrix();
-
-	// Create the orthographic projection matrix for the viewport
-	float coordright = 1.0f;
-	float coordleft = -1.0f;
-	float coordtop = 1.0f;
-	float coordbottom = -1.0f;
-
-	memset(&(pViewport->Orthographic), 0, sizeof(Matrix4x4));
-	pViewport->Orthographic.m[0] = 2.0f / (coordright - coordleft);
-	pViewport->Orthographic.m[5] = 2.0f / (coordtop - coordbottom);
-	pViewport->Orthographic.m[10] = -2.0f / (m_clipFar - m_clipNear);
-	pViewport->Orthographic.m[12] = -(coordright + coordleft) / (coordright - coordleft);
-	pViewport->Orthographic.m[13] = -(coordtop + coordbottom) / (coordtop - coordbottom);
-	pViewport->Orthographic.m[14] = -(m_clipFar + m_clipNear) / (m_clipFar - m_clipNear);
-	pViewport->Orthographic.m[15] = 1.0f;
-
-	// Create the 2d projection matrix for the viewport
-	coordright = (float)m_windowWidth;
-	coordleft = 0.0f;
-	coordtop = (float)m_windowHeight;
-	coordbottom = 0.0f;
-
-	memset(&(pViewport->Projection2d), 0, sizeof(Matrix4x4));
-	pViewport->Projection2d.m[0] = 2.0f / (coordright - coordleft);
-	pViewport->Projection2d.m[5] = 2.0f / (coordtop - coordbottom);
-	pViewport->Projection2d.m[10] = -2.0f / (m_clipFar - m_clipNear);
-	pViewport->Projection2d.m[12] = -(coordright + coordleft) / (coordright - coordleft);
-	pViewport->Projection2d.m[13] = -(coordtop + coordbottom) / (coordtop - coordbottom);
-	pViewport->Projection2d.m[14] = -(m_clipFar + m_clipNear) / (m_clipFar - m_clipNear);
-	pViewport->Projection2d.m[15] = 1.0f;
-
 	return pViewport;
 }
 
@@ -159,46 +129,6 @@ void Renderer::ResizeViewport(Viewport* pViewport, int bottom, int left, int wid
 	pViewport->Height = height;
 	pViewport->Fov = fov;
 	pViewport->Aspect = (float)width / (float)height;
-
-	// Create the perspective projection for the viewport
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	gluPerspective(pViewport->Fov, pViewport->Aspect, m_clipNear, m_clipFar);
-	float mat[16];
-	glGetFloatv(GL_PROJECTION_MATRIX, mat);
-	pViewport->Perspective = mat;
-	glPopMatrix();
-
-	// Create the orthographic projection matrix for the viewport
-	float coordright = 1.0f;
-	float coordleft = -1.0f;
-	float coordtop = 1.0f;
-	float coordbottom = -1.0f;
-
-	memset(&(pViewport->Orthographic), 0, sizeof(Matrix4x4));
-	pViewport->Orthographic.m[0] = 2.0f / (coordright - coordleft);
-	pViewport->Orthographic.m[5] = 2.0f / (coordtop - coordbottom);
-	pViewport->Orthographic.m[10] = -2.0f / (m_clipFar - m_clipNear);
-	pViewport->Orthographic.m[12] = -(coordright + coordleft) / (coordright - coordleft);
-	pViewport->Orthographic.m[13] = -(coordtop + coordbottom) / (coordtop - coordbottom);
-	pViewport->Orthographic.m[14] = -(m_clipFar + m_clipNear) / (m_clipFar - m_clipNear);
-	pViewport->Orthographic.m[15] = 1.0f;
-
-	// Create the 2d projection matrix for the viewport
-	coordright = (float)m_windowWidth;
-	coordleft = 0.0f;
-	coordtop = (float)m_windowHeight;
-	coordbottom = 0.0f;
-
-	memset(&(pViewport->Projection2d), 0, sizeof(Matrix4x4));
-	pViewport->Projection2d.m[0] = 2.0f / (coordright - coordleft);
-	pViewport->Projection2d.m[5] = 2.0f / (coordtop - coordbottom);
-	pViewport->Projection2d.m[10] = -2.0f / (m_clipFar - m_clipNear);
-	pViewport->Projection2d.m[12] = -(coordright + coordleft) / (coordright - coordleft);
-	pViewport->Projection2d.m[13] = -(coordtop + coordbottom) / (coordtop - coordbottom);
-	pViewport->Projection2d.m[14] = -(m_clipFar + m_clipNear) / (m_clipFar - m_clipNear);
-	pViewport->Projection2d.m[15] = 1.0f;
 }
 
 void Renderer::SetViewport(Viewport* pViewport)
@@ -277,4 +207,67 @@ int Renderer::GetFreeTypeTextAscent(FreeTypeFont* pFont)
 int Renderer::GetFreeTypeTextDescent(FreeTypeFont* pFont)
 {
 	return pFont->GetDescent();
+}
+
+// Rendering
+void Renderer::ResetLines()
+{
+	for (unsigned int i = 0; i < m_vpLines.size(); i++)
+	{
+		delete m_vpLines[i];
+		m_vpLines[i] = 0;
+	}
+	m_vpLines.clear();
+}
+
+void Renderer::DrawLine(vec3 lineSart, vec3 lineEnd, Colour lineStartColour, Colour lineEndColour)
+{
+	Line* pNewLine = new Line();
+	pNewLine->m_lineStart = lineSart;
+	pNewLine->m_lineEnd = lineEnd;
+	pNewLine->m_lineStartColour = lineStartColour;
+	pNewLine->m_lineEndColour = lineEndColour;
+
+	m_vpLines.push_back(pNewLine);
+}
+
+void Renderer::RenderLines()
+{
+	// Calculate the stride
+	GLsizei totalStride = sizeof(float) * 7;  // x, y, z, r, g, b, a
+
+	unsigned int numVertices = (unsigned int)m_vpLines.size() * 2;
+	float *pVA = new float[numVertices * 7];
+
+	int arrayCounter = 0;
+	for (unsigned int i = 0; i < m_vpLines.size(); i++)
+	{
+		pVA[arrayCounter + 0] = m_vpLines[i]->m_lineStart.x;
+		pVA[arrayCounter + 1] = m_vpLines[i]->m_lineStart.y;
+		pVA[arrayCounter + 2] = m_vpLines[i]->m_lineStart.z;
+		pVA[arrayCounter + 3] = m_vpLines[i]->m_lineStartColour.GetRed();
+		pVA[arrayCounter + 4] = m_vpLines[i]->m_lineStartColour.GetGreen();
+		pVA[arrayCounter + 5] = m_vpLines[i]->m_lineStartColour.GetBlue();
+		pVA[arrayCounter + 6] = m_vpLines[i]->m_lineStartColour.GetAlpha();
+		pVA[arrayCounter + 7] = m_vpLines[i]->m_lineEnd.x;
+		pVA[arrayCounter + 8] = m_vpLines[i]->m_lineEnd.y;
+		pVA[arrayCounter + 9] = m_vpLines[i]->m_lineEnd.z;
+		pVA[arrayCounter + 10] = m_vpLines[i]->m_lineEndColour.GetRed();
+		pVA[arrayCounter + 11] = m_vpLines[i]->m_lineEndColour.GetGreen();
+		pVA[arrayCounter + 12] = m_vpLines[i]->m_lineEndColour.GetBlue();
+		pVA[arrayCounter + 13] = m_vpLines[i]->m_lineEndColour.GetAlpha();
+
+		arrayCounter += 14;
+	}
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3, GL_FLOAT, totalStride, pVA);
+
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4, GL_FLOAT, totalStride, &pVA[3]);
+
+	glDrawArrays(GL_POINTS, 0, numVertices);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
 }

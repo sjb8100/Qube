@@ -18,6 +18,9 @@
 #include <glm/vec3.hpp>
 using namespace glm;
 
+#include <vector>
+using namespace std;
+
 #ifdef _WIN32
 #include <windows.h>
 #endif //_WIN32
@@ -32,6 +35,15 @@ using namespace glm;
 #pragma comment (lib, "opengl32")
 #pragma comment (lib, "glu32")
 
+
+class Line
+{
+public:
+	vec3 m_lineStart;
+	vec3 m_lineEnd;
+	Colour m_lineStartColour;
+	Colour m_lineEndColour;
+};
 
 class Renderer
 {
@@ -61,6 +73,11 @@ public:
 	int GetFreeTypeTextAscent(FreeTypeFont* pFont);
 	int GetFreeTypeTextDescent(FreeTypeFont* pFont);
 
+	// Rendering
+	void ResetLines();
+	void DrawLine(vec3 lineSart, vec3 lineEnd, Colour lineStartColour, Colour lineEndColour);
+	void RenderLines();
+
 protected:
 	/* Protected methods */
 
@@ -82,6 +99,9 @@ private:
 	// Clipping planes
 	float m_clipNear;
 	float m_clipFar;
+
+	// Rendering
+	vector<Line*> m_vpLines;
 };
 
 int CheckGLErrors(char *file, int line);

@@ -14,12 +14,10 @@
 
 #pragma once
 
-#include "../Maths/3dmaths.h"
 
-
-class Viewport {
+class Viewport
+{
 public:
 	int Bottom, Left, Width, Height;
 	float Fov, Aspect;
-	Matrix4x4 Perspective, Orthographic, Projection2d;
 };

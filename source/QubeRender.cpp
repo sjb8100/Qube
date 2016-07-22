@@ -42,8 +42,12 @@ void QubeGame::Render()
 	// Set viewport
 	m_pRenderer->SetViewport(m_pDefaultViewport);
 
+	m_pRenderer->ResetLines();
+	m_pRenderer->DrawLine(vec3(0.0f, 0.0f, 0.0f), vec3(50.0f, 50.0f, 50.0f), Colour(1.0f, 0.0f, 0.0f), Colour(0.0f, 1.0f, 0.0f));
+	m_pRenderer->RenderLines();
+
 	// Render debug information
-	RenderDebugInformation();
+	//RenderDebugInformation();
 
 
 	// Pass render call to the window class, allow to swap buffers
