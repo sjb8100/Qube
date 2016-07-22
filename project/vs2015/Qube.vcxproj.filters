@@ -37,6 +37,9 @@
     <Filter Include="source\ini">
       <UniqueIdentifier>{a0c69ba6-d402-4a04-bafa-db93c0946480}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\freetype">
+      <UniqueIdentifier>{53a73525-a57c-4052-8725-da10809a3b6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\main.cpp">
@@ -80,6 +83,9 @@
     </ClCompile>
     <ClCompile Include="..\..\source\ini\INIReader.cpp">
       <Filter>source\ini</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\freetype\freetypefont.cpp">
+      <Filter>source\freetype</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -547,6 +553,9 @@
     </ClInclude>
     <ClInclude Include="..\..\source\ini\INIReader.h">
       <Filter>source\ini</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\freetype\freetypefont.h">
+      <Filter>source\freetype</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
