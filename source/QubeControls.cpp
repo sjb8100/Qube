@@ -38,27 +38,27 @@ void QubeGame::UpdateKeyboardControls(float dt)
 		// Keyboard camera movements
 		if (m_bKeyboardForward)
 		{
-			m_pGameCamera->Fly(20.0f * dt, true);
+			m_pGameCamera->Fly(20.0f * dt);
 		}
 		if (m_bKeyboardBackward)
 		{
-			m_pGameCamera->Fly(-20.0f * dt, true);
+			m_pGameCamera->Fly(-20.0f * dt);
 		}
 		if (m_bKeyboardStrafeLeft)
 		{
-			m_pGameCamera->Strafe(-20.0f * dt, true);
+			m_pGameCamera->Strafe(-20.0f * dt);
 		}
 		if (m_bKeyboardStrafeRight)
 		{
-			m_pGameCamera->Strafe(20.0f * dt, true);
+			m_pGameCamera->Strafe(20.0f * dt);
 		}
 		if (m_bKeyboardUp)
 		{
-			m_pGameCamera->Levitate(20.0f * dt, true);
+			m_pGameCamera->Levitate(20.0f * dt);
 		}
 		if (m_bKeyboardDown)
 		{
-			m_pGameCamera->Levitate(-20.0f * dt, true);
+			m_pGameCamera->Levitate(-20.0f * dt);
 		}
 	}
 }
