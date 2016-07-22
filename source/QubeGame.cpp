@@ -191,6 +191,9 @@ void QubeGame::ResizeWindow(int width, int height)
 	{
 		// Let the renderer know we have resized the window
 		m_pRenderer->ResizeWindow(m_windowWidth, m_windowHeight);
+
+		// Resize the viewports
+		m_pRenderer->ResizeViewport(m_pDefaultViewport, 0, 0, m_windowWidth, m_windowHeight, 60.0f);
 	}
 }
 
