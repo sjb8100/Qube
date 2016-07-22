@@ -127,7 +127,6 @@ public:
 	void RenderDebugInformation();
 
 	// Accessors
-	unsigned int GetDefaultViewport();
 	QubeSettings* GetQubeSettings();
 
 protected:
@@ -220,6 +219,9 @@ private:
 	// Movement
 	bool m_keyboardMovement;
 	bool m_gamepadMovement;
+
+	// Fonts
+	FreeTypeFont* m_pDefaultFont;
 
 	// Singleton instance
 	static QubeGame *c_instance;

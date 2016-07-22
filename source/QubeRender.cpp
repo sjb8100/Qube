@@ -49,4 +49,12 @@ void QubeGame::Render()
 
 void QubeGame::RenderDebugInformation()
 {
+	char lBuildInfo[128];
+#if defined(_DEBUG) || defined(NDEBUG)
+	sprintf(lBuildInfo, "DEV %s", m_pQubeSettings->m_version.c_str());
+#else
+	sprintf(lBuildInfo, "RELEASE %s", m_pVoxSettings->m_version.c_str());
+#endif //defined(_DEBUG) || defined(NDEBUG)
+
+	m_pRenderer->RenderFreeTypeText(m_pDefaultFont, 15.0f, 15.0f, 1.0f, Colour(0.75f, 0.75f, 0.75f), 1.0f, lBuildInfo);
 }

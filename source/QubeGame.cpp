@@ -72,7 +72,7 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	m_bGameQuit = false;
 	m_bPaused = false;
 
-	// Keyboard movement
+	/* Keyboard movement */
 	m_bKeyboardForward = false;
 	m_bKeyboardBackward = false;
 	m_bKeyboardStrafeLeft = false;
@@ -84,10 +84,10 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	m_bKeyboardSpace = false;
 	m_bKeyboardMenu = false;
 
-	// Joystick flags
+	/* Joystick flags */
 	m_bJoystickJump = false;
 
-	// Camera movement
+	/* Camera movement */
 	m_bCameraRotate = false;
 	m_pressedX = 0;
 	m_pressedY = 0;
@@ -96,21 +96,24 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	m_cameraDistance = 10.0f;
 	m_maxCameraDistance = m_cameraDistance;
 
-	// Movement
+	/* Movement */
 	m_keyboardMovement = false;
 	m_gamepadMovement = false;
 
-	// Camera mode
+	/* Camera mode */
 	m_cameraMode = CameraMode_Debug;
 	m_previousCameraMode = CameraMode_Debug;
 
-	// Game mode
+	/* Create fonts */
+	m_pDefaultFont = m_pRenderer->CreateFreeTypeFont("media/fonts/arial.ttf", 12);
+
+	/* Game mode */
 	m_gameMode = GameMode_Loading;
 	m_allowToChangeToGame = true;
 	m_allowToChangeToFrontend = true;
 	SetGameMode(m_gameMode);
 
-	// Set game and camera modes
+	/* Set game and camera modes */
 	SetGameMode(GameMode_Debug);
 	SetCameraMode(CameraMode_Debug);
 }
@@ -120,10 +123,11 @@ void QubeGame::Destroy()
 {
 	if (c_instance)
 	{
+		delete m_pDefaultFont;
+
 		delete m_pRenderer;
 
 		m_pQubeWindow->Destroy();
-
 		delete m_pQubeWindow;
 
 		delete c_instance;
