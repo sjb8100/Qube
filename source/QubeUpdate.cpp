@@ -42,11 +42,6 @@ void QubeGame::Update()
 		m_deltaTime = maxDeltaTime;
 	}
 
-	// Set title to contain FPS
-	char fpsText[64];
-	sprintf(fpsText, "Qube - FPS: %.1f", m_fps);
-	m_pQubeWindow->SetWindowTitle(fpsText);
-
 	// Update the initial wait timer and variables, so we dont do gameplay updates straight away
 	if (m_initialStartWait == true)
 	{
