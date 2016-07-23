@@ -23,6 +23,9 @@
 #include "QubeWindow.h"
 #include "QubeSettings.h"
 
+#include <nanogui/nanogui.h>
+using namespace nanogui;
+
 
 #ifdef __linux__
 typedef struct POINT {
@@ -47,6 +50,7 @@ enum CameraMode
 	CameraMode_Frontend,
 	CameraMode_MouseRotate,
 };
+
 
 class QubeGame
 {
@@ -229,6 +233,9 @@ private:
 
 	// Fonts
 	FreeTypeFont* m_pDefaultFont;
+
+	// GUI Screens
+	Screen *m_pGUIScreen;
 
 	// Singleton instance
 	static QubeGame *c_instance;

@@ -13,6 +13,9 @@
 #include "QubeGame.h"
 #include <glm/detail/func_geometric.hpp>
 
+#include <nanogui/nanogui.h>
+using namespace nanogui;
+
 #ifdef __linux__
 #include <sys/time.h>
 #endif //__linux__
@@ -37,8 +40,12 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	m_pQubeSettings = pQubeSettings;
 	m_pQubeWindow = new QubeWindow(this, m_pQubeSettings);
 
-	// Create the window
+	/* Create the GLFW window */
 	m_pQubeWindow->Create();
+
+	/* Create the GUI */
+	//m_pGUIScreen = new Screen();
+	//m_pGUIScreen->initialize(m_pQubeWindow->GetGLFWwindow(), true);
 
 	/* Setup the FPS and deltatime counters */
 #ifdef _WIN32
@@ -123,6 +130,9 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	/* Set game and camera modes */
 	SetGameMode(GameMode_Debug);
 	SetCameraMode(CameraMode_Debug);
+
+	/* Show the window */
+	m_pQubeWindow->ShowWindow();
 }
 
 // Destruction
@@ -187,6 +197,7 @@ bool QubeGame::IsCursorOn()
 
 void QubeGame::ResizeWindow(int width, int height)
 {
+	return;
 	m_windowWidth = width;
 	m_windowHeight = height;
 

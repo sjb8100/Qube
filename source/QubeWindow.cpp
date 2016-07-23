@@ -47,6 +47,9 @@ QubeWindow::QubeWindow(QubeGame* pQubeGame, QubeSettings* pQubeSettings)
 	m_pQubeGame = pQubeGame;
 	m_pQubeSettings = pQubeSettings;
 
+	/* Set GLFWWindow NULL */
+	m_pWindow = NULL;
+
 	/* Minimized flag */
 	m_minimized = false;
 
@@ -165,9 +168,6 @@ void QubeWindow::InitializeWindowContext(GLFWwindow* window)
 
 	/* Force resize */
 	WindowResizeCallback(window, m_windowWidth, m_windowHeight);
-
-	/* Show the window */
-	glfwShowWindow(window);
 }
 
 // Get a pointer to the GLFWwindow object
@@ -195,9 +195,21 @@ void QubeWindow::ResizeWindow(int width, int height)
 	m_windowHeight = height;
 }
 
-bool QubeWindow::GetMinimized()
+// Minimized
+bool QubeWindow::GetMinimized() 
 {
 	return m_minimized;
+}
+
+// Show / Hide
+void QubeWindow::ShowWindow()
+{
+	glfwShowWindow(m_pWindow);
+}
+
+void QubeWindow::HideWindow()
+{
+	glfwHideWindow(m_pWindow);
 }
 
 // Title

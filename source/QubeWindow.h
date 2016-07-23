@@ -64,6 +64,10 @@ public:
 	// Minimized
 	bool GetMinimized();
 
+	// Show / Hide
+	void ShowWindow();
+	void HideWindow();
+
 	// Title
 	void SetWindowTitle(const char* title);
 
