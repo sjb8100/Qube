@@ -65,6 +65,9 @@ QubeWindow::QubeWindow(QubeGame* pQubeGame, QubeSettings* pQubeSettings)
 	m_windowHeight = m_pQubeSettings->m_windowHeight;
 	m_oldWindowWidth = m_windowWidth;
 	m_oldWindowHeight = m_windowHeight;
+
+	/* Initialize the joysticks object */
+	memset(m_joysticks, 0, sizeof(m_joysticks));
 }
 
 QubeWindow::~QubeWindow()
@@ -82,19 +85,21 @@ void QubeWindow::Create()
 	/* Set the OpenGL versions */
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/* Resizable window */
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
 	/* Initialize any rendering params */
-	int samples = 8;
-	glfwWindowHint(GLFW_SAMPLES, samples);
+	glfwWindowHint(GLFW_SAMPLES, 8);
+	glfwWindowHint(GLFW_RED_BITS, 8);
+	glfwWindowHint(GLFW_GREEN_BITS, 8);
+	glfwWindowHint(GLFW_BLUE_BITS, 8);
+	glfwWindowHint(GLFW_ALPHA_BITS, 8);
+	glfwWindowHint(GLFW_STENCIL_BITS, 8);
+	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-	glGetIntegerv(GL_SAMPLES_ARB, &samples);
-
-	/* Initialize the joysticks object */
-	memset(m_joysticks, 0, sizeof(m_joysticks));
 
 	/* Create a windowed mode window and it's OpenGL context */
 	m_pWindow = glfwCreateWindow(m_windowWidth, m_windowHeight, "Qube", NULL, NULL);
