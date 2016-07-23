@@ -50,6 +50,7 @@ public:
 	void BuildFont(const char* fontName, int size);
 
 public:
-	map<GLchar, Character> Characters;
-	GLuint VAO, VBO;
+	map<GLchar, Character> m_characters;
+	GLuint m_VAO;
+	GLuint m_VBO;
 };

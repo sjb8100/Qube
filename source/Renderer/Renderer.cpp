@@ -166,7 +166,7 @@ void Renderer::RenderFreeTypeText(FreeTypeFont* pFont, float x, float y, float z
 	m_pTextShader->UseShader();
 	glUniform3f(glGetUniformLocation(m_pTextShader->GetShader(), "textColor"), colour.GetRed(), colour.GetGreen(), colour.GetBlue());
 	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(pFont->VAO);
+	glBindVertexArray(pFont->m_VAO);
 
 	mat4 projection = ortho(0.0f, static_cast<GLfloat>(m_windowWidth), 0.0f, static_cast<GLfloat>(m_windowHeight));
 	glUniformMatrix4fv(glGetUniformLocation(m_pTextShader->GetShader(), "projection"), 1, GL_FALSE, value_ptr(projection));
@@ -181,7 +181,7 @@ void Renderer::RenderFreeTypeText(FreeTypeFont* pFont, float x, float y, float z
 	string text = inText;
 	for (c = text.begin(); c != text.end(); c++)
 	{
-		Character ch = pFont->Characters[*c];
+		Character ch = pFont->m_characters[*c];
 
 		GLfloat xpos = x + ch.Bearing.x * scale;
 		GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
@@ -201,7 +201,7 @@ void Renderer::RenderFreeTypeText(FreeTypeFont* pFont, float x, float y, float z
 		// Render glyph texture over quad
 		glBindTexture(GL_TEXTURE_2D, ch.TextureID);
 		// Update content of VBO memory
-		glBindBuffer(GL_ARRAY_BUFFER, pFont->VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, pFont->m_VBO);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // Be sure to use glBufferSubData and not glBufferData
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);

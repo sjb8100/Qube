@@ -84,7 +84,7 @@ void FreeTypeFont::BuildFont(const char* fontName, int size)
 			glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
 			face->glyph->advance.x
 		};
-		Characters.insert(pair<GLchar, Character>(c, character));
+		m_characters.insert(pair<GLchar, Character>(c, character));
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 	// Destroy FreeType once we're finished
@@ -92,10 +92,10 @@ void FreeTypeFont::BuildFont(const char* fontName, int size)
 	FT_Done_FreeType(ft);
 
 	// Configure VAO/VBO for texture quads
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glGenVertexArrays(1, &m_VAO);
+	glGenBuffers(1, &m_VBO);
+	glBindVertexArray(m_VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
