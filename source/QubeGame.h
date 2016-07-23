@@ -25,9 +25,6 @@
 
 #include "nanovg/nanovg.h"
 
-#include <nanogui/nanogui.h>
-using namespace nanogui;
-
 
 #ifdef __linux__
 typedef struct POINT {
@@ -241,7 +238,7 @@ private:
 	NVGcontext* m_pNanovg;
 
 	// GUI Screens
-	Screen *m_pGUIScreen;
+	//Screen *m_pGUIScreen;
 
 	// Singleton instance
 	static QubeGame *c_instance;

@@ -16,9 +16,6 @@
 #define NANOVG_GL3_IMPLEMENTATION
 #include "nanovg/nanovg_gl.h"
 
-#include <nanogui/nanogui.h>
-using namespace nanogui;
-
 #ifdef __linux__
 #include <sys/time.h>
 #endif //__linux__
@@ -40,7 +37,7 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 {
 	m_pRenderer = NULL;
 	m_pNanovg = NULL;
-	m_pGUIScreen = NULL;
+	//m_pGUIScreen = NULL;
 
 	m_pQubeSettings = pQubeSettings;
 	m_pQubeWindow = new QubeWindow(this, m_pQubeSettings);
