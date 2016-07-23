@@ -35,7 +35,7 @@ int main(void)
 		pQubeGame->PollEvents();
 
 		/* Update joysticks */
-		pQubeGame->UpdateJoySticks();
+		//pQubeGame->UpdateJoySticks();
 
 		/* Update */
 		pQubeGame->Update();
