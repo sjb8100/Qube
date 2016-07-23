@@ -52,6 +52,7 @@ include_directories(".")
 include_directories("glfw\\include")
 include_directories("glew\\include")
 include_directories("freetype\\include")
+include_directories("nanovg")
 
 if(MSVC)
 target_link_libraries(Qube "opengl32.lib")
