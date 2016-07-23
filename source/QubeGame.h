@@ -192,6 +192,7 @@ private:
 #endif //_WIN32
 	float m_deltaTime;
 	float m_fps;
+	double m_glfwT;
 
 	// Initial starting wait timer
 	float m_initialWaitTimer;
@@ -241,6 +242,7 @@ private:
 	PerfGraph m_cpuGraph;
 	PerfGraph m_gpuGraph;
 	GPUtimer m_gpuTimer;
+	double m_cpuTime;
 
 	// GUI Screens
 	//Screen *m_pGUIScreen;

@@ -38,7 +38,9 @@ void QubeGame::Render()
 		return;
 	}
 
+	// Start timings
 	startGPUTimer(&m_gpuTimer);
+
 
 	// Start the scene
 	m_pRenderer->SetClearColour(0.2f, 0.3f, 0.4f, 1.0f);
@@ -53,7 +55,10 @@ void QubeGame::Render()
 	m_pRenderer->DrawLine(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 5.0f, 0.0f), Colour(0.0f, 1.0f, 0.0f), Colour(0.0f, 1.0f, 0.0f));
 	m_pRenderer->DrawLine(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 5.0f), Colour(0.0f, 0.0f, 1.0f), Colour(0.0f, 0.0f, 1.0f));
 
-	m_pRenderer->DrawCube(vec3(0.0f, 0.0f, 0.0f), 1.0f, 1.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f));
+	for (int i = 0; i < 1; i++)
+	{
+		m_pRenderer->DrawCube(vec3(i, 0.0f, 0.0f), 1.0f, 1.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f));
+	}
 
 	m_pRenderer->RenderLines(m_pGameCamera);
 
@@ -64,10 +69,15 @@ void QubeGame::Render()
 	RenderNanoVG();
 
 
+	// Stop timings
+	m_cpuTime = m_pQubeWindow->GetTime() - m_glfwT;
+	updateGraph(&m_cpuGraph, m_cpuTime);
+
 	float gpuTimes[3];
 	unsigned int n = stopGPUTimer(&m_gpuTimer, gpuTimes, 3);
 	for (unsigned int i = 0; i < n; i++)
 		updateGraph(&m_gpuGraph, gpuTimes[i]);
+
 
 	// Pass render call to the window class, allow to swap buffers
 	m_pQubeWindow->Render();

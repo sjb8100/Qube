@@ -212,6 +212,17 @@ void QubeWindow::HideWindow()
 	glfwHideWindow(m_pWindow);
 }
 
+// Time
+void QubeWindow::SetTime(double time)
+{
+	glfwSetTime(time);
+}
+
+double QubeWindow::GetTime()
+{
+	return glfwGetTime();
+}
+
 // Title
 void QubeWindow::SetWindowTitle(const char* title)
 {

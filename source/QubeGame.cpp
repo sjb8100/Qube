@@ -144,6 +144,9 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 
 	/* Show the window */
 	m_pQubeWindow->ShowWindow();
+
+	/* Set the initial glfw time */
+	m_pQubeWindow->SetTime(0);
 }
 
 // Destruction

@@ -68,6 +68,10 @@ public:
 	void ShowWindow();
 	void HideWindow();
 
+	// Time
+	void SetTime(double time);
+	double GetTime();
+
 	// Title
 	void SetWindowTitle(const char* title);
 
