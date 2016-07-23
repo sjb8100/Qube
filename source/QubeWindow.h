@@ -53,6 +53,9 @@ public:
 	// Initialize window context
 	void InitializeWindowContext(GLFWwindow* window);
 
+	// Get a pointer to the GLFWwindow object
+	GLFWwindow* GetGLFWwindow();
+
 	// Windows dimensions
 	int GetWindowWidth();
 	int GetWindowHeight();

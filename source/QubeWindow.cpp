@@ -165,6 +165,12 @@ void QubeWindow::InitializeWindowContext(GLFWwindow* window)
 	glfwShowWindow(window);
 }
 
+// Get a pointer to the GLFWwindow object
+GLFWwindow* QubeWindow::GetGLFWwindow()
+{
+	return m_pWindow;
+}
+
 // Windows dimensions
 int QubeWindow::GetWindowWidth()
 {
