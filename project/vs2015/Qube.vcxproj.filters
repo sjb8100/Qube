@@ -43,6 +43,9 @@
     <Filter Include="source\Maths">
       <UniqueIdentifier>{ed425069-da28-4cf1-8a62-4418a4fe67de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\nanovg">
+      <UniqueIdentifier>{79a6f2d4-2967-4ef7-af76-a68d0f119404}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\main.cpp">
@@ -116,6 +119,9 @@
     </ClCompile>
     <ClCompile Include="..\..\source\Renderer\camera.cpp">
       <Filter>source\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\nanovg\nanovg.c">
+      <Filter>source\nanovg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -604,6 +610,24 @@
     </ClInclude>
     <ClInclude Include="..\..\source\Renderer\camera.h">
       <Filter>source\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanovg\fontstash.h">
+      <Filter>source\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanovg\nanovg.h">
+      <Filter>source\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanovg\nanovg_gl.h">
+      <Filter>source\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanovg\nanovg_gl_utils.h">
+      <Filter>source\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanovg\stb_image.h">
+      <Filter>source\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanovg\stb_truetype.h">
+      <Filter>source\nanovg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

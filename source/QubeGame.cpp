@@ -13,6 +13,9 @@
 #include "QubeGame.h"
 #include <glm/detail/func_geometric.hpp>
 
+#define NANOVG_GL3_IMPLEMENTATION
+#include "nanovg/nanovg_gl.h"
+
 #include <nanogui/nanogui.h>
 using namespace nanogui;
 
@@ -36,16 +39,14 @@ QubeGame* QubeGame::GetInstance()
 void QubeGame::Create(QubeSettings* pQubeSettings)
 {
 	m_pRenderer = NULL;
+	m_pNanovg = NULL;
+	m_pGUIScreen = NULL;
 
 	m_pQubeSettings = pQubeSettings;
 	m_pQubeWindow = new QubeWindow(this, m_pQubeSettings);
 
 	/* Create the GLFW window */
 	m_pQubeWindow->Create();
-
-	/* Create the GUI */
-	//m_pGUIScreen = new Screen();
-	//m_pGUIScreen->initialize(m_pQubeWindow->GetGLFWwindow(), true);
 
 	/* Setup the FPS and deltatime counters */
 #ifdef _WIN32
@@ -74,6 +75,13 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	m_windowWidth = m_pQubeWindow->GetWindowWidth();
 	m_windowHeight = m_pQubeWindow->GetWindowHeight();
 	m_pRenderer = new Renderer(m_windowWidth, m_windowHeight);
+
+	/* Create the nanovg context */
+	m_pNanovg = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
+
+	/* Create the nanogui */
+	//m_pGUIScreen = new Screen();
+	//m_pGUIScreen->initialize(m_pQubeWindow->GetGLFWwindow(), true);
 
 	/* Pause and quit */
 	m_bGameQuit = false;

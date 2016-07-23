@@ -23,6 +23,8 @@
 #include "QubeWindow.h"
 #include "QubeSettings.h"
 
+#include "nanovg/nanovg.h"
+
 #include <nanogui/nanogui.h>
 using namespace nanogui;
 
@@ -130,6 +132,7 @@ public:
 	void EndShaderRender();
 	void Render();
 	void RenderDebugInformation();
+	void RenderNanoVG();
 
 	// Accessors
 	QubeSettings* GetQubeSettings();
@@ -233,6 +236,9 @@ private:
 
 	// Fonts
 	FreeTypeFont* m_pDefaultFont;
+
+	// Nanovg context
+	NVGcontext* m_pNanovg;
 
 	// GUI Screens
 	Screen *m_pGUIScreen;

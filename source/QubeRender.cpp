@@ -12,6 +12,9 @@
 #include "QubeGame.h"
 #include <glm/detail/func_geometric.hpp>
 
+#include "nanovg/nanovg.h"
+
+
 // Rendering
 void QubeGame::PreRender()
 {
@@ -53,6 +56,9 @@ void QubeGame::Render()
 
 	// Render debug information
 	RenderDebugInformation();
+	
+	// Render nanovg
+	RenderNanoVG();
 
 
 	// Pass render call to the window class, allow to swap buffers
@@ -74,4 +80,12 @@ void QubeGame::RenderDebugInformation()
 
 	m_pRenderer->RenderFreeTypeText(m_pDefaultFont, 10.0f, 10.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f), 1.0f, lBuildInfo);
 	m_pRenderer->RenderFreeTypeText(m_pDefaultFont, m_windowWidth - fpsWidthOffset, 10.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f), 1.0f, lFPSBuff);
+}
+
+void QubeGame::RenderNanoVG()
+{
+	float pxRatio = (float)m_windowWidth / (float)m_windowHeight;
+	nvgBeginFrame(m_pNanovg, m_windowWidth, m_windowHeight, pxRatio);
+
+	nvgEndFrame(m_pNanovg);
 }
