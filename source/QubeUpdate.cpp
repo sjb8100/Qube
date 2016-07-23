@@ -35,6 +35,8 @@ void QubeGame::Update()
 	m_fps = 1.0f / m_deltaTime;
 	m_fpsPreviousTicks = m_fpsCurrentTicks;
 
+	updateGraph(&m_fpsGraph, m_deltaTime);
+
 	float maxDeltaTime = 0.25f;
 	if (m_deltaTime > maxDeltaTime)
 	{

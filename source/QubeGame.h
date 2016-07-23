@@ -24,6 +24,7 @@
 #include "QubeSettings.h"
 
 #include "nanovg/nanovg.h"
+#include "nanovg/perf.h"
 
 
 #ifdef __linux__
@@ -236,6 +237,10 @@ private:
 
 	// Nanovg context
 	NVGcontext* m_pNanovg;
+	PerfGraph m_fpsGraph;
+	PerfGraph m_cpuGraph;
+	PerfGraph m_gpuGraph;
+	GPUtimer m_gpuTimer;
 
 	// GUI Screens
 	//Screen *m_pGUIScreen;

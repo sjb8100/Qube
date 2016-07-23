@@ -123,6 +123,9 @@
     <ClCompile Include="..\..\source\nanovg\nanovg.c">
       <Filter>source\nanovg</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\nanovg\perf.c">
+      <Filter>source\nanovg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\Renderer\Renderer.h">
@@ -627,6 +630,9 @@
       <Filter>source\nanovg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\nanovg\stb_truetype.h">
+      <Filter>source\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanovg\perf.h">
       <Filter>source\nanovg</Filter>
     </ClInclude>
   </ItemGroup>

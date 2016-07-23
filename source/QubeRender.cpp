@@ -13,6 +13,7 @@
 #include <glm/detail/func_geometric.hpp>
 
 #include "nanovg/nanovg.h"
+#include "nanovg/perf.h"
 
 
 // Rendering
@@ -37,6 +38,8 @@ void QubeGame::Render()
 		return;
 	}
 
+	startGPUTimer(&m_gpuTimer);
+
 	// Start the scene
 	m_pRenderer->SetClearColour(0.2f, 0.3f, 0.4f, 1.0f);
 	m_pRenderer->ClearScene();
@@ -55,11 +58,16 @@ void QubeGame::Render()
 	m_pRenderer->RenderLines(m_pGameCamera);
 
 	// Render debug information
-	RenderDebugInformation();
+	//RenderDebugInformation();
 	
 	// Render nanovg
 	RenderNanoVG();
 
+
+	float gpuTimes[3];
+	unsigned int n = stopGPUTimer(&m_gpuTimer, gpuTimes, 3);
+	for (unsigned int i = 0; i < n; i++)
+		updateGraph(&m_gpuGraph, gpuTimes[i]);
 
 	// Pass render call to the window class, allow to swap buffers
 	m_pQubeWindow->Render();
@@ -86,6 +94,13 @@ void QubeGame::RenderNanoVG()
 {
 	float pxRatio = (float)m_windowWidth / (float)m_windowHeight;
 	nvgBeginFrame(m_pNanovg, m_windowWidth, m_windowHeight, pxRatio);
+
+	renderGraph(m_pNanovg, 5, 5, &m_fpsGraph);
+	renderGraph(m_pNanovg, 5 + 200 + 5, 5, &m_cpuGraph);
+	if (m_gpuTimer.supported)
+	{
+		renderGraph(m_pNanovg, 5 + 200 + 5 + 200 + 5, 5, &m_gpuGraph);
+	}
 
 	nvgEndFrame(m_pNanovg);
 }

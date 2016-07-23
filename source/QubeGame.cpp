@@ -15,6 +15,7 @@
 
 #define NANOVG_GL3_IMPLEMENTATION
 #include "nanovg/nanovg_gl.h"
+#include "nanovg/perf.h"
 
 #ifdef __linux__
 #include <sys/time.h>
@@ -75,6 +76,11 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 
 	/* Create the nanovg context */
 	m_pNanovg = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
+	int font = nvgCreateFont(m_pNanovg, "arial", "media/fonts/arial.ttf");
+	initGraph(&m_fpsGraph, GRAPH_RENDER_FPS, "Frame Time");
+	initGraph(&m_cpuGraph, GRAPH_RENDER_MS, "CPU Time");
+	initGraph(&m_gpuGraph, GRAPH_RENDER_MS, "GPU Time");
+	initGPUTimer(&m_gpuTimer);
 
 	/* Create the nanogui */
 	//m_pGUIScreen = new Screen();

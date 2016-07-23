@@ -167,6 +167,7 @@
     <ClCompile Include="..\..\source\Maths\matrix4x4.cpp" />
     <ClCompile Include="..\..\source\Maths\Plane3D.cpp" />
     <ClCompile Include="..\..\source\nanovg\nanovg.c" />
+    <ClCompile Include="..\..\source\nanovg\perf.c" />
     <ClCompile Include="..\..\source\QubeCamera.cpp" />
     <ClCompile Include="..\..\source\QubeControls.cpp" />
     <ClCompile Include="..\..\source\QubeGame.cpp" />
@@ -339,6 +340,7 @@
     <ClInclude Include="..\..\source\nanovg\nanovg.h" />
     <ClInclude Include="..\..\source\nanovg\nanovg_gl.h" />
     <ClInclude Include="..\..\source\nanovg\nanovg_gl_utils.h" />
+    <ClInclude Include="..\..\source\nanovg\perf.h" />
     <ClInclude Include="..\..\source\nanovg\stb_image.h" />
     <ClInclude Include="..\..\source\nanovg\stb_truetype.h" />
     <ClInclude Include="..\..\source\QubeGame.h" />
