@@ -35,8 +35,7 @@ void QubeGame::Update()
 	m_fps = 1.0f / m_deltaTime;
 	m_fpsPreviousTicks = m_fpsCurrentTicks;
 
-	m_glfwT = m_pQubeWindow->GetTime();
-
+	m_glfwTime = m_pQubeWindow->GetTime();
 	updateGraph(&m_fpsGraph, m_deltaTime);
 
 	float maxDeltaTime = 0.25f;
