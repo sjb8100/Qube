@@ -211,7 +211,6 @@ bool QubeGame::IsCursorOn()
 
 void QubeGame::ResizeWindow(int width, int height)
 {
-	return;
 	m_windowWidth = width;
 	m_windowHeight = height;
 
