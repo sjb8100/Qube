@@ -70,7 +70,7 @@ void QubeGame::Render()
 
 
 	// Stop timings
-	m_cpuTime = m_pQubeWindow->GetTime() - m_glfwT;
+	m_cpuTime = m_pQubeWindow->GetTime() - m_glfwTime;
 	updateGraph(&m_cpuGraph, m_cpuTime);
 
 	float gpuTimes[3];
