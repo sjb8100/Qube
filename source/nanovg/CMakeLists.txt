@@ -6,6 +6,8 @@ set(NANOVG_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/nanovg_gl_utils.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/stb_image.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/stb_truetype.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/perf.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/perf.c"
     PARENT_SCOPE)
 
 source_group("nanovg" FILES ${NANOVG_SRCS})
