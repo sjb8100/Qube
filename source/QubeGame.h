@@ -192,7 +192,7 @@ private:
 #endif //_WIN32
 	float m_deltaTime;
 	float m_fps;
-	double m_glfwT;
+	double m_glfwTime;
 
 	// Initial starting wait timer
 	float m_initialWaitTimer;
@@ -238,6 +238,8 @@ private:
 
 	// Nanovg context
 	NVGcontext* m_pNanovg;
+	
+	// Performance and metrics graphs
 	PerfGraph m_fpsGraph;
 	PerfGraph m_cpuGraph;
 	PerfGraph m_gpuGraph;
