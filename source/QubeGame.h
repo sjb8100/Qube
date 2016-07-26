@@ -114,6 +114,7 @@ public:
 
 	// GUI functionality
 	void CreateGUI();
+	bool IsInteractingWithGUI();
 
 	// Game functions
 	void QuitToFrontEnd();

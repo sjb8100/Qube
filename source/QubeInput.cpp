@@ -64,7 +64,10 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 	// Nanogui callback handling
 	if (QubeGame::GetInstance()->GetNanoGUIScreen())
 	{
-		QubeGame::GetInstance()->GetNanoGUIScreen()->mouseButtonCallbackEvent(button, action, mods);
+		if (QubeGame::GetInstance()->IsCursorOn() == true)
+		{
+			QubeGame::GetInstance()->GetNanoGUIScreen()->mouseButtonCallbackEvent(button, action, mods);
+		}
 	}
 
 	switch (action)
@@ -99,7 +102,10 @@ void MouseScrollCallback(GLFWwindow* window, double x, double y)
 	// Nanogui callback handling
 	if (QubeGame::GetInstance()->GetNanoGUIScreen())
 	{
-		QubeGame::GetInstance()->GetNanoGUIScreen()->scrollCallbackEvent(x, y);
+		if (QubeGame::GetInstance()->IsCursorOn() == true)
+		{
+			QubeGame::GetInstance()->GetNanoGUIScreen()->scrollCallbackEvent(x, y);
+		}
 	}
 
 	QubeGame::GetInstance()->MouseScroll(x, y);
@@ -110,7 +116,10 @@ void SetCursorCallback(GLFWwindow* window, double x, double y)
 	// Nanogui callback handling
 	if (QubeGame::GetInstance()->GetNanoGUIScreen())
 	{
-		QubeGame::GetInstance()->GetNanoGUIScreen()->cursorPosCallbackEvent(x, y);
+		if (QubeGame::GetInstance()->IsCursorOn() == true)
+		{
+			QubeGame::GetInstance()->GetNanoGUIScreen()->cursorPosCallbackEvent(x, y);
+		}
 	}
 }
 
@@ -232,6 +241,11 @@ void QubeGame::MouseLeftPressed()
 	m_currentY = m_pQubeWindow->GetCursorY();
 	m_pressedX = m_currentX;
 	m_pressedY = m_currentY;
+
+	if (IsInteractingWithGUI())
+	{
+		return;
+	}
 
 	if (m_gameMode == GameMode_Debug || m_cameraMode == CameraMode_Debug)
 	{
