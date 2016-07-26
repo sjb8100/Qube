@@ -40,6 +40,8 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 void CharacterCallback(GLFWwindow* window, unsigned int keyCode);
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void MouseScrollCallback(GLFWwindow* window, double x, double y);
+void SetCursorCallback(GLFWwindow* window, double x, double y);
+void FrameBufferResizeCallback(GLFWwindow* window, int width, int height);
 
 
 QubeWindow::QubeWindow(QubeGame* pQubeGame, QubeSettings* pQubeSettings)
@@ -156,6 +158,8 @@ void QubeWindow::InitializeWindowContext(GLFWwindow* window)
 	glfwSetCharCallback(window, CharacterCallback);
 	glfwSetMouseButtonCallback(window, MouseButtonCallback);
 	glfwSetScrollCallback(window, MouseScrollCallback);
+	glfwSetCursorPosCallback(window, SetCursorCallback);
+	glfwSetFramebufferSizeCallback(window, FrameBufferResizeCallback);
 
 	/* Center on screen */
 	const GLFWvidmode* vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());

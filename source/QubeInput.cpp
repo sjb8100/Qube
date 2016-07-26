@@ -22,6 +22,12 @@ using namespace std;
 // Input callbacks
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	// Nanogui callback handling
+	if (QubeGame::GetInstance()->GetNanoGUIScreen())
+	{
+		QubeGame::GetInstance()->GetNanoGUIScreen()->keyCallbackEvent(key, scancode, action, mods);
+	}
+
 	switch (action)
 	{
 		case GLFW_PRESS:
@@ -44,11 +50,23 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 void CharacterCallback(GLFWwindow* window, unsigned int keyCode)
 {
+	// Nanogui callback handling
+	if (QubeGame::GetInstance()->GetNanoGUIScreen())
+	{
+		QubeGame::GetInstance()->GetNanoGUIScreen()->charCallbackEvent(keyCode);
+	}
+
 	QubeGame::GetInstance()->CharacterEntered(keyCode);
 }
 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
+	// Nanogui callback handling
+	if (QubeGame::GetInstance()->GetNanoGUIScreen())
+	{
+		QubeGame::GetInstance()->GetNanoGUIScreen()->mouseButtonCallbackEvent(button, action, mods);
+	}
+
 	switch (action)
 	{
 		case GLFW_PRESS:
@@ -78,7 +96,31 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 
 void MouseScrollCallback(GLFWwindow* window, double x, double y)
 {
+	// Nanogui callback handling
+	if (QubeGame::GetInstance()->GetNanoGUIScreen())
+	{
+		QubeGame::GetInstance()->GetNanoGUIScreen()->scrollCallbackEvent(x, y);
+	}
+
 	QubeGame::GetInstance()->MouseScroll(x, y);
+}
+
+void SetCursorCallback(GLFWwindow* window, double x, double y)
+{
+	// Nanogui callback handling
+	if (QubeGame::GetInstance()->GetNanoGUIScreen())
+	{
+		QubeGame::GetInstance()->GetNanoGUIScreen()->cursorPosCallbackEvent(x, y);
+	}
+}
+
+void FrameBufferResizeCallback(GLFWwindow* window, int width, int height)
+{
+	// Nanogui callback handling
+	if (QubeGame::GetInstance()->GetNanoGUIScreen())
+	{
+		QubeGame::GetInstance()->GetNanoGUIScreen()->resizeCallbackEvent(width, height);
+	}
 }
 
 // Input

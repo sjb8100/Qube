@@ -29,7 +29,7 @@ Color colval(0.5f, 0.5f, 0.7f, 1.f);
 void QubeGame::CreateGUI()
 {
 	FormHelper *gui = new FormHelper(m_pNanoGUIScreen);
-	nanogui::ref<Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(10, 10), "Form helper example");
+	nanogui::ref<Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(10, 10), "Test NanoGUI");
 
 	gui->addGroup("Basic types");
 	gui->addVariable("bool", bvar);

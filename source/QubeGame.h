@@ -141,6 +141,7 @@ public:
 
 	// Accessors
 	QubeSettings* GetQubeSettings();
+	Screen* GetNanoGUIScreen();
 
 protected:
 	/* Protected methods */
@@ -253,7 +254,7 @@ private:
 	GPUtimer m_gpuTimer;
 	double m_cpuTime;
 
-	// GUI Screens
+	// NanoGUI root screen
 	Screen *m_pNanoGUIScreen;
 
 	// Singleton instance

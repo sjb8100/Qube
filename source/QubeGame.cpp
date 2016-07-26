@@ -311,3 +311,8 @@ QubeSettings* QubeGame::GetQubeSettings()
 {
 	return m_pQubeSettings;
 }
+
+Screen* QubeGame::GetNanoGUIScreen()
+{
+	return m_pNanoGUIScreen;
+}
