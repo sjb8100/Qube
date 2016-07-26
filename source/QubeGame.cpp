@@ -38,7 +38,7 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 {
 	m_pRenderer = NULL;
 	m_pNanovg = NULL;
-	//m_pGUIScreen = NULL;
+	//m_pNanoGUIScreen = NULL;
 
 	m_pQubeSettings = pQubeSettings;
 	m_pQubeWindow = new QubeWindow(this, m_pQubeSettings);
@@ -83,8 +83,8 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	initGPUTimer(&m_gpuTimer);
 
 	/* Create the nanogui */
-	//m_pGUIScreen = new Screen();
-	//m_pGUIScreen->initialize(m_pQubeWindow->GetGLFWwindow(), true);
+	//m_pNanoGUIScreen = new Screen();
+	//m_pNanoGUIScreen->initialize(m_pQubeWindow->GetGLFWwindow(), true);
 
 	/* Pause and quit */
 	m_bGameQuit = false;

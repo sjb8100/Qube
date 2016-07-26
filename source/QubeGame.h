@@ -26,6 +26,9 @@
 #include "nanovg/nanovg.h"
 #include "nanovg/perf.h"
 
+//#include <nanogui/nanogui.h>
+//using namespace nanogui;
+
 
 #ifdef __linux__
 typedef struct POINT {
@@ -131,6 +134,7 @@ public:
 	void Render();
 	void RenderDebugInformation();
 	void RenderNanoVG();
+	void RenderNanoGUI();
 
 	// Accessors
 	QubeSettings* GetQubeSettings();
@@ -247,7 +251,7 @@ private:
 	double m_cpuTime;
 
 	// GUI Screens
-	//Screen *m_pGUIScreen;
+	//Screen *m_pNanoGUIScreen;
 
 	// Singleton instance
 	static QubeGame *c_instance;

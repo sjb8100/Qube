@@ -68,11 +68,14 @@ void QubeGame::Render()
 	// Render nanovg
 	RenderNanoVG();
 
+	// Render the nanogui
+	//RenderNanoGUI();
 
 	// Stop timings
 	m_cpuTime = m_pQubeWindow->GetTime() - m_glfwTime;
-	updateGraph(&m_cpuGraph, m_cpuTime);
+	updateGraph(&m_cpuGraph, (float)m_cpuTime);
 
+	// Update GPU graphs
 	float gpuTimes[3];
 	unsigned int n = stopGPUTimer(&m_gpuTimer, gpuTimes, 3);
 	for (unsigned int i = 0; i < n; i++)
@@ -113,4 +116,10 @@ void QubeGame::RenderNanoVG()
 	}
 
 	nvgEndFrame(m_pNanovg);
+}
+
+void QubeGame::RenderNanoGUI()
+{
+	//m_pNanoGUIScreen->drawContents();
+	//m_pNanoGUIScreen->drawWidgets();
 }
