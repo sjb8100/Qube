@@ -13,7 +13,9 @@
 #include "QubeGame.h"
 #include <glm/detail/func_geometric.hpp>
 
-#define NANOVG_GL3_IMPLEMENTATION
+#include <nanogui/nanogui.h>
+using namespace nanogui;
+
 #include "nanovg/nanovg_gl.h"
 #include "nanovg/perf.h"
 
@@ -38,7 +40,7 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 {
 	m_pRenderer = NULL;
 	m_pNanovg = NULL;
-	//m_pNanoGUIScreen = NULL;
+	m_pNanoGUIScreen = NULL;
 
 	m_pQubeSettings = pQubeSettings;
 	m_pQubeWindow = new QubeWindow(this, m_pQubeSettings);
@@ -74,17 +76,30 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	m_windowHeight = m_pQubeWindow->GetWindowHeight();
 	m_pRenderer = new Renderer(m_windowWidth, m_windowHeight);
 
+	/* Create camera */
+	m_pGameCamera = new Camera(m_pRenderer);
+	m_pGameCamera->SetupCameraFromPositionAndView(vec3(10.0f, 10.0f, 10.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+
+	/* Create viewports */
+	m_pDefaultViewport = m_pRenderer->CreateViewport(0, 0, m_windowWidth, m_windowHeight, 60.0f);
+
+	/* Create fonts */
+	m_pDefaultFont = m_pRenderer->CreateFreeTypeFont("media/fonts/arial.ttf", 12);
+
+	/* Create the nanogui */
+	m_pNanoGUIScreen = new Screen();
+	m_pNanoGUIScreen->initialize(m_pQubeWindow->GetGLFWwindow(), true);
+
+	/* Create the GUI objects */
+	CreateGUI();
+
 	/* Create the nanovg context */
-	m_pNanovg = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
+	m_pNanovg = m_pNanoGUIScreen->nvgContext();
 	int font = nvgCreateFont(m_pNanovg, "arial", "media/fonts/arial.ttf");
 	initGraph(&m_fpsGraph, GRAPH_RENDER_FPS, "Frame Time");
 	initGraph(&m_cpuGraph, GRAPH_RENDER_MS, "CPU Time");
 	initGraph(&m_gpuGraph, GRAPH_RENDER_MS, "GPU Time");
 	initGPUTimer(&m_gpuTimer);
-
-	/* Create the nanogui */
-	//m_pNanoGUIScreen = new Screen();
-	//m_pNanoGUIScreen->initialize(m_pQubeWindow->GetGLFWwindow(), true);
 
 	/* Pause and quit */
 	m_bGameQuit = false;
@@ -121,16 +136,6 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	/* Camera mode */
 	m_cameraMode = CameraMode_Debug;
 	m_previousCameraMode = CameraMode_Debug;
-
-	/* Create camera */
-	m_pGameCamera = new Camera(m_pRenderer);
-	m_pGameCamera->SetupCameraFromPositionAndView(vec3(10.0f, 10.0f, 10.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-
-	/* Create viewports */
-	m_pDefaultViewport = m_pRenderer->CreateViewport(0, 0, m_windowWidth, m_windowHeight, 60.0f);
-
-	/* Create fonts */
-	m_pDefaultFont = m_pRenderer->CreateFreeTypeFont("media/fonts/arial.ttf", 12);
 
 	/* Game mode */
 	m_gameMode = GameMode_Loading;

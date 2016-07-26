@@ -112,7 +112,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\..\source\glfw\libs\2015\d\glfw3_64.lib;..\..\source\freetype\libs\2015\freetype261d_64.lib;opengl32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\source\glfw\libs\2015\d\glfw3_64.lib;..\..\source\freetype\libs\2015\freetype261d_64.lib;..\..\source\nanogui\libs\nanoguid_64.lib;opengl32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -150,7 +150,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\..\source\glfw\libs\2015\r\glfw3_64.lib;..\..\source\freetype\libs\2015\freetype261_64.lib;opengl32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\source\glfw\libs\2015\r\glfw3_64.lib;..\..\source\freetype\libs\2015\freetype261_64.lib;..\..\source\nanogui\libs\nanogui_64.lib;opengl32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -171,6 +171,7 @@
     <ClCompile Include="..\..\source\QubeCamera.cpp" />
     <ClCompile Include="..\..\source\QubeControls.cpp" />
     <ClCompile Include="..\..\source\QubeGame.cpp" />
+    <ClCompile Include="..\..\source\QubeGUI.cpp" />
     <ClCompile Include="..\..\source\QubeInput.cpp" />
     <ClCompile Include="..\..\source\QubeRender.cpp" />
     <ClCompile Include="..\..\source\QubeSettings.cpp" />
@@ -336,6 +337,43 @@
     <ClInclude Include="..\..\source\ini\INIReader.h" />
     <ClInclude Include="..\..\source\Maths\3dGeometry.h" />
     <ClInclude Include="..\..\source\Maths\3dmaths.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\button.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\checkbox.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\colorpicker.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\colorwheel.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\combobox.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\common.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\compat.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\entypo.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\formhelper.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\glutil.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\graph.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\imagepanel.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\imageview.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\label.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\layout.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\messagedialog.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\nanogui.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\object.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\opengl.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\popup.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\popupbutton.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\progressbar.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\python.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\screen.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\serializer\core.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\serializer\opengl.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\serializer\sparse.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\slider.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\stackedwidget.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\tabheader.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\tabwidget.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\textbox.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\theme.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\toolbutton.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\vscrollpanel.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\widget.h" />
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\window.h" />
     <ClInclude Include="..\..\source\nanovg\fontstash.h" />
     <ClInclude Include="..\..\source\nanovg\nanovg.h" />
     <ClInclude Include="..\..\source\nanovg\nanovg_gl.h" />

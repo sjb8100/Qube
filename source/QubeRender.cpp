@@ -69,7 +69,7 @@ void QubeGame::Render()
 	RenderNanoVG();
 
 	// Render the nanogui
-	//RenderNanoGUI();
+	RenderNanoGUI();
 
 	// Stop timings
 	m_cpuTime = m_pQubeWindow->GetTime() - m_glfwTime;
@@ -120,6 +120,6 @@ void QubeGame::RenderNanoVG()
 
 void QubeGame::RenderNanoGUI()
 {
-	//m_pNanoGUIScreen->drawContents();
-	//m_pNanoGUIScreen->drawWidgets();
+	m_pNanoGUIScreen->drawContents();
+	m_pNanoGUIScreen->drawWidgets();
 }

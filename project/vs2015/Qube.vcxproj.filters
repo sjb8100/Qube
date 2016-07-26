@@ -46,6 +46,18 @@
     <Filter Include="source\nanovg">
       <UniqueIdentifier>{79a6f2d4-2967-4ef7-af76-a68d0f119404}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\nanogui">
+      <UniqueIdentifier>{cc50074b-4fad-4997-9339-2d47bc4292ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\nanogui\include">
+      <UniqueIdentifier>{0e25ac10-29d4-42d9-880d-16cbb8394f09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\nanogui\include\nanogui">
+      <UniqueIdentifier>{8abf1eed-4f1c-4a39-a174-325d9e88c0e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\nanogui\include\nanogui\serializer">
+      <UniqueIdentifier>{2df9a419-37f8-4b16-821b-ebffc8c7b3c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\main.cpp">
@@ -120,11 +132,14 @@
     <ClCompile Include="..\..\source\Renderer\camera.cpp">
       <Filter>source\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\nanovg\perf.c">
+      <Filter>source\nanovg</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\source\nanovg\nanovg.c">
       <Filter>source\nanovg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\nanovg\perf.c">
-      <Filter>source\nanovg</Filter>
+    <ClCompile Include="..\..\source\QubeGUI.cpp">
+      <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -620,9 +635,6 @@
     <ClInclude Include="..\..\source\nanovg\nanovg.h">
       <Filter>source\nanovg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\nanovg\nanovg_gl.h">
-      <Filter>source\nanovg</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\nanovg\nanovg_gl_utils.h">
       <Filter>source\nanovg</Filter>
     </ClInclude>
@@ -633,6 +645,120 @@
       <Filter>source\nanovg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\nanovg\perf.h">
+      <Filter>source\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\serializer\core.h">
+      <Filter>source\nanogui\include\nanogui\serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\serializer\opengl.h">
+      <Filter>source\nanogui\include\nanogui\serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\serializer\sparse.h">
+      <Filter>source\nanogui\include\nanogui\serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\button.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\checkbox.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\colorpicker.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\colorwheel.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\combobox.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\common.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\compat.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\entypo.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\formhelper.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\glutil.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\graph.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\imagepanel.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\imageview.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\label.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\layout.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\messagedialog.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\nanogui.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\object.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\opengl.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\popup.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\popupbutton.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\progressbar.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\python.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\screen.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\slider.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\stackedwidget.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\tabheader.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\tabwidget.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\textbox.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\theme.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\toolbutton.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\vscrollpanel.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\widget.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanogui\include\nanogui\window.h">
+      <Filter>source\nanogui\include\nanogui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\nanovg\nanovg_gl.h">
       <Filter>source\nanovg</Filter>
     </ClInclude>
   </ItemGroup>

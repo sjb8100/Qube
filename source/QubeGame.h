@@ -26,8 +26,8 @@
 #include "nanovg/nanovg.h"
 #include "nanovg/perf.h"
 
-//#include <nanogui/nanogui.h>
-//using namespace nanogui;
+#include <nanogui/nanogui.h>
+using namespace nanogui;
 
 
 #ifdef __linux__
@@ -63,7 +63,7 @@ public:
 
 	// Creation
 	void Create(QubeSettings* pQubeSettings);
-
+	
 	// Destruction
 	void Destroy();
 
@@ -111,6 +111,9 @@ public:
 	void JoystickCameraMove(float dt);
 	void JoystickCameraRotate(float dt);
 	void JoystickCameraZoom(float dt);
+
+	// GUI functionality
+	void CreateGUI();
 
 	// Game functions
 	void QuitToFrontEnd();
@@ -251,7 +254,7 @@ private:
 	double m_cpuTime;
 
 	// GUI Screens
-	//Screen *m_pNanoGUIScreen;
+	Screen *m_pNanoGUIScreen;
 
 	// Singleton instance
 	static QubeGame *c_instance;
