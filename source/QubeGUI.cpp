@@ -32,7 +32,7 @@ void QubeGame::CreateGUI()
 	nanogui::ref<Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(10, 10), "Test NanoGUI");
 
 	gui->addGroup("Basic types");
-	gui->addVariable("bool", bvar);
+	gui->addVariable("bool", bvar)->setTooltip("This is a test tooltip, use this at your own risk.");
 	gui->addVariable("string", strval);
 
 	gui->addGroup("Validating fields");
@@ -45,9 +45,9 @@ void QubeGame::CreateGUI()
 	gui->addVariable("Color", colval);
 
 	gui->addGroup("Other widgets");
-	gui->addButton("A button", []() { std::cout << "Button pressed." << std::endl; });
+	gui->addButton("A button", []() { std::cout << "Button pressed." << std::endl; })->setTooltip("Press this button and see what the hell happens.");
 
 	m_pNanoGUIScreen->setVisible(true);
 	m_pNanoGUIScreen->performLayout();
-	nanoguiWindow->center();
+	nanoguiWindow->setPosition(Vector2i(10, 150));
 }
