@@ -10,21 +10,34 @@
 // ******************************************************************************
 
 #include "QBT.h"
+#include "../QubeGame.h"
+#include "../zlib/zlib.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-#include "../zlib/zlib.h"
+using namespace std;
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+using namespace glm;
 
 
-QBT::QBT()
+QBT::QBT(Renderer* pRenderer)
 {
+	m_pRenderer = pRenderer;
+
+	m_wireframeRender = false;
+
+	m_pPositionColorShader = new Shader("media/shaders/PositionColor.vertex", "media/shaders/PositionColor.fragment");
 }
 
 QBT::~QBT()
 {
 }
 
+// Loading
 bool QBT::LoadQBTFile(string filename)
 {
 	FILE* pQBTfile = NULL;
@@ -189,6 +202,7 @@ bool QBT::LoadMatrix(FILE* pQBTfile)
 	//printf("\n");
 
 	pNewMatrix->m_pColour = new unsigned int[pNewMatrix->m_sizeX * pNewMatrix->m_sizeY * pNewMatrix->m_sizeZ];
+	pNewMatrix->m_numVisiblVoxels = 0;
 
 	unsigned int byteCounter = 0;
 	for (unsigned int x = 0; x < pNewMatrix->m_sizeX; x++)
@@ -203,14 +217,19 @@ bool QBT::LoadMatrix(FILE* pQBTfile)
 				unsigned int mask = pNewMatrix->m_voxelDataDecompressed[byteCounter+3]; // Visibility mask
 				byteCounter += 4;
 
-				// Compress the rgba into a single unsigned int for storage in the matrix structure
-				unsigned int alpha = (int)(255) << 24;
+				// Squish the rgba into a single unsigned int for storage in the matrix structure
+				unsigned int alpha = (int)(mask == 0 ? 0 : 255) << 24;
 				unsigned int blue = (int)(b) << 16;
 				unsigned int green = (int)(g) << 8;
 				unsigned int red = (int)(r);
 
 				unsigned int colour = red + green + blue + alpha;
 				pNewMatrix->m_pColour[x + pNewMatrix->m_sizeX * (y + pNewMatrix->m_sizeY * z)] = colour;
+
+				if (mask != 0)
+				{
+					pNewMatrix->m_numVisiblVoxels += 1;
+				}
 			}
 		}
 	}
@@ -235,4 +254,244 @@ bool QBT::SkipNode(FILE* pQBTfile)
 	char* skipData = new char[dataSize];
 	ok = fread(&skipData[0], sizeof(char), dataSize, pQBTfile) == 1;
 	return true;
+}
+
+// Setup
+void QBT::CreateStaticRenderBuffer()
+{
+	for (unsigned int matrixIndex = 0; matrixIndex < m_vpQBTMatrices.size(); matrixIndex++)
+	{
+		QBTMatrix* pMatrix = m_vpQBTMatrices[matrixIndex];
+
+		// Vertices
+		pMatrix->m_numVertices = (unsigned int)pMatrix->m_numVisiblVoxels * 8;
+		PositionColorVertex* verticesBuffer = new PositionColorVertex[pMatrix->m_numVertices];
+
+		// Indices
+		pMatrix->m_numIndices = (unsigned int)pMatrix->m_numVisiblVoxels * 36;
+		GLuint* indicesBuffer = new GLuint[pMatrix->m_numIndices];
+
+		unsigned int verticesCounter = 0;
+		unsigned int indicesCounter = 0;
+		for (unsigned int x = 0; x < pMatrix->m_sizeX; x++)
+		{
+			for (unsigned int y = 0; y < pMatrix->m_sizeY; y++)
+			{
+				for (unsigned int z = 0; z < pMatrix->m_sizeZ; z++)
+				{
+					unsigned int colour = pMatrix->m_pColour[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+					unsigned int alpha = (colour & 0xFF000000) >> 24;
+					unsigned int blue = (colour & 0x00FF0000) >> 16;
+					unsigned int green = (colour & 0x0000FF00) >> 8;
+					unsigned int red = (colour & 0x000000FF);
+
+					if (colour == 0)
+					{
+						continue;
+					}
+
+					float r = (float)(red / 255.0f);
+					float g = (float)(green / 255.0f);
+					float b = (float)(blue / 255.0f);
+
+					verticesBuffer[verticesCounter + 0].x = x + -0.5f;
+					verticesBuffer[verticesCounter + 0].y = y + -0.5f;
+					verticesBuffer[verticesCounter + 0].z = z + -0.5f;
+					verticesBuffer[verticesCounter + 0].r = r;
+					verticesBuffer[verticesCounter + 0].g = g;
+					verticesBuffer[verticesCounter + 0].b = b;
+					verticesBuffer[verticesCounter + 0].a = 1.0f;
+
+					verticesBuffer[verticesCounter + 1].x = x + 0.5f;
+					verticesBuffer[verticesCounter + 1].y = y + -0.5f;
+					verticesBuffer[verticesCounter + 1].z = z + -0.5f;
+					verticesBuffer[verticesCounter + 1].r = r;
+					verticesBuffer[verticesCounter + 1].g = g;
+					verticesBuffer[verticesCounter + 1].b = b;
+					verticesBuffer[verticesCounter + 1].a = 1.0f;
+
+					verticesBuffer[verticesCounter + 2].x = x + -0.5f;
+					verticesBuffer[verticesCounter + 2].y = y + 0.5f;
+					verticesBuffer[verticesCounter + 2].z = z + -0.5f;
+					verticesBuffer[verticesCounter + 2].r = r;
+					verticesBuffer[verticesCounter + 2].g = g;
+					verticesBuffer[verticesCounter + 2].b = b;
+					verticesBuffer[verticesCounter + 2].a = 1.0f;
+
+					verticesBuffer[verticesCounter + 3].x = x + 0.5f;
+					verticesBuffer[verticesCounter + 3].y = y + 0.5f;
+					verticesBuffer[verticesCounter + 3].z = z + -0.5f;
+					verticesBuffer[verticesCounter + 3].r = r;
+					verticesBuffer[verticesCounter + 3].g = g;
+					verticesBuffer[verticesCounter + 3].b = b;
+					verticesBuffer[verticesCounter + 3].a = 1.0f;
+
+					verticesBuffer[verticesCounter + 4].x = x + -0.5f;
+					verticesBuffer[verticesCounter + 4].y = y + -0.5f;
+					verticesBuffer[verticesCounter + 4].z = z + 0.5f;
+					verticesBuffer[verticesCounter + 4].r = r;
+					verticesBuffer[verticesCounter + 4].g = g;
+					verticesBuffer[verticesCounter + 4].b = b;
+					verticesBuffer[verticesCounter + 4].a = 1.0f;
+
+					verticesBuffer[verticesCounter + 5].x = x + 0.5f;
+					verticesBuffer[verticesCounter + 5].y = y + -0.5f;
+					verticesBuffer[verticesCounter + 5].z = z + 0.5f;
+					verticesBuffer[verticesCounter + 5].r = r;
+					verticesBuffer[verticesCounter + 5].g = g;
+					verticesBuffer[verticesCounter + 5].b = b;
+					verticesBuffer[verticesCounter + 5].a = 1.0f;
+
+					verticesBuffer[verticesCounter + 6].x = x + -0.5f;
+					verticesBuffer[verticesCounter + 6].y = y + 0.5f;
+					verticesBuffer[verticesCounter + 6].z = z + 0.5f;
+					verticesBuffer[verticesCounter + 6].r = r;
+					verticesBuffer[verticesCounter + 6].g = g;
+					verticesBuffer[verticesCounter + 6].b = b;
+					verticesBuffer[verticesCounter + 6].a = 1.0f;
+
+					verticesBuffer[verticesCounter + 7].x = x + 0.5f;
+					verticesBuffer[verticesCounter + 7].y = y + 0.5f;
+					verticesBuffer[verticesCounter + 7].z = z + 0.5f;
+					verticesBuffer[verticesCounter + 7].r = r;
+					verticesBuffer[verticesCounter + 7].g = g;
+					verticesBuffer[verticesCounter + 7].b = b;
+					verticesBuffer[verticesCounter + 7].a = 1.0f;
+
+					indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
+					indicesBuffer[indicesCounter + 1] = verticesCounter + 2;
+					indicesBuffer[indicesCounter + 2] = verticesCounter + 1;
+					indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
+					indicesBuffer[indicesCounter + 4] = verticesCounter + 2;
+					indicesBuffer[indicesCounter + 5] = verticesCounter + 3;
+
+					indicesBuffer[indicesCounter + 6] = verticesCounter + 4;
+					indicesBuffer[indicesCounter + 7] = verticesCounter + 5;
+					indicesBuffer[indicesCounter + 8] = verticesCounter + 6;
+					indicesBuffer[indicesCounter + 9] = verticesCounter + 5;
+					indicesBuffer[indicesCounter + 10] = verticesCounter + 7;
+					indicesBuffer[indicesCounter + 11] = verticesCounter + 6;
+
+					indicesBuffer[indicesCounter + 12] = verticesCounter + 4;
+					indicesBuffer[indicesCounter + 13] = verticesCounter + 2;
+					indicesBuffer[indicesCounter + 14] = verticesCounter + 0;
+					indicesBuffer[indicesCounter + 15] = verticesCounter + 4;
+					indicesBuffer[indicesCounter + 16] = verticesCounter + 6;
+					indicesBuffer[indicesCounter + 17] = verticesCounter + 2;
+
+					indicesBuffer[indicesCounter + 18] = verticesCounter + 1;
+					indicesBuffer[indicesCounter + 19] = verticesCounter + 3;
+					indicesBuffer[indicesCounter + 20] = verticesCounter + 5;
+					indicesBuffer[indicesCounter + 21] = verticesCounter + 5;
+					indicesBuffer[indicesCounter + 22] = verticesCounter + 3;
+					indicesBuffer[indicesCounter + 23] = verticesCounter + 7;
+
+					indicesBuffer[indicesCounter + 24] = verticesCounter + 6;
+					indicesBuffer[indicesCounter + 25] = verticesCounter + 7;
+					indicesBuffer[indicesCounter + 26] = verticesCounter + 2;
+					indicesBuffer[indicesCounter + 27] = verticesCounter + 7;
+					indicesBuffer[indicesCounter + 28] = verticesCounter + 3;
+					indicesBuffer[indicesCounter + 29] = verticesCounter + 2;
+
+					indicesBuffer[indicesCounter + 30] = verticesCounter + 4;
+					indicesBuffer[indicesCounter + 31] = verticesCounter + 0;
+					indicesBuffer[indicesCounter + 32] = verticesCounter + 5;
+					indicesBuffer[indicesCounter + 33] = verticesCounter + 5;
+					indicesBuffer[indicesCounter + 34] = verticesCounter + 0;
+					indicesBuffer[indicesCounter + 35] = verticesCounter + 1;
+
+					verticesCounter += 8;
+					indicesCounter += 36;
+				}
+			}
+		}
+
+		glGenVertexArrays(1, &pMatrix->m_VAO);
+		glGenBuffers(1, &pMatrix->m_VBO);
+		glGenBuffers(1, &pMatrix->m_EBO);
+
+		// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+		glBindVertexArray(pMatrix->m_VAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, pMatrix->m_VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(PositionColorVertex)*pMatrix->m_numVertices, verticesBuffer, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pMatrix->m_EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*pMatrix->m_numIndices, indicesBuffer, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 7, (GLvoid*)0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 7, (GLvoid*)(sizeof(GLfloat) * 3));
+		glEnableVertexAttribArray(1);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
+
+		glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
+	}
+}
+
+// Render modes
+void QBT::SetWireframeMode(bool wireframe)
+{
+	m_wireframeRender = wireframe;
+}
+
+bool QBT::GetWireframeMode()
+{
+	return m_wireframeRender;
+}
+
+// Render
+void QBT::Render(Camera* pCamera)
+{
+	if (m_wireframeRender)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+	glEnable(GL_DEPTH_TEST);
+	glClearDepth(1.0f);
+	glDepthFunc(GL_LESS);
+	glClearStencil(0);
+
+	// Use shader
+	m_pPositionColorShader->UseShader();
+
+	for (unsigned int matrixIndex = 0; matrixIndex < m_vpQBTMatrices.size(); matrixIndex++)
+	{
+		QBTMatrix* pMatrix = m_vpQBTMatrices[matrixIndex];
+
+		// Create transformations
+		mat4 view;
+		mat4 projection;
+		view = lookAt(pCamera->GetPosition(), pCamera->GetView(), pCamera->GetUp());
+		projection = perspective(45.0f, (GLfloat)QubeGame::GetInstance()->GetWindowWidth() / (GLfloat)QubeGame::GetInstance()->GetWindowHeight(), 0.01f, 1000.0f);
+
+		// Get their uniform location
+		GLint modelLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "model");
+		GLint viewLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "view");
+		GLint projLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "projection");
+
+		// Pass the matrices to the shader
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, value_ptr(view));
+		// Note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, value_ptr(projection));
+
+		glBindVertexArray(pMatrix->m_VAO);
+
+		mat4 model;
+		model = translate(model, vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));
+
+		glDrawElements(GL_TRIANGLES, pMatrix->m_numIndices, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+	}
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

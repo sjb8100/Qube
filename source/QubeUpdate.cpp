@@ -88,4 +88,5 @@ void QubeGame::UpdateNamePicking()
 
 void QubeGame::UpdateGameGUI(float dt)
 {
+	UpdateGUI();
 }

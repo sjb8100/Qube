@@ -15,6 +15,8 @@
 
 #pragma once
 
+#include "../Renderer/Renderer.h"
+
 #include <vector>
 #include <string>
 using namespace std;
@@ -48,6 +50,14 @@ public:
 	unsigned char* m_voxelDataDecompressed;
 
 	unsigned int *m_pColour;
+	unsigned int m_numVisiblVoxels;
+
+	// Rendering
+	GLuint m_VBO;
+	GLuint m_VAO;
+	GLuint m_EBO;
+	int m_numVertices;
+	int m_numIndices;
 };
 
 typedef vector<QBTMatrix*> QBTMatrixList;
@@ -56,16 +66,26 @@ class QBT
 {
 public:
 	/* Public methods */
-	QBT();
+	QBT(Renderer* pRenderer);
 	~QBT();
 
+	// Loading
 	bool LoadQBTFile(string filename);
-
 	bool LoadNode(FILE* pQBTfile);
 	bool LoadModel(FILE* pQBTfile);
 	bool LoadMatrix(FILE* pQBTfile);
 	bool LoadCompound(FILE* pQBTfile);
 	bool SkipNode(FILE* pQBTfile);
+
+	// Setup
+	void CreateStaticRenderBuffer();
+
+	// Render modes
+	void SetWireframeMode(bool wireframe);
+	bool GetWireframeMode();
+
+	// Render
+	void Render(Camera* pCamera);
 
 protected:
 	/* Protected methods */
@@ -95,4 +115,13 @@ private:
 
 	// Matrices
 	QBTMatrixList m_vpQBTMatrices;
+
+	// Rendering modes
+	bool m_wireframeRender;
+
+	// Shader
+	Shader* m_pPositionColorShader;
+
+	// Renderer
+	Renderer* m_pRenderer;
 };

@@ -101,8 +101,9 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	initGPUTimer(&m_gpuTimer);
 
 	/* QBT File */
-	QBT* pQBTFile = new QBT();
-	pQBTFile->LoadQBTFile("media/assets/qbt/test_model.qbt");
+	m_pQBTFile = new QBT(m_pRenderer);
+	m_pQBTFile->LoadQBTFile("media/assets/qbt/pikachu.qbt");
+	m_pQBTFile->CreateStaticRenderBuffer();
 
 	/* Pause and quit */
 	m_bGameQuit = false;
@@ -233,6 +234,16 @@ void QubeGame::ResizeWindow(int width, int height)
 	}
 }
 
+int QubeGame::GetWindowWidth()
+{
+	return m_windowWidth;
+}
+
+int QubeGame::GetWindowHeight()
+{
+	return m_windowHeight;
+}
+
 void QubeGame::CloseWindow()
 {
 	m_bGameQuit = true;
@@ -317,4 +328,9 @@ QubeSettings* QubeGame::GetQubeSettings()
 Screen* QubeGame::GetNanoGUIScreen()
 {
 	return m_pNanoGUIScreen;
+}
+
+QBT* QubeGame::GetQBTModel()
+{
+	return m_pQBTFile;
 }

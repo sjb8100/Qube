@@ -17,7 +17,6 @@ enum test_enum {
 	Item3
 };
 
-bool enabled = true;
 bool bvar = true;
 int ivar = 12345678;
 double dvar = 3.1415926;
@@ -41,15 +40,20 @@ void QubeGame::CreateGUI()
 	gui->addVariable("double", dvar)->setSpinnable(true);
 
 	gui->addGroup("Complex types");
-	gui->addVariable("Enumeration", enumval, enabled)->setItems({ "Item 1", "Item 2", "Item 3" });
+	gui->addVariable("Enumeration", enumval, true)->setItems({ "Item 1", "Item 2", "Item 3" });
 	gui->addVariable("Color", colval);
 
 	gui->addGroup("Other widgets");
-	gui->addButton("A button", []() { std::cout << "Button pressed." << std::endl; })->setTooltip("Press this button and see what the hell happens.");
+	gui->addButton("A button", []() { std::cout << "Button pressed." << std::endl; })->setTooltip("Press this button and see what happens.");
 
 	m_pNanoGUIScreen->setVisible(true);
 	m_pNanoGUIScreen->performLayout();
 	nanoguiWindow->setPosition(Vector2i(10, 150));
+}
+
+void QubeGame::UpdateGUI()
+{
+	m_pQBTFile->SetWireframeMode(!bvar);
 }
 
 bool QubeGame::IsInteractingWithGUI()

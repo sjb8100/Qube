@@ -20,6 +20,7 @@
 
 #include "Renderer/Renderer.h"
 #include "Renderer/camera.h"
+#include "qbt/QBT.h"
 #include "QubeWindow.h"
 #include "QubeSettings.h"
 
@@ -78,6 +79,8 @@ public:
 	void TurnCursorOff(bool forceOff);
 	bool IsCursorOn();
 	void ResizeWindow(int width, int height);
+	int GetWindowWidth();
+	int GetWindowHeight();
 	void CloseWindow();
 	void UpdateJoySticks();
 
@@ -114,6 +117,7 @@ public:
 
 	// GUI functionality
 	void CreateGUI();
+	void UpdateGUI();
 	bool IsInteractingWithGUI();
 
 	// Game functions
@@ -143,6 +147,7 @@ public:
 	// Accessors
 	QubeSettings* GetQubeSettings();
 	Screen* GetNanoGUIScreen();
+	QBT* GetQBTModel();
 
 protected:
 	/* Protected methods */
@@ -254,6 +259,9 @@ private:
 
 	// NanoGUI root screen
 	Screen *m_pNanoGUIScreen;
+
+	// QBT File
+	QBT* m_pQBTFile;
 
 	// Singleton instance
 	static QubeGame *c_instance;
