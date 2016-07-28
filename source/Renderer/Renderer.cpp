@@ -270,6 +270,6 @@ void Renderer::RenderLines(Camera* pCamera)
 	model = translate(model, vec3(0.0f, 0.0f, 0.0f));
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));
 
-	glDrawElements(GL_LINES, numVertices, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_LINES, numIndices, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
