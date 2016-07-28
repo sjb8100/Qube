@@ -135,6 +135,11 @@ void FrameBufferResizeCallback(GLFWwindow* window, int width, int height)
 // Input
 void QubeGame::KeyPressed(int key, int scancode, int mods)
 {
+	if (IsInteractingWithGUI())
+	{
+		return;
+	}
+
 	switch (key)
 	{
 		case GLFW_KEY_W:
@@ -298,6 +303,11 @@ void QubeGame::MouseMiddleReleased()
 
 void QubeGame::MouseScroll(double x, double y)
 {
+	if (IsInteractingWithGUI())
+	{
+		return;
+	}
+
 	GameMode gameMode = GetGameMode();
 
 	m_maxCameraDistance += (float)(-y*0.5f);
