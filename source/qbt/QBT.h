@@ -4,7 +4,9 @@
 // Author:      Steven Ball
 //
 // Purpose:
-// 
+//   A Qubicle Binary Tree (.qbt) file loader. Also handles setting up the x, y, z
+//   voxel grid array with color information for each voxel.
+//
 // Revision History:
 //   Initial Revision - 28/07/16
 //
