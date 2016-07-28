@@ -61,9 +61,6 @@ void QubeGame::Render()
 	}
 
 	m_pRenderer->RenderLines(m_pGameCamera);
-
-	// Render debug information
-	//RenderDebugInformation();
 	
 	// Render nanovg
 	RenderNanoVG();
@@ -99,14 +96,11 @@ void QubeGame::RenderDebugInformation()
 	float fpsWidthOffset = 65.0f;
 	sprintf(lFPSBuff, "FPS: %.0f", m_fps);
 
-	m_pRenderer->RenderFreeTypeText(m_pDefaultFont, 10.0f, 10.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f), 1.0f, lBuildInfo);
-	m_pRenderer->RenderFreeTypeText(m_pDefaultFont, m_windowWidth - fpsWidthOffset, 10.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f), 1.0f, lFPSBuff);
-}
-
-void QubeGame::RenderNanoVG()
-{
-	float pxRatio = (float)m_windowWidth / (float)m_windowHeight;
-	nvgBeginFrame(m_pNanovg, m_windowWidth, m_windowHeight, pxRatio);
+	nvgFontFace(m_pNanovg, "arial");
+	nvgFontSize(m_pNanovg, 14.0f);
+	nvgTextAlign(m_pNanovg, NVG_ALIGN_LEFT | NVG_ALIGN_BOTTOM);
+	nvgText(m_pNanovg, 5.0f, m_windowHeight - 5.0f, lBuildInfo, NULL);
+	nvgText(m_pNanovg, m_windowWidth - fpsWidthOffset, m_windowHeight - 5.0f, lFPSBuff, NULL);
 
 	renderGraph(m_pNanovg, 5, 5, &m_fpsGraph);
 	renderGraph(m_pNanovg, 5 + 200 + 5, 5, &m_cpuGraph);
@@ -114,6 +108,15 @@ void QubeGame::RenderNanoVG()
 	{
 		renderGraph(m_pNanovg, 5 + 200 + 5 + 200 + 5, 5, &m_gpuGraph);
 	}
+}
+
+void QubeGame::RenderNanoVG()
+{
+	float pxRatio = (float)m_windowWidth / (float)m_windowHeight;
+	nvgBeginFrame(m_pNanovg, m_windowWidth, m_windowHeight, pxRatio);
+
+	// Render debug information
+	RenderDebugInformation();
 
 	nvgEndFrame(m_pNanovg);
 }
