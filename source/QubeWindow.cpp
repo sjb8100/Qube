@@ -12,6 +12,7 @@
 #include "glew/include/GL/glew.h"
 
 #ifdef _WIN32
+#define NOMINMAX
 #include <windows.h>
 #endif //_WIN32
 #include <GL/gl.h>

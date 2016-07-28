@@ -83,9 +83,6 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	/* Create viewports */
 	m_pDefaultViewport = m_pRenderer->CreateViewport(0, 0, m_windowWidth, m_windowHeight, 60.0f);
 
-	/* Create fonts */
-	m_pDefaultFont = m_pRenderer->CreateFreeTypeFont("media/fonts/arial.ttf", 12);
-
 	/* Create the nanogui */
 	m_pNanoGUIScreen = new Screen();
 	m_pNanoGUIScreen->initialize(m_pQubeWindow->GetGLFWwindow(), true);
@@ -161,7 +158,6 @@ void QubeGame::Destroy()
 	{
 		delete m_pGameCamera;
 		delete m_pDefaultViewport;
-		delete m_pDefaultFont;
 
 		delete m_pRenderer;
 

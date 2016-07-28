@@ -25,10 +25,10 @@ using namespace std;
 #include "Shader.h"
 #include "colour.h"
 #include "viewport.h"
-#include "../freetype/freetypefont.h"
 #include "../Maths/3dmaths.h"
 
 #ifdef _WIN32
+#define NOMINMAX
 #include <windows.h>
 #endif //_WIN32
 #include <GL/gl.h>
@@ -76,11 +76,6 @@ public:
 	Viewport* CreateViewport(int bottom, int left, int width, int height, float fov);
 	void ResizeViewport(Viewport* pViewport, int bottom, int left, int width, int height, float fov);
 	void SetViewport(Viewport* pViewport);
-
-	// Text and font rendering
-	FreeTypeFont* CreateFreeTypeFont(const char *fontName, int fontSize);
-	void RenderFreeTypeText(FreeTypeFont* pFont, float x, float y, float z, Colour colour, float scale, const char *inText, ...);
-	int GetFreeTypeTextWidth(FreeTypeFont* pFont, const char *inText, ...);
 
 	// Rendering
 	void ResetLines();

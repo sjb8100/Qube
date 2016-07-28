@@ -242,9 +242,6 @@ private:
 	// View ports
 	Viewport* m_pDefaultViewport;
 
-	// Fonts
-	FreeTypeFont* m_pDefaultFont;
-
 	// Nanovg context
 	NVGcontext* m_pNanovg;
 	
