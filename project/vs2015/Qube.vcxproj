@@ -112,7 +112,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\..\source\glfw\libs\2015\d\glfw3_64.lib;..\..\source\nanogui\libs\nanoguid_64.lib;opengl32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\source\glfw\libs\2015\d\glfw3_64.lib;..\..\source\nanogui\libs\nanoguid_64.lib;..\..\source\zlib\libs\zlibd_64.lib;opengl32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -150,7 +150,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\..\source\glfw\libs\2015\r\glfw3_64.lib;..\..\source\nanogui\libs\nanogui_64.lib;opengl32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\source\glfw\libs\2015\r\glfw3_64.lib;..\..\source\nanogui\libs\nanogui_64.lib;..\..\source\zlib\libs\zlib_64.lib;opengl32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -167,6 +167,7 @@
     <ClCompile Include="..\..\source\Maths\Plane3D.cpp" />
     <ClCompile Include="..\..\source\nanovg\nanovg.c" />
     <ClCompile Include="..\..\source\nanovg\perf.c" />
+    <ClCompile Include="..\..\source\qbt\QBT.cpp" />
     <ClCompile Include="..\..\source\QubeCamera.cpp" />
     <ClCompile Include="..\..\source\QubeControls.cpp" />
     <ClCompile Include="..\..\source\QubeGame.cpp" />
@@ -379,6 +380,7 @@
     <ClInclude Include="..\..\source\nanovg\perf.h" />
     <ClInclude Include="..\..\source\nanovg\stb_image.h" />
     <ClInclude Include="..\..\source\nanovg\stb_truetype.h" />
+    <ClInclude Include="..\..\source\qbt\QBT.h" />
     <ClInclude Include="..\..\source\QubeGame.h" />
     <ClInclude Include="..\..\source\QubeSettings.h" />
     <ClInclude Include="..\..\source\QubeWindow.h" />
@@ -387,6 +389,8 @@
     <ClInclude Include="..\..\source\Renderer\Renderer.h" />
     <ClInclude Include="..\..\source\Renderer\Shader.h" />
     <ClInclude Include="..\..\source\Renderer\viewport.h" />
+    <ClInclude Include="..\..\source\zlib\zconf.h" />
+    <ClInclude Include="..\..\source\zlib\zlib.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\source\glm\detail\func_common.inl" />

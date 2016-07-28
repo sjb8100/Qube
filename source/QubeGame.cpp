@@ -23,6 +23,8 @@ using namespace nanogui;
 #include <sys/time.h>
 #endif //__linux__
 
+#include "qbt/QBT.h"
+
 
 // Initialize the singleton instance
 QubeGame *QubeGame::c_instance = 0;
@@ -97,6 +99,10 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	initGraph(&m_cpuGraph, GRAPH_RENDER_MS, "CPU Time");
 	initGraph(&m_gpuGraph, GRAPH_RENDER_MS, "GPU Time");
 	initGPUTimer(&m_gpuTimer);
+
+	/* QBT File */
+	QBT* pQBTFile = new QBT();
+	pQBTFile->LoadQBTFile("media/assets/qbt/test_model.qbt");
 
 	/* Pause and quit */
 	m_bGameQuit = false;
