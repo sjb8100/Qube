@@ -452,13 +452,6 @@ void QBT::Render(Camera* pCamera)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-
-	glEnable(GL_DEPTH_TEST);
-	glClearDepth(1.0f);
-	glDepthFunc(GL_LESS);
-	glClearStencil(0);
 
 	// Use shader
 	m_pPositionColorShader->UseShader();

@@ -46,6 +46,16 @@ void QubeGame::Render()
 	m_pRenderer->SetClearColour(0.2f, 0.3f, 0.4f, 1.0f);
 	m_pRenderer->ClearScene();
 
+	// Back face culling
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+	// Depth and stencil 
+	glEnable(GL_DEPTH_TEST);
+	glClearDepth(1.0f);
+	glDepthFunc(GL_LESS);
+	glClearStencil(0);
+
 	// Set viewport
 	m_pRenderer->SetViewport(m_pDefaultViewport);
 
