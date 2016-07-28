@@ -54,7 +54,10 @@ void QubeGame::CreateGUI()
 
 bool QubeGame::IsInteractingWithGUI()
 {
-	const Widget *widget = QubeGame::GetInstance()->GetNanoGUIScreen()->findWidget(Vector2i(m_currentX, m_currentY));
+	int currentX = m_pQubeWindow->GetCursorX();
+	int currentY = m_pQubeWindow->GetCursorY();
+
+	const Widget *widget = QubeGame::GetInstance()->GetNanoGUIScreen()->findWidget(Vector2i(currentX, currentY));
 	if (widget == nullptr || widget == QubeGame::GetInstance()->GetNanoGUIScreen())
 	{
 		return false;
