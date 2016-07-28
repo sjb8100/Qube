@@ -191,8 +191,7 @@ void Renderer::RenderLines(Camera* pCamera)
 	unsigned int numVertices = (unsigned int)m_vpLines.size() * 2;
 
 	// Vertices
-	PositionColorVertex* linesBuffer;
-	linesBuffer = new PositionColorVertex[numVertices];
+	PositionColorVertex* linesBuffer = new PositionColorVertex[numVertices];
 	int arrayCounter = 0;
 	for (unsigned int i = 0; i < (unsigned int)m_vpLines.size(); i++)
 	{
@@ -215,8 +214,8 @@ void Renderer::RenderLines(Camera* pCamera)
 	}
 
 	// Indices
-	GLuint* indicesBuffer;
-	indicesBuffer = new GLuint[numVertices];
+	unsigned int numIndices = numVertices;
+	GLuint* indicesBuffer = new GLuint[numVertices];
 	for (unsigned int i = 0; i < numVertices; i++)
 	{
 		indicesBuffer[i] = i;
@@ -235,7 +234,7 @@ void Renderer::RenderLines(Camera* pCamera)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(PositionColorVertex)*numVertices, linesBuffer, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*numVertices, indicesBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*numIndices, indicesBuffer, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 7, (GLvoid*)0);
 	glEnableVertexAttribArray(0);
