@@ -1,6 +1,6 @@
 // ******************************************************************************
 // Filename:    QBT.h
-// Project:     Vogue
+// Project:     Qube
 // Author:      Steven Ball
 //
 // Purpose:

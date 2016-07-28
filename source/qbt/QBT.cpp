@@ -1,6 +1,6 @@
 // ******************************************************************************
 // Filename:    QBT.cpp
-// Project:     Vogue
+// Project:     Qube
 // Author:      Steven Ball
 // 
 // Revision History:
