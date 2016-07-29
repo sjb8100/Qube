@@ -31,7 +31,7 @@ void QubeGame::CreateGUI()
 	nanogui::ref<Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(10, 10), "Test NanoGUI");
 
 	gui->addGroup("Basic types");
-	gui->addVariable("bool", bvar)->setTooltip("This is a test tooltip, use this at your own risk.");
+	gui->addVariable("wireframe", bvar)->setTooltip("This is a test tooltip, use this at your own risk.");
 	gui->addVariable("string", strval);
 
 	gui->addGroup("Validating fields");
