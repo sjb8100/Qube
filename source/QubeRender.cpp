@@ -65,10 +65,10 @@ void QubeGame::Render()
 	m_pRenderer->DrawLine(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 5.0f, 0.0f), Colour(0.0f, 1.0f, 0.0f), Colour(0.0f, 1.0f, 0.0f));
 	m_pRenderer->DrawLine(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 5.0f), Colour(0.0f, 0.0f, 1.0f), Colour(0.0f, 0.0f, 1.0f));
 
-	for (int i = 0; i < 1; i++)
-	{
-		m_pRenderer->DrawCube(vec3(i, 0.0f, 0.0f), 1.0f, 1.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f));
-	}
+	//for (int i = 0; i < 1; i++)
+	//{
+	//	m_pRenderer->DrawCube(vec3(i, 0.0f, 0.0f), 1.0f, 1.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f));
+	//}
 
 	m_pRenderer->RenderLines(m_pGameCamera);
 
