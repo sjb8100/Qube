@@ -211,25 +211,30 @@ bool QBT::LoadMatrix(FILE* pQBTfile)
 		{
 			for (unsigned int y = 0; y < pNewMatrix->m_sizeY; y++)
 			{
-				unsigned int r = pNewMatrix->m_voxelDataDecompressed[byteCounter+0];
-				unsigned int g = pNewMatrix->m_voxelDataDecompressed[byteCounter+1];
-				unsigned int b = pNewMatrix->m_voxelDataDecompressed[byteCounter+2];
-				unsigned int mask = pNewMatrix->m_voxelDataDecompressed[byteCounter+3]; // Visibility mask
+				int r = pNewMatrix->m_voxelDataDecompressed[byteCounter+0];
+				int g = pNewMatrix->m_voxelDataDecompressed[byteCounter+1];
+				int b = pNewMatrix->m_voxelDataDecompressed[byteCounter+2];
+				int mask = pNewMatrix->m_voxelDataDecompressed[byteCounter+3]; // Visibility mask
 				byteCounter += 4;
 
-				// Squish the rgba into a single unsigned int for storage in the matrix structure
-				unsigned int alpha = (int)(mask == 0 ? 0 : 255) << 24;
-				unsigned int blue = (int)(b) << 16;
-				unsigned int green = (int)(g) << 8;
-				unsigned int red = (int)(r);
+				unsigned int colour = 0;
 
-				unsigned int colour = red + green + blue + alpha;
-				pNewMatrix->m_pColour[x + pNewMatrix->m_sizeX * (y + pNewMatrix->m_sizeY * z)] = colour;
-
-				if (mask != 0)
+				// If mask is 0, this is an invisible voxel, not active
+				// If mask is 1, this is an internal voxel, completely surrounded by other visible voxels
+				if (mask != 0 && mask != 1)
 				{
+					// Squish the rgba into a single unsigned int for storage in the matrix structure
+					unsigned int alpha = (int)(mask == 0 ? 0 : 255) << 24;
+					unsigned int blue = (int)(b) << 16;
+					unsigned int green = (int)(g) << 8;
+					unsigned int red = (int)(r);
+
+					colour = red + green + blue + alpha;
+
 					pNewMatrix->m_numVisiblVoxels += 1;
 				}
+
+				pNewMatrix->m_pColour[x + pNewMatrix->m_sizeX * (y + pNewMatrix->m_sizeY * z)] = colour;
 			}
 		}
 	}
