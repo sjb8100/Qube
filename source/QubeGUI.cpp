@@ -70,6 +70,11 @@ void QubeGame::CreateGUI()
 			m_pQBTFile->LoadQBTFile(fileName);
 		}
 	});
+	b = new Button(window, "Save");
+	b->setPosition(Vector2i(90, 222));
+	b->setCallback([&] {
+		string fileName = file_dialog({ { "qbt", "Qubicle Binary Tree" }, }, true);
+	});
 
 	window->setVisible(true);
 
