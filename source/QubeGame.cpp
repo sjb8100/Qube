@@ -103,7 +103,6 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	/* QBT File */
 	m_pQBTFile = new QBT(m_pRenderer);
 	m_pQBTFile->LoadQBTFile("media/assets/qbt/ground_tile1.qbt");
-	m_pQBTFile->CreateStaticRenderBuffer();
 
 	/* Pause and quit */
 	m_bGameQuit = false;

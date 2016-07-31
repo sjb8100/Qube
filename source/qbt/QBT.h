@@ -70,6 +70,9 @@ public:
 	QBT(Renderer* pRenderer);
 	~QBT();
 
+	// Unloading
+	bool Unload();
+
 	// Loading
 	bool LoadQBTFile(string filename);
 	bool LoadNode(FILE* pQBTfile);

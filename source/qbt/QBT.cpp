@@ -35,6 +35,12 @@ QBT::QBT(Renderer* pRenderer)
 
 QBT::~QBT()
 {
+	Unload();
+}
+
+// Unloading
+bool QBT::Unload()
+{
 	for (unsigned int i = 0; i < m_vpQBTMatrices.size(); i++)
 	{
 		delete[] m_vpQBTMatrices[i]->m_pColour;
@@ -47,6 +53,8 @@ QBT::~QBT()
 		m_vpQBTMatrices[i] = NULL;
 	}
 	m_vpQBTMatrices.clear();
+
+	return true;
 }
 
 // Loading
@@ -85,6 +93,8 @@ bool QBT::LoadQBTFile(string filename)
 		LoadNode(pQBTfile);
 
 		fclose(pQBTfile);
+
+		CreateStaticRenderBuffer();
 
 		return true;
 	}

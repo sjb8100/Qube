@@ -58,6 +58,19 @@ void QubeGame::CreateGUI()
 	cb->setTooltip("Shadows rendering.");
 	cb->setPosition(Vector2i(20, 169));
 
+	l = new Label(window, "File Operations", "arial");
+	l->setPosition(Vector2i(10, 201));
+	Button *b = new Button(window, "Open");
+	b->setPosition(Vector2i(20, 222));
+	b->setCallback([&] {
+		string fileName = file_dialog({ { "qbt", "Qubicle Binary Tree" } }, false);
+		if (fileName != "")
+		{
+			m_pQBTFile->Unload();
+			m_pQBTFile->LoadQBTFile(fileName);
+		}
+	});
+
 	window->setVisible(true);
 
 	m_pNanoGUIScreen->setVisible(true);
