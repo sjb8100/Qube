@@ -536,7 +536,7 @@ void QBT::Render(Camera* pCamera)
 		glBindVertexArray(pMatrix->m_VAO);
 
 		mat4 model;
-		model = translate(model, vec3(0.0f, 0.0f, 0.0f));
+		model = translate(model, vec3(pMatrix->m_positionX, pMatrix->m_positionY, pMatrix->m_positionZ));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));
 
 		glDrawElements(GL_TRIANGLES, pMatrix->m_numIndices, GL_UNSIGNED_INT, 0);
