@@ -272,4 +272,11 @@ void Renderer::RenderLines(Camera* pCamera)
 
 	glDrawElements(GL_LINES, numIndices, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+	glDeleteVertexArrays(1, &VAO);
+
+	delete linesBuffer;
+	delete indicesBuffer;
 }
