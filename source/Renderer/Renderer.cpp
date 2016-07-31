@@ -277,6 +277,6 @@ void Renderer::RenderLines(Camera* pCamera)
 	glDeleteBuffers(1, &EBO);
 	glDeleteVertexArrays(1, &VAO);
 
-	delete linesBuffer;
-	delete indicesBuffer;
+	delete[] linesBuffer;
+	delete[] indicesBuffer;
 }
