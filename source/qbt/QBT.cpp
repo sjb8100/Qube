@@ -35,6 +35,18 @@ QBT::QBT(Renderer* pRenderer)
 
 QBT::~QBT()
 {
+	for (unsigned int i = 0; i < m_vpQBTMatrices.size(); i++)
+	{
+		delete[] m_vpQBTMatrices[i]->m_pColour;
+		delete[] m_vpQBTMatrices[i]->m_pVisibilityMask;
+
+		glDeleteBuffers(1, &m_vpQBTMatrices[i]->m_VBO);
+		glDeleteBuffers(1, &m_vpQBTMatrices[i]->m_EBO);
+		glDeleteVertexArrays(1, &m_vpQBTMatrices[i]->m_VAO);
+		delete m_vpQBTMatrices[i];
+		m_vpQBTMatrices[i] = NULL;
+	}
+	m_vpQBTMatrices.clear();
 }
 
 // Loading
@@ -202,6 +214,7 @@ bool QBT::LoadMatrix(FILE* pQBTfile)
 	//printf("\n");
 
 	pNewMatrix->m_pColour = new unsigned int[pNewMatrix->m_sizeX * pNewMatrix->m_sizeY * pNewMatrix->m_sizeZ];
+	pNewMatrix->m_pVisibilityMask = new unsigned int[pNewMatrix->m_sizeX * pNewMatrix->m_sizeY * pNewMatrix->m_sizeZ];
 	pNewMatrix->m_numVisiblVoxels = 0;
 
 	unsigned int byteCounter = 0;
@@ -235,6 +248,7 @@ bool QBT::LoadMatrix(FILE* pQBTfile)
 				}
 
 				pNewMatrix->m_pColour[x + pNewMatrix->m_sizeX * (y + pNewMatrix->m_sizeY * z)] = colour;
+				pNewMatrix->m_pVisibilityMask[x + pNewMatrix->m_sizeX * (y + pNewMatrix->m_sizeY * z)] = mask;
 			}
 		}
 	}
@@ -285,6 +299,7 @@ void QBT::CreateStaticRenderBuffer()
 				for (unsigned int z = 0; z < pMatrix->m_sizeZ; z++)
 				{
 					unsigned int colour = pMatrix->m_pColour[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+					unsigned int mask = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
 					unsigned int alpha = (colour & 0xFF000000) >> 24;
 					unsigned int blue = (colour & 0x00FF0000) >> 16;
 					unsigned int green = (colour & 0x0000FF00) >> 8;

@@ -50,6 +50,7 @@ public:
 	unsigned char* m_voxelDataDecompressed;
 
 	unsigned int *m_pColour;
+	unsigned int *m_pVisibilityMask;
 	unsigned int m_numVisiblVoxels;
 
 	// Rendering
