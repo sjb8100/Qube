@@ -163,6 +163,8 @@ void QubeGame::Destroy()
 {
 	if (c_instance)
 	{
+		DestroyGUI();
+
 		delete m_pGameCamera;
 		delete m_pDefaultViewport;
 

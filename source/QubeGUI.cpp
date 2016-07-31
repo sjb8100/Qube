@@ -29,37 +29,58 @@ Color colval(0.5f, 0.5f, 0.7f, 1.f);
 
 void QubeGame::CreateGUI()
 {
-	FormHelper *gui = new FormHelper(m_pNanoGUIScreen);
-	nanogui::ref<Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(10, 10), "Controls");
+	Window *window = new Window(m_pNanoGUIScreen, "Controls");
+	window->setSize(Vector2i(175, 300));
+	window->setPosition(Vector2i(10, 150));
+	//window->setLayout(new GroupLayout());
 
-	gui->addGroup("Information");
+	Label *l = new Label(window, "Information", "arial");
+	l->setPosition(Vector2i(10, 33));
+	m_matricesInformationLabel = new Label(window, "[MATRICES]", "arial");
+	m_matricesInformationLabel->setFontSize(13);
+	m_matricesInformationLabel->setPosition(Vector2i(20, 50));
+	m_verticesInformationLabel = new Label(window, "[VERTICEES]", "arial");
+	m_verticesInformationLabel->setFontSize(13);
+	m_verticesInformationLabel->setPosition(Vector2i(20, 63));
+	m_trianglesInformationLabel = new Label(window, "[TRIANGLES]", "arial");
+	m_trianglesInformationLabel->setFontSize(13);
+	m_trianglesInformationLabel->setPosition(Vector2i(20, 76));
 
-	gui->addGroup("Rendering modes");
-	gui->addVariable("Wireframe", wireframe)->setTooltip("Enable Wireframe rendering.");
-	gui->addVariable("Lighting", lighting)->setTooltip("Enable lighting.");
-	gui->addVariable("Shadows", shadows)->setTooltip("Enable shadows.");
+	l = new Label(window, "Rendering", "arial");
+	l->setPosition(Vector2i(10, 108));
+	CheckBox *cb = new CheckBox(window, "Wireframe", [](bool state) { wireframe = state; });
+	cb->setTooltip("Wireframe rendering.");
+	cb->setPosition(Vector2i(20, 125));
+	cb = new CheckBox(window, "Lighting", [](bool state) { lighting = state; });
+	cb->setTooltip("Lighting rendering.");
+	cb->setPosition(Vector2i(20, 147));
+	cb = new CheckBox(window, "Shadow", [](bool state) { shadows = state; });
+	cb->setTooltip("Shadows rendering.");
+	cb->setPosition(Vector2i(20, 169));
 
-	//gui->addGroup("Validating fields");
-	//gui->addVariable("string", strval);
-	//gui->addVariable("int", ivar)->setSpinnable(true);
-	//gui->addVariable("float", fvar);
-	//gui->addVariable("double", dvar)->setSpinnable(true);
-
-	//gui->addGroup("Complex types");
-	//gui->addVariable("Enumeration", enumval, true)->setItems({ "Item 1", "Item 2", "Item 3" });
-	//gui->addVariable("Color", colval);
-
-	//gui->addGroup("Other widgets");
-	//gui->addButton("A button", []() { std::cout << "Button pressed." << std::endl; })->setTooltip("Press this button and see what happens.");
+	window->setVisible(true);
 
 	m_pNanoGUIScreen->setVisible(true);
 	m_pNanoGUIScreen->performLayout();
-	nanoguiWindow->setPosition(Vector2i(10, 150));
+}
+
+void QubeGame::DestroyGUI()
+{
+	delete m_pNanoGUIScreen;
 }
 
 void QubeGame::UpdateGUI()
 {
 	m_pQBTFile->SetWireframeMode(wireframe);
+
+	string matrices = "Number of matrices: " + to_string(m_pQBTFile->GetNumMatrices());
+	m_matricesInformationLabel->setCaption(matrices);
+
+	string vertices = "Number of vertices: " + to_string(m_pQBTFile->GetNumVertices());
+	m_verticesInformationLabel->setCaption(vertices);
+
+	string triangles = "Number of triangles: " + to_string(m_pQBTFile->GetNumTriangles());
+	m_trianglesInformationLabel->setCaption(triangles);
 }
 
 bool QubeGame::IsInteractingWithGUI()

@@ -117,6 +117,7 @@ public:
 
 	// GUI functionality
 	void CreateGUI();
+	void DestroyGUI();
 	void UpdateGUI();
 	bool IsInteractingWithGUI();
 
@@ -259,6 +260,9 @@ private:
 
 	// NanoGUI root screen
 	Screen *m_pNanoGUIScreen;
+	Label *m_matricesInformationLabel;
+	Label *m_verticesInformationLabel;
+	Label *m_trianglesInformationLabel;
 
 	// QBT File
 	QBT* m_pQBTFile;
