@@ -80,6 +80,11 @@ public:
 	// Setup
 	void CreateStaticRenderBuffer();
 
+	// Accessors
+	int GetNumMatrices();
+	int GetNumVertices();
+	int GetNumTriangles();
+
 	// Render modes
 	void SetWireframeMode(bool wireframe);
 	bool GetWireframeMode();

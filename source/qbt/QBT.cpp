@@ -435,6 +435,33 @@ void QBT::CreateStaticRenderBuffer()
 	}
 }
 
+// Accessors
+int QBT::GetNumMatrices()
+{
+	int numMatrices = (int)m_vpQBTMatrices.size();
+	return numMatrices;
+}
+
+int QBT::GetNumVertices()
+{
+	int numVertices = 0;
+	for (int i = 0; i < (int)m_vpQBTMatrices.size(); i++)
+	{
+		numVertices += m_vpQBTMatrices[i]->m_numVertices;
+	}
+	return numVertices;
+}
+
+int QBT::GetNumTriangles()
+{
+	int numTriangles = 0;
+	for (int i = 0; i < (int)m_vpQBTMatrices.size(); i++)
+	{
+		numTriangles += m_vpQBTMatrices[i]->m_numVisiblVoxels * 12;
+	}
+	return numTriangles;
+}
+
 // Render modes
 void QBT::SetWireframeMode(bool wireframe)
 {
