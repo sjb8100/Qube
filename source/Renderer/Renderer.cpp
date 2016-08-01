@@ -76,7 +76,6 @@ Renderer::~Renderer()
 void Renderer::SetupShaders()
 {
 	m_pPositionColorShader = new Shader("media/shaders/PositionColor.vertex", "media/shaders/PositionColor.fragment");
-	m_pTextShader = new Shader("media/shaders/Text.vertex", "media/shaders/Text.fragment");
 }
 
 // Resize

@@ -115,7 +115,6 @@ private:
 
 	// Shaders
 	Shader* m_pPositionColorShader;
-	Shader* m_pTextShader;
 
 	// Rendering
 	vector<Line*> m_vpLines;
