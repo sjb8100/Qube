@@ -30,7 +30,7 @@ QBT::QBT(Renderer* pRenderer)
 
 	m_wireframeRender = false;
 
-	m_pPositionColorShader = new Shader("media/shaders/PositionColor.vertex", "media/shaders/PositionColor.fragment");
+	m_pPositionColorShader = new Shader("media/shaders/PositionColorNormal.vertex", "media/shaders/PositionColorNormal.fragment");
 }
 
 QBT::~QBT()
@@ -293,8 +293,8 @@ void QBT::CreateStaticRenderBuffer()
 		QBTMatrix* pMatrix = m_vpQBTMatrices[matrixIndex];
 
 		// Vertices
-		pMatrix->m_numVertices = (unsigned int)pMatrix->m_numVisiblVoxels * 8;
-		PositionColorVertex* verticesBuffer = new PositionColorVertex[pMatrix->m_numVertices];
+		pMatrix->m_numVertices = (unsigned int)pMatrix->m_numVisiblVoxels * 24;
+		PositionColorNormalVertex* verticesBuffer = new PositionColorNormalVertex[pMatrix->m_numVertices];
 
 		// Indices
 		pMatrix->m_numIndices = (unsigned int)pMatrix->m_numVisiblVoxels * 36;
@@ -324,6 +324,7 @@ void QBT::CreateStaticRenderBuffer()
 					float g = (float)(green / 255.0f);
 					float b = (float)(blue / 255.0f);
 
+					// Back 0 1 2 3
 					verticesBuffer[verticesCounter + 0].x = x + -0.5f;
 					verticesBuffer[verticesCounter + 0].y = y + -0.5f;
 					verticesBuffer[verticesCounter + 0].z = z + -0.5f;
@@ -331,6 +332,9 @@ void QBT::CreateStaticRenderBuffer()
 					verticesBuffer[verticesCounter + 0].g = g;
 					verticesBuffer[verticesCounter + 0].b = b;
 					verticesBuffer[verticesCounter + 0].a = 1.0f;
+					verticesBuffer[verticesCounter + 0].nx = 0.0f;
+					verticesBuffer[verticesCounter + 0].ny = 0.0f;
+					verticesBuffer[verticesCounter + 0].nz = -1.0f;
 
 					verticesBuffer[verticesCounter + 1].x = x + 0.5f;
 					verticesBuffer[verticesCounter + 1].y = y + -0.5f;
@@ -339,6 +343,9 @@ void QBT::CreateStaticRenderBuffer()
 					verticesBuffer[verticesCounter + 1].g = g;
 					verticesBuffer[verticesCounter + 1].b = b;
 					verticesBuffer[verticesCounter + 1].a = 1.0f;
+					verticesBuffer[verticesCounter + 1].nx = 0.0f;
+					verticesBuffer[verticesCounter + 1].ny = 0.0f;
+					verticesBuffer[verticesCounter + 1].nz = -1.0f;
 
 					verticesBuffer[verticesCounter + 2].x = x + -0.5f;
 					verticesBuffer[verticesCounter + 2].y = y + 0.5f;
@@ -347,6 +354,9 @@ void QBT::CreateStaticRenderBuffer()
 					verticesBuffer[verticesCounter + 2].g = g;
 					verticesBuffer[verticesCounter + 2].b = b;
 					verticesBuffer[verticesCounter + 2].a = 1.0f;
+					verticesBuffer[verticesCounter + 2].nx = 0.0f;
+					verticesBuffer[verticesCounter + 2].ny = 0.0f;
+					verticesBuffer[verticesCounter + 2].nz = -1.0f;
 
 					verticesBuffer[verticesCounter + 3].x = x + 0.5f;
 					verticesBuffer[verticesCounter + 3].y = y + 0.5f;
@@ -355,7 +365,11 @@ void QBT::CreateStaticRenderBuffer()
 					verticesBuffer[verticesCounter + 3].g = g;
 					verticesBuffer[verticesCounter + 3].b = b;
 					verticesBuffer[verticesCounter + 3].a = 1.0f;
+					verticesBuffer[verticesCounter + 3].nx = 0.0f;
+					verticesBuffer[verticesCounter + 3].ny = 0.0f;
+					verticesBuffer[verticesCounter + 3].nz = -1.0f;
 
+					// Front 4 5 6 7
 					verticesBuffer[verticesCounter + 4].x = x + -0.5f;
 					verticesBuffer[verticesCounter + 4].y = y + -0.5f;
 					verticesBuffer[verticesCounter + 4].z = z + 0.5f;
@@ -363,6 +377,9 @@ void QBT::CreateStaticRenderBuffer()
 					verticesBuffer[verticesCounter + 4].g = g;
 					verticesBuffer[verticesCounter + 4].b = b;
 					verticesBuffer[verticesCounter + 4].a = 1.0f;
+					verticesBuffer[verticesCounter + 4].nx = 0.0f;
+					verticesBuffer[verticesCounter + 4].ny = 0.0f;
+					verticesBuffer[verticesCounter + 4].nz = 1.0f;
 
 					verticesBuffer[verticesCounter + 5].x = x + 0.5f;
 					verticesBuffer[verticesCounter + 5].y = y + -0.5f;
@@ -371,6 +388,9 @@ void QBT::CreateStaticRenderBuffer()
 					verticesBuffer[verticesCounter + 5].g = g;
 					verticesBuffer[verticesCounter + 5].b = b;
 					verticesBuffer[verticesCounter + 5].a = 1.0f;
+					verticesBuffer[verticesCounter + 5].nx = 0.0f;
+					verticesBuffer[verticesCounter + 5].ny = 0.0f;
+					verticesBuffer[verticesCounter + 5].nz = 1.0f;
 
 					verticesBuffer[verticesCounter + 6].x = x + -0.5f;
 					verticesBuffer[verticesCounter + 6].y = y + 0.5f;
@@ -379,6 +399,9 @@ void QBT::CreateStaticRenderBuffer()
 					verticesBuffer[verticesCounter + 6].g = g;
 					verticesBuffer[verticesCounter + 6].b = b;
 					verticesBuffer[verticesCounter + 6].a = 1.0f;
+					verticesBuffer[verticesCounter + 6].nx = 0.0f;
+					verticesBuffer[verticesCounter + 6].ny = 0.0f;
+					verticesBuffer[verticesCounter + 6].nz = 1.0f;
 
 					verticesBuffer[verticesCounter + 7].x = x + 0.5f;
 					verticesBuffer[verticesCounter + 7].y = y + 0.5f;
@@ -387,7 +410,191 @@ void QBT::CreateStaticRenderBuffer()
 					verticesBuffer[verticesCounter + 7].g = g;
 					verticesBuffer[verticesCounter + 7].b = b;
 					verticesBuffer[verticesCounter + 7].a = 1.0f;
+					verticesBuffer[verticesCounter + 7].nx = 0.0f;
+					verticesBuffer[verticesCounter + 7].ny = 0.0f;
+					verticesBuffer[verticesCounter + 7].nz = 1.0f;
 
+					// Left 8 9 10 11
+					verticesBuffer[verticesCounter + 8].x = x + -0.5f;
+					verticesBuffer[verticesCounter + 8].y = y + -0.5f;
+					verticesBuffer[verticesCounter + 8].z = z + -0.5f;
+					verticesBuffer[verticesCounter + 8].r = r;
+					verticesBuffer[verticesCounter + 8].g = g;
+					verticesBuffer[verticesCounter + 8].b = b;
+					verticesBuffer[verticesCounter + 8].a = 1.0f;
+					verticesBuffer[verticesCounter + 8].nx = -1.0f;
+					verticesBuffer[verticesCounter + 8].ny = 0.0f;
+					verticesBuffer[verticesCounter + 8].nz = 0.0f;
+
+					verticesBuffer[verticesCounter + 9].x = x + -0.5f;
+					verticesBuffer[verticesCounter + 9].y = y + -0.5f;
+					verticesBuffer[verticesCounter + 9].z = z + 0.5f;
+					verticesBuffer[verticesCounter + 9].r = r;
+					verticesBuffer[verticesCounter + 9].g = g;
+					verticesBuffer[verticesCounter + 9].b = b;
+					verticesBuffer[verticesCounter + 9].a = 1.0f;
+					verticesBuffer[verticesCounter + 9].nx = -1.0f;
+					verticesBuffer[verticesCounter + 9].ny = 0.0f;
+					verticesBuffer[verticesCounter + 9].nz = 0.0f;
+
+					verticesBuffer[verticesCounter + 10].x = x + -0.5f;
+					verticesBuffer[verticesCounter + 10].y = y + 0.5f;
+					verticesBuffer[verticesCounter + 10].z = z + -0.5f;
+					verticesBuffer[verticesCounter + 10].r = r;
+					verticesBuffer[verticesCounter + 10].g = g;
+					verticesBuffer[verticesCounter + 10].b = b;
+					verticesBuffer[verticesCounter + 10].a = 1.0f;
+					verticesBuffer[verticesCounter + 10].nx = -1.0f;
+					verticesBuffer[verticesCounter + 10].ny = 0.0f;
+					verticesBuffer[verticesCounter + 10].nz = 0.0f;
+
+					verticesBuffer[verticesCounter + 11].x = x + -0.5f;
+					verticesBuffer[verticesCounter + 11].y = y + 0.5f;
+					verticesBuffer[verticesCounter + 11].z = z + 0.5f;
+					verticesBuffer[verticesCounter + 11].r = r;
+					verticesBuffer[verticesCounter + 11].g = g;
+					verticesBuffer[verticesCounter + 11].b = b;
+					verticesBuffer[verticesCounter + 11].a = 1.0f;
+					verticesBuffer[verticesCounter + 11].nx = -1.0f;
+					verticesBuffer[verticesCounter + 11].ny = 0.0f;
+					verticesBuffer[verticesCounter + 11].nz = 0.0f;
+
+					// Right 12 13 14 15
+					verticesBuffer[verticesCounter + 12].x = x + 0.5f;
+					verticesBuffer[verticesCounter + 12].y = y + -0.5f;
+					verticesBuffer[verticesCounter + 12].z = z + -0.5f;
+					verticesBuffer[verticesCounter + 12].r = r;
+					verticesBuffer[verticesCounter + 12].g = g;
+					verticesBuffer[verticesCounter + 12].b = b;
+					verticesBuffer[verticesCounter + 12].a = 1.0f;
+					verticesBuffer[verticesCounter + 12].nx = 1.0f;
+					verticesBuffer[verticesCounter + 12].ny = 0.0f;
+					verticesBuffer[verticesCounter + 12].nz = 0.0f;
+
+					verticesBuffer[verticesCounter + 13].x = x + 0.5f;
+					verticesBuffer[verticesCounter + 13].y = y + -0.5f;
+					verticesBuffer[verticesCounter + 13].z = z + 0.5f;
+					verticesBuffer[verticesCounter + 13].r = r;
+					verticesBuffer[verticesCounter + 13].g = g;
+					verticesBuffer[verticesCounter + 13].b = b;
+					verticesBuffer[verticesCounter + 13].a = 1.0f;
+					verticesBuffer[verticesCounter + 13].nx = 1.0f;
+					verticesBuffer[verticesCounter + 13].ny = 0.0f;
+					verticesBuffer[verticesCounter + 13].nz = 0.0f;
+
+					verticesBuffer[verticesCounter + 14].x = x + 0.5f;
+					verticesBuffer[verticesCounter + 14].y = y + 0.5f;
+					verticesBuffer[verticesCounter + 14].z = z + -0.5f;
+					verticesBuffer[verticesCounter + 14].r = r;
+					verticesBuffer[verticesCounter + 14].g = g;
+					verticesBuffer[verticesCounter + 14].b = b;
+					verticesBuffer[verticesCounter + 14].a = 1.0f;
+					verticesBuffer[verticesCounter + 14].nx = 1.0f;
+					verticesBuffer[verticesCounter + 14].ny = 0.0f;
+					verticesBuffer[verticesCounter + 14].nz = 0.0f;
+
+					verticesBuffer[verticesCounter + 15].x = x + 0.5f;
+					verticesBuffer[verticesCounter + 15].y = y + 0.5f;
+					verticesBuffer[verticesCounter + 15].z = z + 0.5f;
+					verticesBuffer[verticesCounter + 15].r = r;
+					verticesBuffer[verticesCounter + 15].g = g;
+					verticesBuffer[verticesCounter + 15].b = b;
+					verticesBuffer[verticesCounter + 15].a = 1.0f;
+					verticesBuffer[verticesCounter + 15].nx = 1.0f;
+					verticesBuffer[verticesCounter + 15].ny = 0.0f;
+					verticesBuffer[verticesCounter + 15].nz = 0.0f;
+
+					// Top 16 17 18 19
+					verticesBuffer[verticesCounter + 16].x = x + -0.5f;
+					verticesBuffer[verticesCounter + 16].y = y + 0.5f;
+					verticesBuffer[verticesCounter + 16].z = z + 0.5f;
+					verticesBuffer[verticesCounter + 16].r = r;
+					verticesBuffer[verticesCounter + 16].g = g;
+					verticesBuffer[verticesCounter + 16].b = b;
+					verticesBuffer[verticesCounter + 16].a = 1.0f;
+					verticesBuffer[verticesCounter + 16].nx = 0.0f;
+					verticesBuffer[verticesCounter + 16].ny = 1.0f;
+					verticesBuffer[verticesCounter + 16].nz = 0.0f;
+
+					verticesBuffer[verticesCounter + 17].x = x + 0.5f;
+					verticesBuffer[verticesCounter + 17].y = y + 0.5f;
+					verticesBuffer[verticesCounter + 17].z = z + 0.5f;
+					verticesBuffer[verticesCounter + 17].r = r;
+					verticesBuffer[verticesCounter + 17].g = g;
+					verticesBuffer[verticesCounter + 17].b = b;
+					verticesBuffer[verticesCounter + 17].a = 1.0f;
+					verticesBuffer[verticesCounter + 17].nx = 0.0f;
+					verticesBuffer[verticesCounter + 17].ny = 1.0f;
+					verticesBuffer[verticesCounter + 17].nz = 0.0f;
+
+					verticesBuffer[verticesCounter + 18].x = x + -0.5f;
+					verticesBuffer[verticesCounter + 18].y = y + 0.5f;
+					verticesBuffer[verticesCounter + 18].z = z + -0.5f;
+					verticesBuffer[verticesCounter + 18].r = r;
+					verticesBuffer[verticesCounter + 18].g = g;
+					verticesBuffer[verticesCounter + 18].b = b;
+					verticesBuffer[verticesCounter + 18].a = 1.0f;
+					verticesBuffer[verticesCounter + 18].nx = 0.0f;
+					verticesBuffer[verticesCounter + 18].ny = 1.0f;
+					verticesBuffer[verticesCounter + 18].nz = 0.0f;
+
+					verticesBuffer[verticesCounter + 19].x = x + 0.5f;
+					verticesBuffer[verticesCounter + 19].y = y + 0.5f;
+					verticesBuffer[verticesCounter + 19].z = z + -0.5f;
+					verticesBuffer[verticesCounter + 19].r = r;
+					verticesBuffer[verticesCounter + 19].g = g;
+					verticesBuffer[verticesCounter + 19].b = b;
+					verticesBuffer[verticesCounter + 19].a = 1.0f;
+					verticesBuffer[verticesCounter + 19].nx = 0.0f;
+					verticesBuffer[verticesCounter + 19].ny = 1.0f;
+					verticesBuffer[verticesCounter + 19].nz = 0.0f;
+
+					// Bottom 20 21 22 23
+					verticesBuffer[verticesCounter + 20].x = x + -0.5f;
+					verticesBuffer[verticesCounter + 20].y = y + -0.5f;
+					verticesBuffer[verticesCounter + 20].z = z + 0.5f;
+					verticesBuffer[verticesCounter + 20].r = r;
+					verticesBuffer[verticesCounter + 20].g = g;
+					verticesBuffer[verticesCounter + 20].b = b;
+					verticesBuffer[verticesCounter + 20].a = 1.0f;
+					verticesBuffer[verticesCounter + 20].nx = 0.0f;
+					verticesBuffer[verticesCounter + 20].ny = -1.0f;
+					verticesBuffer[verticesCounter + 20].nz = 0.0f;
+
+					verticesBuffer[verticesCounter + 21].x = x + 0.5f;
+					verticesBuffer[verticesCounter + 21].y = y + -0.5f;
+					verticesBuffer[verticesCounter + 21].z = z + 0.5f;
+					verticesBuffer[verticesCounter + 21].r = r;
+					verticesBuffer[verticesCounter + 21].g = g;
+					verticesBuffer[verticesCounter + 21].b = b;
+					verticesBuffer[verticesCounter + 21].a = 1.0f;
+					verticesBuffer[verticesCounter + 21].nx = 0.0f;
+					verticesBuffer[verticesCounter + 21].ny = -1.0f;
+					verticesBuffer[verticesCounter + 21].nz = 0.0f;
+
+					verticesBuffer[verticesCounter + 22].x = x + -0.5f;
+					verticesBuffer[verticesCounter + 22].y = y + -0.5f;
+					verticesBuffer[verticesCounter + 22].z = z + -0.5f;
+					verticesBuffer[verticesCounter + 22].r = r;
+					verticesBuffer[verticesCounter + 22].g = g;
+					verticesBuffer[verticesCounter + 22].b = b;
+					verticesBuffer[verticesCounter + 22].a = 1.0f;
+					verticesBuffer[verticesCounter + 22].nx = 0.0f;
+					verticesBuffer[verticesCounter + 22].ny = -1.0f;
+					verticesBuffer[verticesCounter + 22].nz = 0.0f;
+
+					verticesBuffer[verticesCounter + 23].x = x + 0.5f;
+					verticesBuffer[verticesCounter + 23].y = y + -0.5f;
+					verticesBuffer[verticesCounter + 23].z = z + -0.5f;
+					verticesBuffer[verticesCounter + 23].r = r;
+					verticesBuffer[verticesCounter + 23].g = g;
+					verticesBuffer[verticesCounter + 23].b = b;
+					verticesBuffer[verticesCounter + 23].a = 1.0f;
+					verticesBuffer[verticesCounter + 23].nx = 0.0f;
+					verticesBuffer[verticesCounter + 23].ny = -1.0f;
+					verticesBuffer[verticesCounter + 23].nz = 0.0f;
+
+					// Back
 					indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
 					indicesBuffer[indicesCounter + 1] = verticesCounter + 2;
 					indicesBuffer[indicesCounter + 2] = verticesCounter + 1;
@@ -395,6 +602,7 @@ void QBT::CreateStaticRenderBuffer()
 					indicesBuffer[indicesCounter + 4] = verticesCounter + 2;
 					indicesBuffer[indicesCounter + 5] = verticesCounter + 3;
 
+					// Front
 					indicesBuffer[indicesCounter + 6] = verticesCounter + 4;
 					indicesBuffer[indicesCounter + 7] = verticesCounter + 5;
 					indicesBuffer[indicesCounter + 8] = verticesCounter + 6;
@@ -402,35 +610,39 @@ void QBT::CreateStaticRenderBuffer()
 					indicesBuffer[indicesCounter + 10] = verticesCounter + 7;
 					indicesBuffer[indicesCounter + 11] = verticesCounter + 6;
 
-					indicesBuffer[indicesCounter + 12] = verticesCounter + 4;
-					indicesBuffer[indicesCounter + 13] = verticesCounter + 2;
-					indicesBuffer[indicesCounter + 14] = verticesCounter + 0;
-					indicesBuffer[indicesCounter + 15] = verticesCounter + 4;
-					indicesBuffer[indicesCounter + 16] = verticesCounter + 6;
-					indicesBuffer[indicesCounter + 17] = verticesCounter + 2;
+					// Left
+					indicesBuffer[indicesCounter + 12] = verticesCounter + 9;
+					indicesBuffer[indicesCounter + 13] = verticesCounter + 10;
+					indicesBuffer[indicesCounter + 14] = verticesCounter + 8;
+					indicesBuffer[indicesCounter + 15] = verticesCounter + 9;
+					indicesBuffer[indicesCounter + 16] = verticesCounter + 11;
+					indicesBuffer[indicesCounter + 17] = verticesCounter + 10;
 
-					indicesBuffer[indicesCounter + 18] = verticesCounter + 1;
-					indicesBuffer[indicesCounter + 19] = verticesCounter + 3;
-					indicesBuffer[indicesCounter + 20] = verticesCounter + 5;
-					indicesBuffer[indicesCounter + 21] = verticesCounter + 5;
-					indicesBuffer[indicesCounter + 22] = verticesCounter + 3;
-					indicesBuffer[indicesCounter + 23] = verticesCounter + 7;
+					// Right
+					indicesBuffer[indicesCounter + 18] = verticesCounter + 12;
+					indicesBuffer[indicesCounter + 19] = verticesCounter + 14;
+					indicesBuffer[indicesCounter + 20] = verticesCounter + 13;
+					indicesBuffer[indicesCounter + 21] = verticesCounter + 13;
+					indicesBuffer[indicesCounter + 22] = verticesCounter + 14;
+					indicesBuffer[indicesCounter + 23] = verticesCounter + 15;
 
-					indicesBuffer[indicesCounter + 24] = verticesCounter + 6;
-					indicesBuffer[indicesCounter + 25] = verticesCounter + 7;
-					indicesBuffer[indicesCounter + 26] = verticesCounter + 2;
-					indicesBuffer[indicesCounter + 27] = verticesCounter + 7;
-					indicesBuffer[indicesCounter + 28] = verticesCounter + 3;
-					indicesBuffer[indicesCounter + 29] = verticesCounter + 2;
+					// Top
+					indicesBuffer[indicesCounter + 24] = verticesCounter + 16;
+					indicesBuffer[indicesCounter + 25] = verticesCounter + 17;
+					indicesBuffer[indicesCounter + 26] = verticesCounter + 18;
+					indicesBuffer[indicesCounter + 27] = verticesCounter + 17;
+					indicesBuffer[indicesCounter + 28] = verticesCounter + 19;
+					indicesBuffer[indicesCounter + 29] = verticesCounter + 18;
 
-					indicesBuffer[indicesCounter + 30] = verticesCounter + 4;
-					indicesBuffer[indicesCounter + 31] = verticesCounter + 0;
-					indicesBuffer[indicesCounter + 32] = verticesCounter + 5;
-					indicesBuffer[indicesCounter + 33] = verticesCounter + 5;
-					indicesBuffer[indicesCounter + 34] = verticesCounter + 0;
-					indicesBuffer[indicesCounter + 35] = verticesCounter + 1;
+					// Bottom
+					indicesBuffer[indicesCounter + 30] = verticesCounter + 20;
+					indicesBuffer[indicesCounter + 31] = verticesCounter + 22;
+					indicesBuffer[indicesCounter + 32] = verticesCounter + 21;
+					indicesBuffer[indicesCounter + 33] = verticesCounter + 21;
+					indicesBuffer[indicesCounter + 34] = verticesCounter + 22;
+					indicesBuffer[indicesCounter + 35] = verticesCounter + 23;
 
-					verticesCounter += 8;
+					verticesCounter += 24;
 					indicesCounter += 36;
 				}
 			}
@@ -444,15 +656,17 @@ void QBT::CreateStaticRenderBuffer()
 		glBindVertexArray(pMatrix->m_VAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, pMatrix->m_VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(PositionColorVertex)*pMatrix->m_numVertices, verticesBuffer, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(PositionColorNormalVertex)*pMatrix->m_numVertices, verticesBuffer, GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pMatrix->m_EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*pMatrix->m_numIndices, indicesBuffer, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 7, (GLvoid*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 10, (GLvoid*)0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 7, (GLvoid*)(sizeof(GLfloat) * 3));
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 10, (GLvoid*)(sizeof(GLfloat) * 3));
 		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 10, (GLvoid*)(sizeof(GLfloat) * 7));
+		glEnableVertexAttribArray(2);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
 
@@ -512,6 +726,16 @@ void QBT::Render(Camera* pCamera)
 
 	// Use shader
 	m_pPositionColorShader->UseShader();
+
+	glm::vec3 lightPos(50.0f, 50.0f, 50.0f);
+	GLint objectColorLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "objectColor");
+	GLint lightColorLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "lightColor");
+	GLint lightPosLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "lightPos");
+	GLint viewPosLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "viewPos");
+	glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
+	glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+	glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+	glUniform3f(viewPosLoc, pCamera->GetPosition().x, pCamera->GetPosition().y, pCamera->GetPosition().z);
 
 	for (unsigned int matrixIndex = 0; matrixIndex < m_vpQBTMatrices.size(); matrixIndex++)
 	{
