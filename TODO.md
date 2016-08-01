@@ -9,7 +9,7 @@
   - [x] Add functionality for debug bounding boxes, spheres, etc.
 - [ ] Add better logging and output for errors and information.
 - [ ] Better media support, maybe add SDL lib support?
-- [ ] GUI Lib?
+- [x] GUI Lib?
 - [x] Better font support in renderer.
-- [ ] C++ 11?
+- [x] C++ 11?
 - [x] Latest versions of glfw and glm.
