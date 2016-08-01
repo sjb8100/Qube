@@ -13,6 +13,7 @@
 - [x] Better font support in renderer.
 - [x] C++ 11?
 - [x] Latest versions of glfw and glm.
+- [ ] Build nanogui on linux to fix linux build.
 - [ ] Don't render invisible voxels.
 - [ ] Don't render invisible faces, due to visibility mask.
 - [ ] Add face merging or face optimizations.
