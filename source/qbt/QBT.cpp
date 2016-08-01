@@ -727,12 +727,10 @@ void QBT::Render(Camera* pCamera)
 	// Use shader
 	m_pPositionColorShader->UseShader();
 
-	glm::vec3 lightPos(50.0f, 50.0f, 50.0f);
-	GLint objectColorLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "objectColor");
+	glm::vec3 lightPos(15.0f, 15.0f, 15.0f);
 	GLint lightColorLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "lightColor");
 	GLint lightPosLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "lightPos");
 	GLint viewPosLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "viewPos");
-	glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
 	glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
 	glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
 	glUniform3f(viewPosLoc, pCamera->GetPosition().x, pCamera->GetPosition().y, pCamera->GetPosition().z);
