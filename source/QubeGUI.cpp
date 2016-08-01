@@ -29,38 +29,38 @@ Color colval(0.5f, 0.5f, 0.7f, 1.f);
 
 void QubeGame::CreateGUI()
 {
-	Window *window = new Window(m_pNanoGUIScreen, "Controls");
-	window->setSize(Vector2i(175, 300));
-	window->setPosition(Vector2i(10, 150));
+	m_pControlswindow = new Window(m_pNanoGUIScreen, "Controls");
+	m_pControlswindow->setSize(Vector2i(175, 300));
+	m_pControlswindow->setPosition(Vector2i(10, 150));
 	//window->setLayout(new GroupLayout());
 
-	Label *l = new Label(window, "Information", "arial");
+	Label *l = new Label(m_pControlswindow, "Information", "arial");
 	l->setPosition(Vector2i(10, 33));
-	m_matricesInformationLabel = new Label(window, "[MATRICES]", "arial");
+	m_matricesInformationLabel = new Label(m_pControlswindow, "[MATRICES]", "arial");
 	m_matricesInformationLabel->setFontSize(13);
 	m_matricesInformationLabel->setPosition(Vector2i(20, 50));
-	m_verticesInformationLabel = new Label(window, "[VERTICEES]", "arial");
+	m_verticesInformationLabel = new Label(m_pControlswindow, "[VERTICEES]", "arial");
 	m_verticesInformationLabel->setFontSize(13);
 	m_verticesInformationLabel->setPosition(Vector2i(20, 63));
-	m_trianglesInformationLabel = new Label(window, "[TRIANGLES]", "arial");
+	m_trianglesInformationLabel = new Label(m_pControlswindow, "[TRIANGLES]", "arial");
 	m_trianglesInformationLabel->setFontSize(13);
 	m_trianglesInformationLabel->setPosition(Vector2i(20, 76));
 
-	l = new Label(window, "Rendering", "arial");
+	l = new Label(m_pControlswindow, "Rendering", "arial");
 	l->setPosition(Vector2i(10, 108));
-	CheckBox *cb = new CheckBox(window, "Wireframe", [](bool state) { wireframe = state; });
+	CheckBox *cb = new CheckBox(m_pControlswindow, "Wireframe", [](bool state) { wireframe = state; });
 	cb->setTooltip("Wireframe rendering.");
 	cb->setPosition(Vector2i(20, 125));
-	cb = new CheckBox(window, "Lighting", [](bool state) { lighting = state; });
+	cb = new CheckBox(m_pControlswindow, "Lighting", [](bool state) { lighting = state; });
 	cb->setTooltip("Lighting rendering.");
 	cb->setPosition(Vector2i(20, 147));
-	cb = new CheckBox(window, "Shadow", [](bool state) { shadows = state; });
+	cb = new CheckBox(m_pControlswindow, "Shadow", [](bool state) { shadows = state; });
 	cb->setTooltip("Shadows rendering.");
 	cb->setPosition(Vector2i(20, 169));
 
-	l = new Label(window, "File Operations", "arial");
+	l = new Label(m_pControlswindow, "File Operations", "arial");
 	l->setPosition(Vector2i(10, 201));
-	Button *b = new Button(window, "Open");
+	Button *b = new Button(m_pControlswindow, "Open");
 	b->setPosition(Vector2i(20, 222));
 	b->setCallback([&] {
 		string fileName = file_dialog({ { "qbt", "Qubicle Binary Tree" } }, false);
@@ -70,13 +70,13 @@ void QubeGame::CreateGUI()
 			m_pQBTFile->LoadQBTFile(fileName);
 		}
 	});
-	b = new Button(window, "Save");
+	b = new Button(m_pControlswindow, "Save");
 	b->setPosition(Vector2i(90, 222));
 	b->setCallback([&] {
 		string fileName = file_dialog({ { "qbt", "Qubicle Binary Tree" }, }, true);
 	});
 
-	window->setVisible(true);
+	m_pControlswindow->setVisible(true);
 
 	m_pNanoGUIScreen->setVisible(true);
 	m_pNanoGUIScreen->performLayout();
@@ -90,6 +90,8 @@ void QubeGame::DestroyGUI()
 void QubeGame::UpdateGUI()
 {
 	m_pQBTFile->SetWireframeMode(wireframe);
+
+	m_pControlswindow->setTitle(m_pQBTFile->GetFilename());
 
 	string matrices = "Number of matrices: " + to_string(m_pQBTFile->GetNumMatrices());
 	m_matricesInformationLabel->setCaption(matrices);

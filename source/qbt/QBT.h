@@ -85,6 +85,7 @@ public:
 	void CreateStaticRenderBuffer();
 
 	// Accessors
+	string GetFilename();
 	int GetNumMatrices();
 	int GetNumVertices();
 	int GetNumTriangles();
@@ -117,6 +118,9 @@ private:
 	float m_globalScaleX;
 	float m_globalScaleY;
 	float m_globalScaleZ;
+
+	// Filename
+	string m_filename;
 
 	// Color map
 	unsigned int m_numColors;

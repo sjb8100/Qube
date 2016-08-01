@@ -65,6 +65,13 @@ bool QBT::LoadQBTFile(string filename)
 
 	if (pQBTfile != NULL)
 	{
+		int lastindex = (int)filename.find_last_of("/");
+		if (lastindex == -1)
+		{
+			lastindex = (int)filename.find_last_of("\\");
+		}
+		m_filename = filename.substr(lastindex+1);
+
 		int ok = 0;
 
 		// Header
@@ -675,6 +682,11 @@ void QBT::CreateStaticRenderBuffer()
 }
 
 // Accessors
+string QBT::GetFilename()
+{
+	return m_filename;
+}
+
 int QBT::GetNumMatrices()
 {
 	int numMatrices = (int)m_vpQBTMatrices.size();
