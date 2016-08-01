@@ -41,8 +41,16 @@ using namespace std;
 class PositionColorVertex
 {
 public:
-	float x, y, z;		// Position.
-	float r, g, b, a;	// Colour
+	float x, y, z;      // Position
+	float r, g, b, a;   // Colour
+};
+
+class PositionColorNormalVertex
+{
+public:
+	float x, y, z;      // Position
+	float r, g, b, a;   // Colour
+	float nx, ny, nz;   // Normal
 };
 
 class Line
