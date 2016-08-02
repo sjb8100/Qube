@@ -20,13 +20,16 @@ enum test_enum {
 bool wireframe = false;
 bool lighting = true;
 bool shadows = true;
+bool innerVoxels = false;
+bool innerFaces = false;
+bool mergeFaces = false;
 
 void QubeGame::CreateGUI()
 {
 	m_pControlswindow = new Window(m_pNanoGUIScreen, "Controls");
-	m_pControlswindow->setSize(Vector2i(175, 300));
+	m_pControlswindow->setSize(Vector2i(175, 350));
 	m_pControlswindow->setPosition(Vector2i(10, 150));
-	//window->setLayout(new GroupLayout());
+	//m_pNanoGUIScreen->setLayout(new GroupLayout());
 
 	Label *l = new Label(m_pControlswindow, "Information", "arial");
 	l->setPosition(Vector2i(10, 33));
@@ -51,11 +54,26 @@ void QubeGame::CreateGUI()
 	cb = new CheckBox(m_pControlswindow, "Shadow", [](bool state) { shadows = state; });
 	cb->setTooltip("Shadows rendering.");
 	cb->setPosition(Vector2i(20, 169));
+	cb = new CheckBox(m_pControlswindow, "Inner Voxels");
+	cb->setCallback([&](bool state) {
+		innerVoxels = state;
+		m_pQBTFile->SetCreateInnerVoxels(innerVoxels);
+		m_pQBTFile->SetVisibilityInformation();
+		m_pQBTFile->RecreateStaticBuffers();
+	});
+	cb->setTooltip("Render the inner voxels.");
+	cb->setPosition(Vector2i(20, 191));
+	cb = new CheckBox(m_pControlswindow, "Inner Faces", [](bool state) { innerFaces = state; });
+	cb->setTooltip("Render the inner faces.");
+	cb->setPosition(Vector2i(20, 213));
+	cb = new CheckBox(m_pControlswindow, "Face Merging", [](bool state) { mergeFaces = state; });
+	cb->setTooltip("Voxel face merging.");
+	cb->setPosition(Vector2i(20, 235));
 
 	l = new Label(m_pControlswindow, "File Operations", "arial");
-	l->setPosition(Vector2i(10, 201));
+	l->setPosition(Vector2i(10, 267));
 	Button *b = new Button(m_pControlswindow, "Open");
-	b->setPosition(Vector2i(20, 222));
+	b->setPosition(Vector2i(20, 288));
 	b->setCallback([&] {
 		string fileName = file_dialog({ { "qbt", "Qubicle Binary Tree" } }, false);
 		if (fileName != "")
@@ -65,7 +83,7 @@ void QubeGame::CreateGUI()
 		}
 	});
 	b = new Button(m_pControlswindow, "Save");
-	b->setPosition(Vector2i(90, 222));
+	b->setPosition(Vector2i(90, 288));
 	b->setCallback([&] {
 		string fileName = file_dialog({ { "qbt", "Qubicle Binary Tree" }, }, true);
 	});

@@ -28,9 +28,16 @@ QBT::QBT(Renderer* pRenderer)
 {
 	m_pRenderer = pRenderer;
 
+	// Render modes
 	m_wireframeRender = false;
 
-	m_pPositionColorShader = new Shader("media/shaders/PositionColorNormal.vertex", "media/shaders/PositionColorNormal.fragment");
+	// Creation optimizations
+	m_createInnerVoxels = false;
+	m_createInnerFaces = false;
+	m_mergeFaces = true;
+
+	// Shader
+	m_pPositionColorNormalShader = new Shader("media/shaders/PositionColorNormal.vertex", "media/shaders/PositionColorNormal.fragment");
 }
 
 QBT::~QBT()
@@ -39,22 +46,29 @@ QBT::~QBT()
 }
 
 // Unloading
-bool QBT::Unload()
+void QBT::Unload()
 {
+	DestroyStaticBuffers();
+
 	for (unsigned int i = 0; i < m_vpQBTMatrices.size(); i++)
 	{
 		delete[] m_vpQBTMatrices[i]->m_pColour;
 		delete[] m_vpQBTMatrices[i]->m_pVisibilityMask;
 
-		glDeleteBuffers(1, &m_vpQBTMatrices[i]->m_VBO);
-		glDeleteBuffers(1, &m_vpQBTMatrices[i]->m_EBO);
-		glDeleteVertexArrays(1, &m_vpQBTMatrices[i]->m_VAO);
 		delete m_vpQBTMatrices[i];
 		m_vpQBTMatrices[i] = NULL;
 	}
 	m_vpQBTMatrices.clear();
+}
 
-	return true;
+void QBT::DestroyStaticBuffers()
+{
+	for (unsigned int i = 0; i < m_vpQBTMatrices.size(); i++)
+	{
+		glDeleteBuffers(1, &m_vpQBTMatrices[i]->m_VBO);
+		glDeleteBuffers(1, &m_vpQBTMatrices[i]->m_EBO);
+		glDeleteVertexArrays(1, &m_vpQBTMatrices[i]->m_VAO);
+	}
 }
 
 // Loading
@@ -101,7 +115,8 @@ bool QBT::LoadQBTFile(string filename)
 
 		fclose(pQBTfile);
 
-		CreateStaticRenderBuffer();
+		SetVisibilityInformation();
+		CreateStaticRenderBuffers();
 
 		return true;
 	}
@@ -232,7 +247,7 @@ bool QBT::LoadMatrix(FILE* pQBTfile)
 
 	pNewMatrix->m_pColour = new unsigned int[pNewMatrix->m_sizeX * pNewMatrix->m_sizeY * pNewMatrix->m_sizeZ];
 	pNewMatrix->m_pVisibilityMask = new unsigned int[pNewMatrix->m_sizeX * pNewMatrix->m_sizeY * pNewMatrix->m_sizeZ];
-	pNewMatrix->m_numVisiblVoxels = 0;
+	pNewMatrix->m_numVisibleVoxels = 0;
 
 	unsigned int byteCounter = 0;
 	for (unsigned int x = 0; x < pNewMatrix->m_sizeX; x++)
@@ -250,8 +265,7 @@ bool QBT::LoadMatrix(FILE* pQBTfile)
 				unsigned int colour = 0;
 
 				// If mask is 0, this is an invisible voxel, not active
-				// If mask is 1, this is an internal voxel, completely surrounded by other visible voxels
-				if (mask != 0 && mask != 1)
+				if (mask != 0)
 				{
 					// Squish the rgba into a single unsigned int for storage in the matrix structure
 					unsigned int alpha = (int)(mask == 0 ? 0 : 255) << 24;
@@ -260,8 +274,6 @@ bool QBT::LoadMatrix(FILE* pQBTfile)
 					unsigned int red = (int)(r);
 
 					colour = red + green + blue + alpha;
-
-					pNewMatrix->m_numVisiblVoxels += 1;
 				}
 
 				pNewMatrix->m_pColour[x + pNewMatrix->m_sizeX * (y + pNewMatrix->m_sizeY * z)] = colour;
@@ -293,18 +305,54 @@ bool QBT::SkipNode(FILE* pQBTfile)
 }
 
 // Setup
-void QBT::CreateStaticRenderBuffer()
+void QBT::SetVisibilityInformation()
+{
+	for (unsigned int i = 0; i < m_vpQBTMatrices.size(); i++)
+	{
+		QBTMatrix* pMatrix = m_vpQBTMatrices[i];
+
+		pMatrix->m_numVisibleVoxels = 0;
+
+		for (unsigned int x = 0; x < pMatrix->m_sizeX; x++)
+		{
+			for (unsigned int z = 0; z < pMatrix->m_sizeZ; z++)
+			{
+				for (unsigned int y = 0; y < pMatrix->m_sizeY; y++)
+				{
+					unsigned int mask = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+
+					// If mask is 0, this is an invisible voxel, not active
+					if (mask != 0)
+					{
+						if (mask != 1 || m_createInnerVoxels == true)
+						{
+							pMatrix->m_numVisibleVoxels += 1;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void QBT::RecreateStaticBuffers()
+{
+	DestroyStaticBuffers();
+	CreateStaticRenderBuffers();
+}
+
+void QBT::CreateStaticRenderBuffers()
 {
 	for (unsigned int matrixIndex = 0; matrixIndex < m_vpQBTMatrices.size(); matrixIndex++)
 	{
 		QBTMatrix* pMatrix = m_vpQBTMatrices[matrixIndex];
 
 		// Vertices
-		pMatrix->m_numVertices = (unsigned int)pMatrix->m_numVisiblVoxels * 24;
+		pMatrix->m_numVertices = (unsigned int)pMatrix->m_numVisibleVoxels * 24;
 		PositionColorNormalVertex* verticesBuffer = new PositionColorNormalVertex[pMatrix->m_numVertices];
 
 		// Indices
-		pMatrix->m_numIndices = (unsigned int)pMatrix->m_numVisiblVoxels * 36;
+		pMatrix->m_numIndices = (unsigned int)pMatrix->m_numVisibleVoxels * 36;
 		GLuint* indicesBuffer = new GLuint[pMatrix->m_numIndices];
 
 		unsigned int verticesCounter = 0;
@@ -322,7 +370,12 @@ void QBT::CreateStaticRenderBuffer()
 					unsigned int green = (colour & 0x0000FF00) >> 8;
 					unsigned int red = (colour & 0x000000FF);
 
-					if (colour == 0)
+					if (mask == 0)
+					{
+						continue;
+					}
+
+					if (mask == 1 && m_createInnerVoxels == false)
 					{
 						continue;
 					}
@@ -708,7 +761,7 @@ int QBT::GetNumTriangles()
 	int numTriangles = 0;
 	for (int i = 0; i < (int)m_vpQBTMatrices.size(); i++)
 	{
-		numTriangles += m_vpQBTMatrices[i]->m_numVisiblVoxels * 12;
+		numTriangles += m_vpQBTMatrices[i]->m_numVisibleVoxels * 12;
 	}
 	return numTriangles;
 }
@@ -724,6 +777,22 @@ bool QBT::GetWireframeMode()
 	return m_wireframeRender;
 }
 
+// Creation optimizations
+void QBT::SetCreateInnerVoxels(bool innerVoxels)
+{
+	m_createInnerVoxels = innerVoxels;
+}
+
+void QBT::SetCreateInnerFaces(bool innerFaces)
+{
+	m_createInnerFaces = innerFaces;
+}
+
+void QBT::SetMergeFaces(bool mergeFaces)
+{
+	m_mergeFaces = mergeFaces;
+}
+
 // Render
 void QBT::Render(Camera* pCamera)
 {
@@ -737,12 +806,12 @@ void QBT::Render(Camera* pCamera)
 	}
 
 	// Use shader
-	m_pPositionColorShader->UseShader();
+	m_pPositionColorNormalShader->UseShader();
 
 	glm::vec3 lightPos(15.0f, 15.0f, 15.0f);
-	GLint lightColorLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "lightColor");
-	GLint lightPosLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "lightPos");
-	GLint viewPosLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "viewPos");
+	GLint lightColorLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "lightColor");
+	GLint lightPosLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "lightPos");
+	GLint viewPosLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "viewPos");
 	glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
 	glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
 	glUniform3f(viewPosLoc, pCamera->GetPosition().x, pCamera->GetPosition().y, pCamera->GetPosition().z);
@@ -758,9 +827,9 @@ void QBT::Render(Camera* pCamera)
 		projection = perspective(45.0f, (GLfloat)QubeGame::GetInstance()->GetWindowWidth() / (GLfloat)QubeGame::GetInstance()->GetWindowHeight(), 0.01f, 1000.0f);
 
 		// Get their uniform location
-		GLint modelLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "model");
-		GLint viewLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "view");
-		GLint projLoc = glGetUniformLocation(m_pPositionColorShader->GetShader(), "projection");
+		GLint modelLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "model");
+		GLint viewLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "view");
+		GLint projLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "projection");
 
 		// Pass the matrices to the shader
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, value_ptr(view));

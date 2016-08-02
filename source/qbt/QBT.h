@@ -51,7 +51,7 @@ public:
 
 	unsigned int *m_pColour;
 	unsigned int *m_pVisibilityMask;
-	unsigned int m_numVisiblVoxels;
+	unsigned int m_numVisibleVoxels;
 
 	// Rendering
 	GLuint m_VBO;
@@ -71,7 +71,8 @@ public:
 	~QBT();
 
 	// Unloading
-	bool Unload();
+	void Unload();
+	void DestroyStaticBuffers();
 
 	// Loading
 	bool LoadQBTFile(string filename);
@@ -82,7 +83,9 @@ public:
 	bool SkipNode(FILE* pQBTfile);
 
 	// Setup
-	void CreateStaticRenderBuffer();
+	void SetVisibilityInformation();
+	void RecreateStaticBuffers();
+	void CreateStaticRenderBuffers();
 
 	// Accessors
 	string GetFilename();
@@ -93,6 +96,11 @@ public:
 	// Render modes
 	void SetWireframeMode(bool wireframe);
 	bool GetWireframeMode();
+
+	// Creation optimizations
+	void SetCreateInnerVoxels(bool innerVoxels);
+	void SetCreateInnerFaces(bool innerFaces);
+	void SetMergeFaces(bool mergeFaces);
 
 	// Render
 	void Render(Camera* pCamera);
@@ -132,8 +140,13 @@ private:
 	// Rendering modes
 	bool m_wireframeRender;
 
+	// Creation optimizations
+	bool m_createInnerVoxels;
+	bool m_createInnerFaces;
+	bool m_mergeFaces;
+
 	// Shader
-	Shader* m_pPositionColorShader;
+	Shader* m_pPositionColorNormalShader;
 
 	// Renderer
 	Renderer* m_pRenderer;
