@@ -63,10 +63,22 @@ void QubeGame::CreateGUI()
 	});
 	cb->setTooltip("Render the inner voxels.");
 	cb->setPosition(Vector2i(20, 191));
-	cb = new CheckBox(m_pControlswindow, "Inner Faces", [](bool state) { innerFaces = state; });
+	cb = new CheckBox(m_pControlswindow, "Inner Faces");
+	cb->setCallback([&](bool state) {
+		innerFaces = state;
+		m_pQBTFile->SetCreateInnerFaces(innerFaces);
+		m_pQBTFile->SetVisibilityInformation();
+		m_pQBTFile->RecreateStaticBuffers();
+	});
 	cb->setTooltip("Render the inner faces.");
 	cb->setPosition(Vector2i(20, 213));
-	cb = new CheckBox(m_pControlswindow, "Face Merging", [](bool state) { mergeFaces = state; });
+	cb = new CheckBox(m_pControlswindow, "Face Merging");
+	cb->setCallback([&](bool state) {
+		mergeFaces = state;
+		m_pQBTFile->SetMergeFaces(mergeFaces);
+		m_pQBTFile->SetVisibilityInformation();
+		m_pQBTFile->RecreateStaticBuffers();
+	});
 	cb->setTooltip("Voxel face merging.");
 	cb->setPosition(Vector2i(20, 235));
 
@@ -102,6 +114,9 @@ void QubeGame::DestroyGUI()
 void QubeGame::UpdateGUI()
 {
 	m_pQBTFile->SetWireframeMode(wireframe);
+	m_pQBTFile->SetCreateInnerVoxels(innerVoxels);
+	m_pQBTFile->SetCreateInnerFaces(innerFaces);
+	m_pQBTFile->SetMergeFaces(mergeFaces);
 
 	m_pControlswindow->setTitle(m_pQBTFile->GetFilename());
 
