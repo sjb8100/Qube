@@ -18,3 +18,7 @@
 - [ ] Don't render invisible faces, due to visibility mask.
 - [ ] Add face merging or face optimizations.
 - [x] Add toggle checkboxes on GUI for different rendering modes and voxel optimizations.
+- [ ] Add voxel information to GUI window also (size, scale, position, etc).
+- [ ] Draw bounding boxes for matrices.
+- [ ] Ability to select individual matrice and show context information in the GUI.
+- [ ] Show the matrix name and the full filenames in the GUI.
