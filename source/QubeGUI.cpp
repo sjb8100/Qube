@@ -122,6 +122,7 @@ void QubeGame::DestroyGUI()
 void QubeGame::UpdateGUI()
 {
 	m_pQBTFile->SetWireframeMode(wireframe);
+	m_pQBTFile->SetUseLighting(lighting);
 	m_pQBTFile->SetCreateInnerVoxels(innerVoxels);
 	m_pQBTFile->SetCreateInnerFaces(innerFaces);
 	m_pQBTFile->SetMergeFaces(mergeFaces);

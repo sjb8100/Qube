@@ -97,6 +97,7 @@ public:
 	// Render modes
 	void SetWireframeMode(bool wireframe);
 	bool GetWireframeMode();
+	void SetUseLighting(bool lighting);
 
 	// Creation optimizations
 	void SetCreateInnerVoxels(bool innerVoxels);
@@ -104,7 +105,7 @@ public:
 	void SetMergeFaces(bool mergeFaces);
 
 	// Render
-	void Render(Camera* pCamera);
+	void Render(Camera* pCamera, vec3 lightPos);
 
 protected:
 	/* Protected methods */
@@ -140,6 +141,7 @@ private:
 
 	// Rendering modes
 	bool m_wireframeRender;
+	bool m_useLighting;
 
 	// Creation optimizations
 	bool m_createInnerVoxels;

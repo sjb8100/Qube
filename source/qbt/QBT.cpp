@@ -30,6 +30,7 @@ QBT::QBT(Renderer* pRenderer)
 
 	// Render modes
 	m_wireframeRender = false;
+	m_useLighting = true;
 
 	// Creation optimizations
 	m_createInnerVoxels = false;
@@ -843,6 +844,11 @@ bool QBT::GetWireframeMode()
 	return m_wireframeRender;
 }
 
+void QBT::SetUseLighting(bool lighting)
+{
+	m_useLighting = lighting;
+}
+
 // Creation optimizations
 void QBT::SetCreateInnerVoxels(bool innerVoxels)
 {
@@ -860,7 +866,7 @@ void QBT::SetMergeFaces(bool mergeFaces)
 }
 
 // Render
-void QBT::Render(Camera* pCamera)
+void QBT::Render(Camera* pCamera, vec3 lightPos)
 {
 	if (m_wireframeRender)
 	{
@@ -874,13 +880,25 @@ void QBT::Render(Camera* pCamera)
 	// Use shader
 	m_pPositionColorNormalShader->UseShader();
 
-	glm::vec3 lightPos(0.0f, 15.0f, 15.0f);
-	GLint lightColorLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "lightColor");
-	GLint lightPosLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "lightPos");
 	GLint viewPosLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "viewPos");
-	glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
-	glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
 	glUniform3f(viewPosLoc, pCamera->GetPosition().x, pCamera->GetPosition().y, pCamera->GetPosition().z);
+
+	// Set material properties
+	glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "material.ambient"), 1.0f, 1.0f, 1.0f);
+	glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "material.diffuse"), 1.0f, 1.0f, 1.0f);
+	glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "material.specular"), 1.0f, 1.0f, 1.0f);
+	glUniform1f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "material.shininess"), 32.0f);
+
+	// Set light properties
+	glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "light.position"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "light.ambient"), 0.2f, 0.2f, 0.2f);
+	glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "light.diffuse"), 1.0f, 1.0f, 1.0f);
+	glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "light.specular"), 1.0f, 1.0f, 1.0f);
+	glUniform1f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "light.constant"), 1.0f);
+	glUniform1f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "light.linear"), 0.0f);
+	glUniform1f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "light.quadratic"), 0.0f);
+
+	glUniform1i(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "useLighting"), m_useLighting);
 
 	for (unsigned int matrixIndex = 0; matrixIndex < m_vpQBTMatrices.size(); matrixIndex++)
 	{
@@ -899,7 +917,6 @@ void QBT::Render(Camera* pCamera)
 
 		// Pass the matrices to the shader
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, value_ptr(view));
-		// Note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, value_ptr(projection));
 
 		glBindVertexArray(pMatrix->m_VAO);

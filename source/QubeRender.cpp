@@ -56,6 +56,9 @@ void QubeGame::Render()
 	glDepthFunc(GL_LESS);
 	glClearStencil(0);
 
+	static vec3 lightPos(30.0f, 30.0f, 30.0f);
+	//lightPos.x = 1.0f + sin(glfwGetTime()) * 5.0f;
+
 	// Set viewport
 	m_pRenderer->SetViewport(m_pDefaultViewport);
 
@@ -70,10 +73,12 @@ void QubeGame::Render()
 	//	m_pRenderer->DrawCube(vec3(i, 0.0f, 0.0f), 1.0f, 1.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f));
 	//}
 
+	m_pRenderer->DrawCube(lightPos, 1.0f, 1.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f));
+
 	m_pRenderer->RenderLines(m_pGameCamera);
 
 	// Render the QBT file
-	m_pQBTFile->Render(m_pGameCamera);
+	m_pQBTFile->Render(m_pGameCamera, lightPos);
 
 	// Render nanovg
 	RenderNanoVG();
