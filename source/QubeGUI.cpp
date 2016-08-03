@@ -17,12 +17,12 @@ enum test_enum {
 	Item3
 };
 
-bool wireframe = false;
+bool wireframe = true;
 bool lighting = true;
 bool shadows = true;
 bool innerVoxels = false;
 bool innerFaces = false;
-bool mergeFaces = false;
+bool mergeFaces = true;
 
 void QubeGame::CreateGUI()
 {
@@ -31,6 +31,7 @@ void QubeGame::CreateGUI()
 	m_pControlswindow->setPosition(Vector2i(10, 150));
 	//m_pNanoGUIScreen->setLayout(new GroupLayout());
 
+	// Information
 	Label *l = new Label(m_pControlswindow, "Information", "arial");
 	l->setPosition(Vector2i(10, 33));
 	m_matricesInformationLabel = new Label(m_pControlswindow, "[MATRICES]", "arial");
@@ -43,18 +44,23 @@ void QubeGame::CreateGUI()
 	m_trianglesInformationLabel->setFontSize(13);
 	m_trianglesInformationLabel->setPosition(Vector2i(20, 76));
 
+	// Rendering
 	l = new Label(m_pControlswindow, "Rendering", "arial");
 	l->setPosition(Vector2i(10, 108));
 	CheckBox *cb = new CheckBox(m_pControlswindow, "Wireframe", [](bool state) { wireframe = state; });
+	cb->setChecked(wireframe);
 	cb->setTooltip("Wireframe rendering.");
 	cb->setPosition(Vector2i(20, 125));
 	cb = new CheckBox(m_pControlswindow, "Lighting", [](bool state) { lighting = state; });
+	cb->setChecked(lighting);
 	cb->setTooltip("Lighting rendering.");
 	cb->setPosition(Vector2i(20, 147));
 	cb = new CheckBox(m_pControlswindow, "Shadow", [](bool state) { shadows = state; });
+	cb->setChecked(shadows);
 	cb->setTooltip("Shadows rendering.");
 	cb->setPosition(Vector2i(20, 169));
 	cb = new CheckBox(m_pControlswindow, "Inner Voxels");
+	cb->setChecked(innerVoxels);
 	cb->setCallback([&](bool state) {
 		innerVoxels = state;
 		m_pQBTFile->SetCreateInnerVoxels(innerVoxels);
@@ -64,6 +70,7 @@ void QubeGame::CreateGUI()
 	cb->setTooltip("Render the inner voxels.");
 	cb->setPosition(Vector2i(20, 191));
 	cb = new CheckBox(m_pControlswindow, "Inner Faces");
+	cb->setChecked(innerFaces);
 	cb->setCallback([&](bool state) {
 		innerFaces = state;
 		m_pQBTFile->SetCreateInnerFaces(innerFaces);
@@ -73,6 +80,7 @@ void QubeGame::CreateGUI()
 	cb->setTooltip("Render the inner faces.");
 	cb->setPosition(Vector2i(20, 213));
 	cb = new CheckBox(m_pControlswindow, "Face Merging");
+	cb->setChecked(mergeFaces);
 	cb->setCallback([&](bool state) {
 		mergeFaces = state;
 		m_pQBTFile->SetMergeFaces(mergeFaces);
