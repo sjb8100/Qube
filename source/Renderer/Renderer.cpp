@@ -170,7 +170,7 @@ void Renderer::DrawCube(vec3 pos, float length, float height, float width, Colou
 	float half_height = height*0.5f;
 	float half_width = width*0.5f;
 
-	DrawLine(pos+vec3(-half_length, -half_height, -half_width), pos+vec3(half_length, -half_height, -half_width), color, color);
+	DrawLine(pos + vec3(-half_length, -half_height, -half_width), pos+vec3(half_length, -half_height, -half_width), color, color);
 	DrawLine(pos + vec3(-half_length, half_height, -half_width), pos + vec3(half_length, half_height, -half_width), color, color);
 	DrawLine(pos + vec3(-half_length, -half_height, -half_width), pos + vec3(-half_length, half_height, -half_width), color, color);
 	DrawLine(pos + vec3(half_length, -half_height, -half_width), pos + vec3(half_length, half_height, -half_width), color, color);
