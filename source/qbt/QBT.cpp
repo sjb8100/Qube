@@ -312,6 +312,7 @@ void QBT::SetVisibilityInformation()
 		QBTMatrix* pMatrix = m_vpQBTMatrices[i];
 
 		pMatrix->m_numVisibleVoxels = 0;
+		pMatrix->m_numTriangles = 0;
 
 		for (unsigned int x = 0; x < pMatrix->m_sizeX; x++)
 		{
@@ -327,6 +328,42 @@ void QBT::SetVisibilityInformation()
 						if (mask != 1 || m_createInnerVoxels == true)
 						{
 							pMatrix->m_numVisibleVoxels += 1;
+
+							// Back
+							if (m_createInnerFaces == true || (mask & 32) == 32)
+							{
+								pMatrix->m_numTriangles += 2;
+							}
+
+							// Front
+							if (m_createInnerFaces == true || (mask & 64) == 64)
+							{
+								pMatrix->m_numTriangles += 2;
+							}
+
+							// Left
+							if (m_createInnerFaces == true || (mask & 4) == 4)
+							{
+								pMatrix->m_numTriangles += 2;
+							}
+
+							// Right
+							if (m_createInnerFaces == true || (mask & 2) == 2)
+							{
+								pMatrix->m_numTriangles += 2;
+							}
+
+							// Top
+							if (m_createInnerFaces == true || (mask & 8) == 8)
+							{
+								pMatrix->m_numTriangles += 2;
+							}
+
+							// Bottom
+							if (m_createInnerFaces == true || (mask & 16) == 16)
+							{
+								pMatrix->m_numTriangles += 2;
+							}
 						}
 					}
 				}
@@ -655,52 +692,70 @@ void QBT::CreateStaticRenderBuffers()
 					verticesBuffer[verticesCounter + 23].nz = 0.0f;
 
 					// Back
-					indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
-					indicesBuffer[indicesCounter + 1] = verticesCounter + 2;
-					indicesBuffer[indicesCounter + 2] = verticesCounter + 1;
-					indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
-					indicesBuffer[indicesCounter + 4] = verticesCounter + 2;
-					indicesBuffer[indicesCounter + 5] = verticesCounter + 3;
+					if (m_createInnerFaces == true || (mask & 32) == 32)
+					{
+						indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
+						indicesBuffer[indicesCounter + 1] = verticesCounter + 2;
+						indicesBuffer[indicesCounter + 2] = verticesCounter + 1;
+						indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
+						indicesBuffer[indicesCounter + 4] = verticesCounter + 2;
+						indicesBuffer[indicesCounter + 5] = verticesCounter + 3;
+					}
 
 					// Front
-					indicesBuffer[indicesCounter + 6] = verticesCounter + 4;
-					indicesBuffer[indicesCounter + 7] = verticesCounter + 5;
-					indicesBuffer[indicesCounter + 8] = verticesCounter + 6;
-					indicesBuffer[indicesCounter + 9] = verticesCounter + 5;
-					indicesBuffer[indicesCounter + 10] = verticesCounter + 7;
-					indicesBuffer[indicesCounter + 11] = verticesCounter + 6;
+					if (m_createInnerFaces == true || (mask & 64) == 64)
+					{
+						indicesBuffer[indicesCounter + 6] = verticesCounter + 4;
+						indicesBuffer[indicesCounter + 7] = verticesCounter + 5;
+						indicesBuffer[indicesCounter + 8] = verticesCounter + 6;
+						indicesBuffer[indicesCounter + 9] = verticesCounter + 5;
+						indicesBuffer[indicesCounter + 10] = verticesCounter + 7;
+						indicesBuffer[indicesCounter + 11] = verticesCounter + 6;
+					}
 
 					// Left
-					indicesBuffer[indicesCounter + 12] = verticesCounter + 9;
-					indicesBuffer[indicesCounter + 13] = verticesCounter + 10;
-					indicesBuffer[indicesCounter + 14] = verticesCounter + 8;
-					indicesBuffer[indicesCounter + 15] = verticesCounter + 9;
-					indicesBuffer[indicesCounter + 16] = verticesCounter + 11;
-					indicesBuffer[indicesCounter + 17] = verticesCounter + 10;
+					if (m_createInnerFaces == true || (mask & 4) == 4)
+					{
+						indicesBuffer[indicesCounter + 12] = verticesCounter + 9;
+						indicesBuffer[indicesCounter + 13] = verticesCounter + 10;
+						indicesBuffer[indicesCounter + 14] = verticesCounter + 8;
+						indicesBuffer[indicesCounter + 15] = verticesCounter + 9;
+						indicesBuffer[indicesCounter + 16] = verticesCounter + 11;
+						indicesBuffer[indicesCounter + 17] = verticesCounter + 10;
+					}
 
 					// Right
-					indicesBuffer[indicesCounter + 18] = verticesCounter + 12;
-					indicesBuffer[indicesCounter + 19] = verticesCounter + 14;
-					indicesBuffer[indicesCounter + 20] = verticesCounter + 13;
-					indicesBuffer[indicesCounter + 21] = verticesCounter + 13;
-					indicesBuffer[indicesCounter + 22] = verticesCounter + 14;
-					indicesBuffer[indicesCounter + 23] = verticesCounter + 15;
+					if (m_createInnerFaces == true || (mask & 2) == 2)
+					{
+						indicesBuffer[indicesCounter + 18] = verticesCounter + 12;
+						indicesBuffer[indicesCounter + 19] = verticesCounter + 14;
+						indicesBuffer[indicesCounter + 20] = verticesCounter + 13;
+						indicesBuffer[indicesCounter + 21] = verticesCounter + 13;
+						indicesBuffer[indicesCounter + 22] = verticesCounter + 14;
+						indicesBuffer[indicesCounter + 23] = verticesCounter + 15;
+					}
 
 					// Top
-					indicesBuffer[indicesCounter + 24] = verticesCounter + 16;
-					indicesBuffer[indicesCounter + 25] = verticesCounter + 17;
-					indicesBuffer[indicesCounter + 26] = verticesCounter + 18;
-					indicesBuffer[indicesCounter + 27] = verticesCounter + 17;
-					indicesBuffer[indicesCounter + 28] = verticesCounter + 19;
-					indicesBuffer[indicesCounter + 29] = verticesCounter + 18;
+					if (m_createInnerFaces == true || (mask & 8) == 8)
+					{
+						indicesBuffer[indicesCounter + 24] = verticesCounter + 16;
+						indicesBuffer[indicesCounter + 25] = verticesCounter + 17;
+						indicesBuffer[indicesCounter + 26] = verticesCounter + 18;
+						indicesBuffer[indicesCounter + 27] = verticesCounter + 17;
+						indicesBuffer[indicesCounter + 28] = verticesCounter + 19;
+						indicesBuffer[indicesCounter + 29] = verticesCounter + 18;
+					}
 
 					// Bottom
-					indicesBuffer[indicesCounter + 30] = verticesCounter + 20;
-					indicesBuffer[indicesCounter + 31] = verticesCounter + 22;
-					indicesBuffer[indicesCounter + 32] = verticesCounter + 21;
-					indicesBuffer[indicesCounter + 33] = verticesCounter + 21;
-					indicesBuffer[indicesCounter + 34] = verticesCounter + 22;
-					indicesBuffer[indicesCounter + 35] = verticesCounter + 23;
+					if (m_createInnerFaces == true || (mask & 16) == 16)
+					{
+						indicesBuffer[indicesCounter + 30] = verticesCounter + 20;
+						indicesBuffer[indicesCounter + 31] = verticesCounter + 22;
+						indicesBuffer[indicesCounter + 32] = verticesCounter + 21;
+						indicesBuffer[indicesCounter + 33] = verticesCounter + 21;
+						indicesBuffer[indicesCounter + 34] = verticesCounter + 22;
+						indicesBuffer[indicesCounter + 35] = verticesCounter + 23;
+					}
 
 					verticesCounter += 24;
 					indicesCounter += 36;
@@ -761,7 +816,7 @@ int QBT::GetNumTriangles()
 	int numTriangles = 0;
 	for (int i = 0; i < (int)m_vpQBTMatrices.size(); i++)
 	{
-		numTriangles += m_vpQBTMatrices[i]->m_numVisibleVoxels * 12;
+		numTriangles += m_vpQBTMatrices[i]->m_numTriangles;
 	}
 	return numTriangles;
 }
@@ -808,7 +863,7 @@ void QBT::Render(Camera* pCamera)
 	// Use shader
 	m_pPositionColorNormalShader->UseShader();
 
-	glm::vec3 lightPos(5.0f, 15.0f, 15.0f);
+	glm::vec3 lightPos(0.0f, 15.0f, 15.0f);
 	GLint lightColorLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "lightColor");
 	GLint lightPosLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "lightPos");
 	GLint viewPosLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "viewPos");

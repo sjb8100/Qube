@@ -52,6 +52,7 @@ public:
 	unsigned int *m_pColour;
 	unsigned int *m_pVisibilityMask;
 	unsigned int m_numVisibleVoxels;
+	unsigned int m_numTriangles;
 
 	// Rendering
 	GLuint m_VBO;
