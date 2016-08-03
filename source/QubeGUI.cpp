@@ -17,7 +17,7 @@ enum test_enum {
 	Item3
 };
 
-bool wireframe = true;
+bool wireframe = false;
 bool lighting = true;
 bool shadows = true;
 bool innerVoxels = false;
