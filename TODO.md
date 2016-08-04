@@ -23,3 +23,7 @@
 - [ ] Draw bounding boxes for matrices.
 - [ ] Ability to select individual matrice and show context information in the GUI.
 - [ ] Show the matrix name and the full filenames in the GUI.
+- [ ] Add gamma correction and GUI toggle.
+- [ ] Add Blinn-Phong lighting model and GUI toggle.
+- [ ] Add shadow rendering.
+- [ ] Add light and material GUI modifiers.
