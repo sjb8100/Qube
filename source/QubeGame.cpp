@@ -85,6 +85,16 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	/* Create viewports */
 	m_pDefaultViewport = m_pRenderer->CreateViewport(0, 0, m_windowWidth, m_windowHeight, 60.0f);
 
+	/* Create lights */
+	m_pDefaultLight = new Light();
+	m_pDefaultLight->m_position = vec3(30.0f, 30.0f, 30.0f);
+	m_pDefaultLight->m_ambient = Colour(0.2f, 0.2f, 0.2f);
+	m_pDefaultLight->m_diffuse = Colour(0.8f, 0.8f, 0.8f);
+	m_pDefaultLight->m_specular = Colour(0.8f, 0.8f, 0.8f);
+	m_pDefaultLight->m_constantAttenuation = 1.0f;
+	m_pDefaultLight->m_linearAttenuation = 0.0f;
+	m_pDefaultLight->m_quadraticAttenuation = 0.0f;
+
 	/* Create the nanogui */
 	m_pNanoGUIScreen = new Screen();
 	m_pNanoGUIScreen->initialize(m_pQubeWindow->GetGLFWwindow(), true);
@@ -166,6 +176,7 @@ void QubeGame::Destroy()
 
 		delete m_pGameCamera;
 		delete m_pDefaultViewport;
+		delete m_pDefaultLight;
 
 		delete m_pRenderer;
 

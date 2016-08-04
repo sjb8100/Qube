@@ -386,6 +386,8 @@
     <ClInclude Include="..\..\source\QubeWindow.h" />
     <ClInclude Include="..\..\source\Renderer\camera.h" />
     <ClInclude Include="..\..\source\Renderer\colour.h" />
+    <ClInclude Include="..\..\source\Renderer\light.h" />
+    <ClInclude Include="..\..\source\Renderer\material.h" />
     <ClInclude Include="..\..\source\Renderer\Renderer.h" />
     <ClInclude Include="..\..\source\Renderer\Shader.h" />
     <ClInclude Include="..\..\source\Renderer\viewport.h" />

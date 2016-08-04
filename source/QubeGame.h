@@ -20,6 +20,7 @@
 
 #include "Renderer/Renderer.h"
 #include "Renderer/camera.h"
+#include "Renderer/light.h"
 #include "qbt/QBT.h"
 #include "QubeWindow.h"
 #include "QubeSettings.h"
@@ -247,6 +248,9 @@ private:
 
 	// View ports
 	Viewport* m_pDefaultViewport;
+
+	// Lights
+	Light* m_pDefaultLight;
 
 	// Nanovg context
 	NVGcontext* m_pNanovg;

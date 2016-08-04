@@ -16,6 +16,8 @@
 #pragma once
 
 #include "../Renderer/Renderer.h"
+#include "../Renderer/light.h"
+#include "../Renderer/material.h"
 
 #include <vector>
 #include <string>
@@ -105,7 +107,7 @@ public:
 	void SetMergeFaces(bool mergeFaces);
 
 	// Render
-	void Render(Camera* pCamera, vec3 lightPos);
+	void Render(Camera* pCamera, Light* pLight);
 
 protected:
 	/* Protected methods */
@@ -147,6 +149,9 @@ private:
 	bool m_createInnerVoxels;
 	bool m_createInnerFaces;
 	bool m_mergeFaces;
+
+	// Material
+	Material* m_pMaterial;
 
 	// Shader
 	Shader* m_pPositionColorNormalShader;

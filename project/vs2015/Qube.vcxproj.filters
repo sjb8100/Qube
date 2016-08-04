@@ -770,6 +770,12 @@
     <ClInclude Include="..\..\source\zlib\zlib.h">
       <Filter>source\zlib</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\Renderer\light.h">
+      <Filter>source\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\Renderer\material.h">
+      <Filter>source\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\source\glm\detail\func_common.inl">
