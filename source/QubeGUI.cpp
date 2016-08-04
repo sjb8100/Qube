@@ -99,7 +99,7 @@ void QubeGame::CreateGUI()
 	l = new Label(m_pControlswindow, "File Operations", "arial");
 	l->setPosition(Vector2i(10, 267));
 	Button *b = new Button(m_pControlswindow, "Open");
-	b->setFontSize(16);
+	b->setFontSize(18);
 	b->setPosition(Vector2i(20, 288));
 	b->setCallback([&] {
 		string fileName = file_dialog({ { "qbt", "Qubicle Binary Tree" } }, false);
@@ -110,8 +110,8 @@ void QubeGame::CreateGUI()
 		}
 	});
 	b = new Button(m_pControlswindow, "Save");
-	b->setFontSize(16);
-	b->setPosition(Vector2i(80, 288));
+	b->setFontSize(18);
+	b->setPosition(Vector2i(85, 288));
 	b->setCallback([&] {
 		string fileName = file_dialog({ { "qbt", "Qubicle Binary Tree" }, }, true);
 	});
