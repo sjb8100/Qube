@@ -216,6 +216,24 @@ void QubeGame::CreateGUI()
 		}
 	});
 
+	Slider *slider = new Slider(m_pLightWindow);
+	slider->setValue(0.0625f);
+	slider->setFixedWidth(80);
+	slider->setPosition(Vector2i(20, 185));
+
+	TextBox *textBox = new TextBox(m_pLightWindow);
+	textBox->setFixedSize(Vector2i(60, 25));
+	textBox->setValue("64");
+	slider->setCallback([textBox, this](float value) {
+		textBox->setValue(std::to_string((int)(value * 1023) + 1));
+		m_pQBTFile->SetMaterialShininess((value * 1023.0f) + 1.0f);
+	});
+	slider->setFinalCallback([&](float value) {
+	});
+	textBox->setFixedSize(Vector2i(50, 25));
+	textBox->setFontSize(16);
+	textBox->setPosition(Vector2i(115, 180));
+
 	m_pControlsWindow->setVisible(true);
 	m_pLightWindow->setVisible(true);
 	m_pNanoGUIScreen->setVisible(true);
