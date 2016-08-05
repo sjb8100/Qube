@@ -56,6 +56,9 @@ public:
 	unsigned int m_numVisibleVoxels;
 	unsigned int m_numTriangles;
 
+	// Material
+	Material* m_pMaterial;
+
 	// Rendering
 	GLuint m_VBO;
 	GLuint m_VAO;
@@ -149,9 +152,6 @@ private:
 	bool m_createInnerVoxels;
 	bool m_createInnerFaces;
 	bool m_mergeFaces;
-
-	// Material
-	Material* m_pMaterial;
 
 	// Shader
 	Shader* m_pPositionColorNormalShader;

@@ -37,14 +37,6 @@ QBT::QBT(Renderer* pRenderer)
 	m_createInnerFaces = false;
 	m_mergeFaces = true;
 
-	// Material
-	m_pMaterial = new Material();
-	m_pMaterial->m_ambient = Colour(1.0f, 1.0f, 1.0f);
-	m_pMaterial->m_diffuse = Colour(1.0f, 1.0f, 1.0f);
-	m_pMaterial->m_specular = Colour(1.0f, 1.0f, 1.0f);
-	m_pMaterial->m_emission = Colour(0.0f, 0.0f, 0.0f);
-	m_pMaterial->m_shininess = 64.0f;
-
 	// Shader
 	m_pPositionColorNormalShader = new Shader("media/shaders/PositionColorNormal.vertex", "media/shaders/PositionColorNormal.fragment");
 }
@@ -52,8 +44,6 @@ QBT::QBT(Renderer* pRenderer)
 QBT::~QBT()
 {
 	Unload();
-
-	delete m_pMaterial;
 }
 
 // Unloading
@@ -65,6 +55,8 @@ void QBT::Unload()
 	{
 		delete[] m_vpQBTMatrices[i]->m_pColour;
 		delete[] m_vpQBTMatrices[i]->m_pVisibilityMask;
+
+		delete m_vpQBTMatrices[i]->m_pMaterial;
 
 		delete m_vpQBTMatrices[i];
 		m_vpQBTMatrices[i] = NULL;
@@ -292,6 +284,14 @@ bool QBT::LoadMatrix(FILE* pQBTfile)
 			}
 		}
 	}
+
+	// Material
+	pNewMatrix->m_pMaterial = new Material();
+	pNewMatrix->m_pMaterial->m_ambient = Colour(1.0f, 1.0f, 1.0f);
+	pNewMatrix->m_pMaterial->m_diffuse = Colour(1.0f, 1.0f, 1.0f);
+	pNewMatrix->m_pMaterial->m_specular = Colour(1.0f, 1.0f, 1.0f);
+	pNewMatrix->m_pMaterial->m_emission = Colour(0.0f, 0.0f, 0.0f);
+	pNewMatrix->m_pMaterial->m_shininess = 64.0f;
 
 	m_vpQBTMatrices.push_back(pNewMatrix);
 
@@ -893,12 +893,6 @@ void QBT::Render(Camera* pCamera, Light* pLight)
 	GLint viewPosLoc = glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "viewPos");
 	glUniform3f(viewPosLoc, pCamera->GetPosition().x, pCamera->GetPosition().y, pCamera->GetPosition().z);
 
-	// Set material properties
-	glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "material.ambient"), m_pMaterial->m_ambient.GetRed(), m_pMaterial->m_ambient.GetGreen(), m_pMaterial->m_ambient.GetBlue());
-	glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "material.diffuse"), m_pMaterial->m_diffuse.GetRed(), m_pMaterial->m_diffuse.GetGreen(), m_pMaterial->m_diffuse.GetBlue());
-	glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "material.specular"), m_pMaterial->m_specular.GetRed(), m_pMaterial->m_specular.GetGreen(), m_pMaterial->m_specular.GetBlue());
-	glUniform1f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "material.shininess"), m_pMaterial->m_shininess);
-
 	// Set light properties
 	glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "light.position"), pLight->m_position.x, pLight->m_position.y, pLight->m_position.z);
 	glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "light.ambient"), pLight->m_ambient.GetRed(), pLight->m_ambient.GetGreen(), pLight->m_ambient.GetBlue());
@@ -913,6 +907,12 @@ void QBT::Render(Camera* pCamera, Light* pLight)
 	for (unsigned int matrixIndex = 0; matrixIndex < m_vpQBTMatrices.size(); matrixIndex++)
 	{
 		QBTMatrix* pMatrix = m_vpQBTMatrices[matrixIndex];
+
+		// Set material properties
+		glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "material.ambient"), pMatrix->m_pMaterial->m_ambient.GetRed(), pMatrix->m_pMaterial->m_ambient.GetGreen(), pMatrix->m_pMaterial->m_ambient.GetBlue());
+		glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "material.diffuse"), pMatrix->m_pMaterial->m_diffuse.GetRed(), pMatrix->m_pMaterial->m_diffuse.GetGreen(), pMatrix->m_pMaterial->m_diffuse.GetBlue());
+		glUniform3f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "material.specular"), pMatrix->m_pMaterial->m_specular.GetRed(), pMatrix->m_pMaterial->m_specular.GetGreen(), pMatrix->m_pMaterial->m_specular.GetBlue());
+		glUniform1f(glGetUniformLocation(m_pPositionColorNormalShader->GetShader(), "material.shininess"), pMatrix->m_pMaterial->m_shininess);
 
 		// Create transformations
 		mat4 view;
