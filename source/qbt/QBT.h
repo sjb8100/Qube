@@ -99,6 +99,13 @@ public:
 	int GetNumVertices();
 	int GetNumTriangles();
 
+	// Modifiers
+	void SetMaterialAmbient(Colour ambient);
+	void SetMaterialDiffuse(Colour diffuse);
+	void SetMaterialSpecular(Colour specular);
+	void SetMaterialEmission(Colour emission);
+	void SetMaterialShininess(float shininess);
+
 	// Render modes
 	void SetWireframeMode(bool wireframe);
 	bool GetWireframeMode();

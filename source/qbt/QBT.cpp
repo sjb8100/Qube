@@ -847,6 +847,47 @@ int QBT::GetNumTriangles()
 	return numTriangles;
 }
 
+// Modifiers
+void QBT::SetMaterialAmbient(Colour ambient)
+{
+	for (int i = 0; i < (int)m_vpQBTMatrices.size(); i++)
+	{
+		m_vpQBTMatrices[i]->m_pMaterial->m_ambient = ambient;
+	}
+}
+
+void QBT::SetMaterialDiffuse(Colour diffuse)
+{
+	for (int i = 0; i < (int)m_vpQBTMatrices.size(); i++)
+	{
+		m_vpQBTMatrices[i]->m_pMaterial->m_diffuse = diffuse;
+	}
+}
+
+void QBT::SetMaterialSpecular(Colour specular)
+{
+	for (int i = 0; i < (int)m_vpQBTMatrices.size(); i++)
+	{
+		m_vpQBTMatrices[i]->m_pMaterial->m_specular = specular;
+	}
+}
+
+void QBT::SetMaterialEmission(Colour emission)
+{
+	for (int i = 0; i < (int)m_vpQBTMatrices.size(); i++)
+	{
+		m_vpQBTMatrices[i]->m_pMaterial->m_emission = emission;
+	}
+}
+
+void QBT::SetMaterialShininess(float shininess)
+{
+	for (int i = 0; i < (int)m_vpQBTMatrices.size(); i++)
+	{
+		m_vpQBTMatrices[i]->m_pMaterial->m_shininess = shininess;
+	}
+}
+
 // Render modes
 void QBT::SetWireframeMode(bool wireframe)
 {
