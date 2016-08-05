@@ -264,7 +264,8 @@ private:
 
 	// NanoGUI root screen
 	Screen *m_pNanoGUIScreen;
-	Window *m_pControlswindow;
+	Window *m_pControlsWindow;
+	Window *m_pLightWindow;
 	Label *m_matricesInformationLabel;
 	Label *m_verticesInformationLabel;
 	Label *m_trianglesInformationLabel;
