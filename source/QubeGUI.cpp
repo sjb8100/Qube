@@ -67,7 +67,6 @@ void QubeGame::CreateGUI()
 	cb->setCallback([&](bool state) {
 		innerVoxels = state;
 		m_pQBTFile->SetCreateInnerVoxels(innerVoxels);
-		m_pQBTFile->SetVisibilityInformation();
 		m_pQBTFile->RecreateStaticBuffers();
 	});
 	cb->setTooltip("Render the inner voxels.");
@@ -78,7 +77,6 @@ void QubeGame::CreateGUI()
 	cb->setCallback([&](bool state) {
 		innerFaces = state;
 		m_pQBTFile->SetCreateInnerFaces(innerFaces);
-		m_pQBTFile->SetVisibilityInformation();
 		m_pQBTFile->RecreateStaticBuffers();
 	});
 	cb->setTooltip("Render the inner faces.");
@@ -89,7 +87,6 @@ void QubeGame::CreateGUI()
 	cb->setCallback([&](bool state) {
 		mergeFaces = state;
 		m_pQBTFile->SetMergeFaces(mergeFaces);
-		m_pQBTFile->SetVisibilityInformation();
 		m_pQBTFile->RecreateStaticBuffers();
 	});
 	cb->setTooltip("Voxel face merging.");

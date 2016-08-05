@@ -54,7 +54,9 @@ public:
 	unsigned int *m_pColour;
 	unsigned int *m_pVisibilityMask;
 	unsigned int m_numVisibleVoxels;
+	unsigned int m_numVertices;
 	unsigned int m_numTriangles;
+	unsigned int m_numIndices;
 
 	// Material
 	Material* m_pMaterial;
@@ -63,8 +65,6 @@ public:
 	GLuint m_VBO;
 	GLuint m_VAO;
 	GLuint m_EBO;
-	int m_numVertices;
-	int m_numIndices;
 };
 
 typedef vector<QBTMatrix*> QBTMatrixList;

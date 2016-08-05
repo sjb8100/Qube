@@ -250,7 +250,6 @@ bool QBT::LoadMatrix(FILE* pQBTfile)
 
 	pNewMatrix->m_pColour = new unsigned int[pNewMatrix->m_sizeX * pNewMatrix->m_sizeY * pNewMatrix->m_sizeZ];
 	pNewMatrix->m_pVisibilityMask = new unsigned int[pNewMatrix->m_sizeX * pNewMatrix->m_sizeY * pNewMatrix->m_sizeZ];
-	pNewMatrix->m_numVisibleVoxels = 0;
 
 	unsigned int byteCounter = 0;
 	for (unsigned int x = 0; x < pNewMatrix->m_sizeX; x++)
@@ -380,12 +379,19 @@ void QBT::SetVisibilityInformation()
 				}
 			}
 		}
+
+		// Vertices
+		pMatrix->m_numVertices = (unsigned int)pMatrix->m_numVisibleVoxels * 24;
+
+		// Indices
+		pMatrix->m_numIndices = (unsigned int)pMatrix->m_numTriangles * 3;
 	}
 }
 
 void QBT::RecreateStaticBuffers()
 {
 	DestroyStaticBuffers();
+	SetVisibilityInformation();
 	CreateStaticRenderBuffers();
 }
 
@@ -396,11 +402,9 @@ void QBT::CreateStaticRenderBuffers()
 		QBTMatrix* pMatrix = m_vpQBTMatrices[matrixIndex];
 
 		// Vertices
-		pMatrix->m_numVertices = (unsigned int)pMatrix->m_numVisibleVoxels * 24;
 		PositionColorNormalVertex* verticesBuffer = new PositionColorNormalVertex[pMatrix->m_numVertices];
 
 		// Indices
-		pMatrix->m_numIndices = (unsigned int)pMatrix->m_numTriangles * 3;
 		GLuint* indicesBuffer = new GLuint[pMatrix->m_numIndices];
 
 		unsigned int verticesCounter = 0;
