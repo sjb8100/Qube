@@ -17,9 +17,9 @@
 - [x] Add toggle checkboxes on GUI for different rendering modes and voxel optimizations.
 - [x] Don't render invisible voxels.
 - [x] Don't render invisible faces, due to visibility mask.
-- [ ] Don't create vertices when there will be no connected triangles/faces.
+- [x] Don't create vertices when there will be no connected triangles/faces.
 - [ ] Add face merging or face optimizations.
-- [ ] Add voxel information to GUI window also (size, scale, position, etc).
+- [ ] Add voxel information to GUI window also (size, scale, pivot, position, etc).
 - [ ] Draw bounding boxes for matrices.
 - [ ] Ability to select individual matrice and show context information in the GUI.
 - [ ] Show the matrix name and the full filenames in the GUI.

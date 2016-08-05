@@ -53,7 +53,7 @@ public:
 
 	unsigned int *m_pColour;
 	unsigned int *m_pVisibilityMask;
-	unsigned int m_numVisibleVoxels;
+
 	unsigned int m_numVertices;
 	unsigned int m_numTriangles;
 	unsigned int m_numIndices;
