@@ -26,4 +26,4 @@
 - [ ] Add gamma correction and GUI toggle.
 - [ ] Add Blinn-Phong lighting model and GUI toggle.
 - [ ] Add shadow rendering.
-- [ ] Add light and material GUI modifiers.
+- [x] Add light and material GUI modifiers.
