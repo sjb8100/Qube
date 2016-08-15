@@ -7,9 +7,6 @@
   - [x] Internal list of lines passed per frame.
   - [x] Clear list each frame but draw via a shader and vertex buffer.
   - [x] Add functionality for debug bounding boxes, spheres, etc.
-- [ ] Add better logging and output for errors and information.
-- [ ] Better media support, maybe add SDL lib support?
-- [ ] Build nanogui on linux to fix linux build.
 - [x] GUI Lib?
 - [x] Better font support in renderer.
 - [x] C++ 11?
@@ -18,6 +15,10 @@
 - [x] Don't render invisible voxels.
 - [x] Don't render invisible faces, due to visibility mask.
 - [x] Don't create vertices when there will be no connected triangles/faces.
+- [x] Add light and material GUI modifiers.
+- [ ] Add better logging and output for errors and information.
+- [ ] Better media support, maybe add SDL lib support?
+- [ ] Build nanogui on linux to fix linux build.
 - [ ] Add face merging or face optimizations.
 - [ ] Add voxel information to GUI window also (size, scale, pivot, position, etc).
 - [ ] Draw bounding boxes for matrices.
@@ -26,4 +27,4 @@
 - [ ] Add gamma correction and GUI toggle.
 - [ ] Add Blinn-Phong lighting model and GUI toggle.
 - [ ] Add shadow rendering.
-- [x] Add light and material GUI modifiers.
+
