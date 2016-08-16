@@ -126,13 +126,13 @@ void QubeGame::CreateGUI()
 	m_pLightWindow->setSize(Vector2i(175, 350));
 	m_pLightWindow->setPosition(Vector2i(10, 500));
 
-	cb = new CheckBox(m_pLightWindow, "Movement", [](bool state) { lightMovement = state; });
+	cb = new CheckBox(m_pLightWindow, "Light Movement", [](bool state) { lightMovement = state; });
 	cb->setChecked(lightMovement);
 	cb->setTooltip("Light movement.");
 	cb->setFontSize(14);
 	cb->setPosition(Vector2i(20, 33));
 
-	cb = new CheckBox(m_pLightWindow, "Color Lock", [](bool state) { lightColorLock = state; });
+	cb = new CheckBox(m_pLightWindow, "Light Color Lock", [](bool state) { lightColorLock = state; });
 	cb->setChecked(lightColorLock);
 	cb->setTooltip("Lock the light colour for ambient, diffuse and specular to be the same.");
 	cb->setFontSize(14);
@@ -142,23 +142,25 @@ void QubeGame::CreateGUI()
 	l = new Label(m_pLightWindow, "Ambient:", "arial");
 	l->setPosition(Vector2i(20, 84));
 	l->setFontSize(14);
-	PopupButton *popupBtn = new PopupButton(m_pLightWindow, "", 0);
-	popupBtn->setBackgroundColor(Color(255, 255, 255, 255));
-	popupBtn->setFontSize(16);
-	popupBtn->setFixedSize(Vector2i(80, 20));
-	popupBtn->setPosition(Vector2i(80, 82));
-	Popup *popup = popupBtn->popup();
+	m_pAmbientButton = new PopupButton(m_pLightWindow, "", 0);
+	m_pAmbientButton->setBackgroundColor(Color(255, 255, 255, 255));
+	m_pAmbientButton->setFontSize(16);
+	m_pAmbientButton->setFixedSize(Vector2i(80, 20));
+	m_pAmbientButton->setPosition(Vector2i(80, 82));
+	Popup *popup = m_pAmbientButton->popup();
 	popup->setLayout(new GroupLayout());
 
 	ColorWheel *colorwheel = new ColorWheel(popup);
-	colorwheel->setColor(popupBtn->backgroundColor());
+	colorwheel->setColor(m_pAmbientButton->backgroundColor());
 
-	colorwheel->setCallback([this, popupBtn](const Color &value)
+	colorwheel->setCallback([this](const Color &value)
 	{
-		popupBtn->setBackgroundColor(value);
+		m_pAmbientButton->setBackgroundColor(value);
 		m_pDefaultLight->m_ambient = Colour(value.r(), value.g(), value.b());
 		if (lightColorLock)
 		{
+			m_pDiffuseButton->setBackgroundColor(value);
+			m_pSpecularButton->setBackgroundColor(value);
 			m_pDefaultLight->m_diffuse = Colour(value.r(), value.g(), value.b());
 			m_pDefaultLight->m_specular = Colour(value.r(), value.g(), value.b());
 		}
@@ -168,23 +170,25 @@ void QubeGame::CreateGUI()
 	l = new Label(m_pLightWindow, "Diffuse:", "arial");
 	l->setPosition(Vector2i(20, 108));
 	l->setFontSize(14);
-	popupBtn = new PopupButton(m_pLightWindow, "", 0);
-	popupBtn->setBackgroundColor(Color(255, 255, 255, 255));
-	popupBtn->setFontSize(16);
-	popupBtn->setFixedSize(Vector2i(80, 20));
-	popupBtn->setPosition(Vector2i(80, 106));
-	popup = popupBtn->popup();
+	m_pDiffuseButton = new PopupButton(m_pLightWindow, "", 0);
+	m_pDiffuseButton->setBackgroundColor(Color(255, 255, 255, 255));
+	m_pDiffuseButton->setFontSize(16);
+	m_pDiffuseButton->setFixedSize(Vector2i(80, 20));
+	m_pDiffuseButton->setPosition(Vector2i(80, 106));
+	popup = m_pDiffuseButton->popup();
 	popup->setLayout(new GroupLayout());
 
 	colorwheel = new ColorWheel(popup);
-	colorwheel->setColor(popupBtn->backgroundColor());
+	colorwheel->setColor(m_pDiffuseButton->backgroundColor());
 
-	colorwheel->setCallback([this, popupBtn](const Color &value)
+	colorwheel->setCallback([this](const Color &value)
 	{
-		popupBtn->setBackgroundColor(value);
+		m_pDiffuseButton->setBackgroundColor(value);
 		m_pDefaultLight->m_diffuse = Colour(value.r(), value.g(), value.b());
 		if (lightColorLock)
 		{
+			m_pAmbientButton->setBackgroundColor(value);
+			m_pSpecularButton->setBackgroundColor(value);
 			m_pDefaultLight->m_ambient = Colour(value.r(), value.g(), value.b());
 			m_pDefaultLight->m_specular = Colour(value.r(), value.g(), value.b());
 		}
@@ -194,23 +198,25 @@ void QubeGame::CreateGUI()
 	l = new Label(m_pLightWindow, "Specular:", "arial");
 	l->setPosition(Vector2i(20, 132));
 	l->setFontSize(14);
-	popupBtn = new PopupButton(m_pLightWindow, "", 0);
-	popupBtn->setBackgroundColor(Color(255, 255, 255, 255));
-	popupBtn->setFontSize(16);
-	popupBtn->setFixedSize(Vector2i(80, 20));
-	popupBtn->setPosition(Vector2i(80, 130));
-	popup = popupBtn->popup();
+	m_pSpecularButton = new PopupButton(m_pLightWindow, "", 0);
+	m_pSpecularButton->setBackgroundColor(Color(255, 255, 255, 255));
+	m_pSpecularButton->setFontSize(16);
+	m_pSpecularButton->setFixedSize(Vector2i(80, 20));
+	m_pSpecularButton->setPosition(Vector2i(80, 130));
+	popup = m_pSpecularButton->popup();
 	popup->setLayout(new GroupLayout());
 
 	colorwheel = new ColorWheel(popup);
-	colorwheel->setColor(popupBtn->backgroundColor());
+	colorwheel->setColor(m_pSpecularButton->backgroundColor());
 
-	colorwheel->setCallback([this, popupBtn](const Color &value)
+	colorwheel->setCallback([this](const Color &value)
 	{
-		popupBtn->setBackgroundColor(value);
+		m_pSpecularButton->setBackgroundColor(value);
 		m_pDefaultLight->m_specular = Colour(value.r(), value.g(), value.b());
 		if (lightColorLock)
 		{
+			m_pAmbientButton->setBackgroundColor(value);
+			m_pDiffuseButton->setBackgroundColor(value);
 			m_pDefaultLight->m_ambient = Colour(value.r(), value.g(), value.b());
 			m_pDefaultLight->m_diffuse = Colour(value.r(), value.g(), value.b());
 		}
