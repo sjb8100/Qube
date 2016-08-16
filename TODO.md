@@ -16,6 +16,7 @@
 - [x] Don't render invisible faces, due to visibility mask.
 - [x] Don't create vertices when there will be no connected triangles/faces.
 - [x] Add light and material GUI modifiers.
+- [x] Add light movement.
 - [ ] Add better logging and output for errors and information.
 - [ ] Better media support, maybe add SDL lib support?
 - [ ] Build nanogui on linux to fix linux build.
