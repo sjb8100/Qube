@@ -134,6 +134,7 @@ public:
 
 	// Updating
 	void Update();
+	void UpdateLights(float dt);
 	void UpdateNamePicking();
 	void UpdateGameGUI(float dt);
 
@@ -251,6 +252,8 @@ private:
 
 	// Lights
 	Light* m_pDefaultLight;
+	bool m_bLightMovement;
+	float m_lightTimer;
 
 	// Nanovg context
 	NVGcontext* m_pNanovg;

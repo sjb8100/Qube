@@ -269,6 +269,8 @@ void QubeGame::UpdateGUI()
 
 	string triangles = "Number of triangles: " + to_string(m_pQBTFile->GetNumTriangles());
 	m_pTrianglesInformationLabel->setCaption(triangles);
+
+	m_bLightMovement = lightMovement;
 }
 
 bool QubeGame::IsInteractingWithGUI()

@@ -94,6 +94,8 @@ void QubeGame::Create(QubeSettings* pQubeSettings)
 	m_pDefaultLight->m_constantAttenuation = 1.0f;
 	m_pDefaultLight->m_linearAttenuation = 0.0f;
 	m_pDefaultLight->m_quadraticAttenuation = 0.0f;
+	m_bLightMovement = false;
+	m_lightTimer = 0.0f;
 
 	/* Create the nanogui */
 	m_pNanoGUIScreen = new Screen();

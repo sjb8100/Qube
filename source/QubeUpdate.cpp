@@ -59,6 +59,9 @@ void QubeGame::Update()
 		}
 	}
 
+	// Update the lights
+	UpdateLights(m_deltaTime);
+
 	// Update the GUI
 	int x = m_pQubeWindow->GetCursorX();
 	int y = m_pQubeWindow->GetCursorY();
@@ -80,6 +83,23 @@ void QubeGame::Update()
 
 	// Update the application and window
 	m_pQubeWindow->Update(m_deltaTime);
+}
+
+void QubeGame::UpdateLights(float dt)
+{
+	if (m_bLightMovement)
+	{
+		m_lightTimer += dt;
+		float radius = 15.0f;
+		float movementSpeed = 5.0f;
+		float angle = DegToRad((m_lightTimer/ movementSpeed) * 360.0f);
+		vec3 lightPos = vec3(cos(angle) * radius, sin(angle * 1.25f) * radius, sin(angle) * radius);
+		
+		m_pDefaultLight->m_position = lightPos;
+	}
+	else
+	{
+	}
 }
 
 void QubeGame::UpdateNamePicking()
