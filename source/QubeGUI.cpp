@@ -36,15 +36,15 @@ void QubeGame::CreateGUI()
 	// Information
 	Label *l = new Label(m_pControlsWindow, "Information", "arial");
 	l->setPosition(Vector2i(10, 33));
-	m_matricesInformationLabel = new Label(m_pControlsWindow, "[MATRICES]", "arial");
-	m_matricesInformationLabel->setFontSize(13);
-	m_matricesInformationLabel->setPosition(Vector2i(20, 50));
-	m_verticesInformationLabel = new Label(m_pControlsWindow, "[VERTICEES]", "arial");
-	m_verticesInformationLabel->setFontSize(13);
-	m_verticesInformationLabel->setPosition(Vector2i(20, 63));
-	m_trianglesInformationLabel = new Label(m_pControlsWindow, "[TRIANGLES]", "arial");
-	m_trianglesInformationLabel->setFontSize(13);
-	m_trianglesInformationLabel->setPosition(Vector2i(20, 76));
+	m_pMatricesInformationLabel = new Label(m_pControlsWindow, "[MATRICES]", "arial");
+	m_pMatricesInformationLabel->setFontSize(13);
+	m_pMatricesInformationLabel->setPosition(Vector2i(20, 50));
+	m_pVerticesInformationLabel = new Label(m_pControlsWindow, "[VERTICEES]", "arial");
+	m_pVerticesInformationLabel->setFontSize(13);
+	m_pVerticesInformationLabel->setPosition(Vector2i(20, 63));
+	m_pTrianglesInformationLabel = new Label(m_pControlsWindow, "[TRIANGLES]", "arial");
+	m_pTrianglesInformationLabel->setFontSize(13);
+	m_pTrianglesInformationLabel->setPosition(Vector2i(20, 76));
 
 	// Rendering
 	l = new Label(m_pControlsWindow, "Rendering", "arial");
@@ -256,13 +256,13 @@ void QubeGame::UpdateGUI()
 	m_pControlsWindow->setTitle(m_pQBTFile->GetFilename());
 
 	string matrices = "Number of matrices: " + to_string(m_pQBTFile->GetNumMatrices());
-	m_matricesInformationLabel->setCaption(matrices);
+	m_pMatricesInformationLabel->setCaption(matrices);
 
 	string vertices = "Number of vertices: " + to_string(m_pQBTFile->GetNumVertices());
-	m_verticesInformationLabel->setCaption(vertices);
+	m_pVerticesInformationLabel->setCaption(vertices);
 
 	string triangles = "Number of triangles: " + to_string(m_pQBTFile->GetNumTriangles());
-	m_trianglesInformationLabel->setCaption(triangles);
+	m_pTrianglesInformationLabel->setCaption(triangles);
 }
 
 bool QubeGame::IsInteractingWithGUI()

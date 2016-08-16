@@ -266,9 +266,9 @@ private:
 	Screen *m_pNanoGUIScreen;
 	Window *m_pControlsWindow;
 	Window *m_pLightWindow;
-	Label *m_matricesInformationLabel;
-	Label *m_verticesInformationLabel;
-	Label *m_trianglesInformationLabel;
+	Label *m_pMatricesInformationLabel;
+	Label *m_pVerticesInformationLabel;
+	Label *m_pTrianglesInformationLabel;
 
 	// QBT File
 	QBT* m_pQBTFile;
