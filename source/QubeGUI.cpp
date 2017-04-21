@@ -22,7 +22,7 @@ bool lighting = true;
 bool shadows = true;
 bool innerVoxels = false;
 bool innerFaces = false;
-bool mergeFaces = true;
+bool mergeFaces = false;
 bool lightMovement = false;
 bool lightColorLock = true;
 
