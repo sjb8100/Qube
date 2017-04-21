@@ -35,7 +35,7 @@ QBT::QBT(Renderer* pRenderer)
 	// Creation optimizations
 	m_createInnerVoxels = false;
 	m_createInnerFaces = false;
-	m_mergeFaces = true;
+	m_mergeFaces = false;
 
 	// Shader
 	m_pPositionColorNormalShader = new Shader("media/shaders/PositionColorNormal.vertex", "media/shaders/PositionColorNormal.fragment");
@@ -325,59 +325,215 @@ void QBT::SetVisibilityInformation()
 		pMatrix->m_numTriangles = 0;
 		pMatrix->m_numIndices = 0;
 
-		for (unsigned int x = 0; x < pMatrix->m_sizeX; x++)
+		if (m_mergeFaces)
 		{
-			for (unsigned int z = 0; z < pMatrix->m_sizeZ; z++)
+			int cubeSize = pMatrix->m_sizeX * pMatrix->m_sizeY * pMatrix->m_sizeZ;
+			int *l_merged;
+			l_merged = new int[cubeSize];
+
+			for (int i = 0; i < cubeSize; i++)
+			{
+				l_merged[i] = MergedSide_None;
+			}
+
+			unsigned int verticesCounter = 0;
+			unsigned int indicesCounter = 0;
+			for (unsigned int x = 0; x < pMatrix->m_sizeX; x++)
 			{
 				for (unsigned int y = 0; y < pMatrix->m_sizeY; y++)
 				{
-					unsigned int mask = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
-
-					// If mask is 0, this is an invisible voxel, not active
-					if (mask != 0)
+					for (unsigned int z = 0; z < pMatrix->m_sizeZ; z++)
 					{
-						if (mask != 1 || m_createInnerVoxels == true)
+						unsigned int colour = pMatrix->m_pColour[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+						unsigned int mask = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+						unsigned int alpha = (colour & 0xFF000000) >> 24;
+						unsigned int blue = (colour & 0x00FF0000) >> 16;
+						unsigned int green = (colour & 0x0000FF00) >> 8;
+						unsigned int red = (colour & 0x000000FF);
+
+						float r = (float)(red / 255.0f);
+						float g = (float)(green / 255.0f);
+						float b = (float)(blue / 255.0f);
+
+						if (mask == 0)
 						{
-							// Back
-							if (m_createInnerFaces == true || (mask & 32) == 32)
+							continue;
+						}
+
+						if (mask == 1 && m_createInnerVoxels == false)
+						{
+							continue;
+						}
+
+						int merged = l_merged[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+
+						// Back
+						if (m_createInnerFaces == true || (mask & 32) == 32)
+						{
+							if ((merged & MergedSide_Z_Negative) == MergedSide_Z_Negative)
 							{
-								pMatrix->m_numVertices += 4;
-								pMatrix->m_numTriangles += 2;
+								continue;
 							}
 
-							// Front
-							if (m_createInnerFaces == true || (mask & 64) == 64)
+							bool stopMerging = false;
+							int increaseX = 0;
+							for (unsigned int x1 = x + 1; x1 < pMatrix->m_sizeX && stopMerging == false; x1++)
 							{
-								pMatrix->m_numVertices += 4;
-								pMatrix->m_numTriangles += 2;
+								unsigned int colour1 = pMatrix->m_pColour[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+								unsigned int mask1 = pMatrix->m_pVisibilityMask[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+								int merged1 = l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+
+								if ((merged1 & MergedSide_Z_Negative) == MergedSide_Z_Negative)
+								{
+									stopMerging = true;
+									continue;
+								}
+								if ((mask1 & 32) != 32)
+								{
+									stopMerging = true;
+									continue;
+								}
+								if (colour1 != colour)
+								{
+									stopMerging = true;
+									continue;
+								}
+
+								increaseX++;
+								l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)] |= MergedSide_Z_Negative;
 							}
 
-							// Left
-							if (m_createInnerFaces == true || (mask & 4) == 4)
+							stopMerging = false;
+							int increaseY = 0;
+							for (unsigned int y1 = y + 1; y1 < pMatrix->m_sizeY && stopMerging == false; y1++)
 							{
-								pMatrix->m_numVertices += 4;
-								pMatrix->m_numTriangles += 2;
+								unsigned int colour1 = pMatrix->m_pColour[x + pMatrix->m_sizeX * (y1 + pMatrix->m_sizeY * z)];
+								unsigned int mask1 = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y1 + pMatrix->m_sizeY * z)];
+								int merged1 = l_merged[x + pMatrix->m_sizeX * (y1 + pMatrix->m_sizeY * z)];
+
+								if ((merged1 & MergedSide_Z_Negative) == MergedSide_Z_Negative)
+								{
+									stopMerging = true;
+									continue;
+								}
+								if ((mask1 & 32) != 32)
+								{
+									stopMerging = true;
+									continue;
+								}
+								if (colour1 != colour)
+								{
+									stopMerging = true;
+									continue;
+								}
+
+								bool stopMergingX = false;
+								for (unsigned int xAdd = 0; xAdd <= increaseX && stopMergingX == false; xAdd++)
+								{
+									unsigned int x1 = x + xAdd;
+
+									unsigned int colour1 = pMatrix->m_pColour[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+									unsigned int mask1 = pMatrix->m_pVisibilityMask[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+									int merged1 = l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+
+									if ((merged1 & MergedSide_Z_Negative) == MergedSide_Z_Negative)
+									{
+										stopMergingX = true;
+										continue;
+									}
+									if ((mask1 & 32) != 32)
+									{
+										stopMergingX = true;
+										continue;
+									}
+									if (colour1 != colour)
+									{
+										stopMergingX = true;
+										continue;
+									}
+								}
+
+								if (stopMergingX == true)
+								{
+									stopMerging = true;
+									continue;
+								}
+
+								increaseY++;
+								l_merged[x + pMatrix->m_sizeX * (y1 + pMatrix->m_sizeY * z)] |= MergedSide_Z_Negative;
+
+								for (unsigned int xAdd = 0; xAdd < increaseX; xAdd++)
+								{
+									unsigned int x1 = x + xAdd;
+									l_merged[x1 + pMatrix->m_sizeX * (y1 + pMatrix->m_sizeY * z)] |= MergedSide_Z_Negative;
+								}
 							}
 
-							// Right
-							if (m_createInnerFaces == true || (mask & 2) == 2)
-							{
-								pMatrix->m_numVertices += 4;
-								pMatrix->m_numTriangles += 2;
-							}
+							pMatrix->m_numVertices += 4;
+							pMatrix->m_numTriangles += 2;
+						}
 
-							// Top
-							if (m_createInnerFaces == true || (mask & 8) == 8)
-							{
-								pMatrix->m_numVertices += 4;
-								pMatrix->m_numTriangles += 2;
-							}
+						// Front
+					}
+				}
+			}
+		}
+		else
+		{
+			for (unsigned int x = 0; x < pMatrix->m_sizeX; x++)
+			{
+				for (unsigned int z = 0; z < pMatrix->m_sizeZ; z++)
+				{
+					for (unsigned int y = 0; y < pMatrix->m_sizeY; y++)
+					{
+						unsigned int mask = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
 
-							// Bottom
-							if (m_createInnerFaces == true || (mask & 16) == 16)
+						// If mask is 0, this is an invisible voxel, not active
+						if (mask != 0)
+						{
+							if (mask != 1 || m_createInnerVoxels == true)
 							{
-								pMatrix->m_numVertices += 4;
-								pMatrix->m_numTriangles += 2;
+								// Back
+								if (m_createInnerFaces == true || (mask & 32) == 32)
+								{
+									pMatrix->m_numVertices += 4;
+									pMatrix->m_numTriangles += 2;
+								}
+
+								// Front
+								if (m_createInnerFaces == true || (mask & 64) == 64)
+								{
+									pMatrix->m_numVertices += 4;
+									pMatrix->m_numTriangles += 2;
+								}
+
+								// Left
+								if (m_createInnerFaces == true || (mask & 4) == 4)
+								{
+									pMatrix->m_numVertices += 4;
+									pMatrix->m_numTriangles += 2;
+								}
+
+								// Right
+								if (m_createInnerFaces == true || (mask & 2) == 2)
+								{
+									pMatrix->m_numVertices += 4;
+									pMatrix->m_numTriangles += 2;
+								}
+
+								// Top
+								if (m_createInnerFaces == true || (mask & 8) == 8)
+								{
+									pMatrix->m_numVertices += 4;
+									pMatrix->m_numTriangles += 2;
+								}
+
+								// Bottom
+								if (m_createInnerFaces == true || (mask & 16) == 16)
+								{
+									pMatrix->m_numVertices += 4;
+									pMatrix->m_numTriangles += 2;
+								}
 							}
 						}
 					}
@@ -409,381 +565,586 @@ void QBT::CreateStaticRenderBuffers()
 		// Indices
 		GLuint* indicesBuffer = new GLuint[pMatrix->m_numIndices];
 
-		unsigned int verticesCounter = 0;
-		unsigned int indicesCounter = 0;
-		for (unsigned int x = 0; x < pMatrix->m_sizeX; x++)
+		if(m_mergeFaces)
 		{
-			for (unsigned int y = 0; y < pMatrix->m_sizeY; y++)
+			int cubeSize = pMatrix->m_sizeX * pMatrix->m_sizeY * pMatrix->m_sizeZ;
+			int *l_merged;
+			l_merged = new int[cubeSize];
+
+			for (int i = 0; i < cubeSize; i++)
 			{
-				for (unsigned int z = 0; z < pMatrix->m_sizeZ; z++)
+				l_merged[i] = MergedSide_None;
+			}
+
+			unsigned int verticesCounter = 0;
+			unsigned int indicesCounter = 0;
+			for (unsigned int x = 0; x < pMatrix->m_sizeX; x++)
+			{
+				for (unsigned int y = 0; y < pMatrix->m_sizeY; y++)
 				{
-					unsigned int colour = pMatrix->m_pColour[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
-					unsigned int mask = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
-					unsigned int alpha = (colour & 0xFF000000) >> 24;
-					unsigned int blue = (colour & 0x00FF0000) >> 16;
-					unsigned int green = (colour & 0x0000FF00) >> 8;
-					unsigned int red = (colour & 0x000000FF);
-
-					if (mask == 0)
+					for (unsigned int z = 0; z < pMatrix->m_sizeZ; z++)
 					{
-						continue;
+						unsigned int colour = pMatrix->m_pColour[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+						unsigned int mask = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+						unsigned int alpha = (colour & 0xFF000000) >> 24;
+						unsigned int blue = (colour & 0x00FF0000) >> 16;
+						unsigned int green = (colour & 0x0000FF00) >> 8;
+						unsigned int red = (colour & 0x000000FF);
+
+						float r = (float)(red / 255.0f);
+						float g = (float)(green / 255.0f);
+						float b = (float)(blue / 255.0f);
+
+						if (mask == 0)
+						{
+							continue;
+						}
+
+						if (mask == 1 && m_createInnerVoxels == false)
+						{
+							continue;
+						}
+
+						int merged = l_merged[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+
+						// BACK
+						if (m_createInnerFaces == true || (mask & 32) == 32)
+						{
+							if ((merged & MergedSide_Z_Negative) == MergedSide_Z_Negative)
+							{
+								continue;
+							}
+
+							bool stopMerging = false;
+							int increaseX = 0;
+							for (unsigned int x1 = x + 1; x1 < pMatrix->m_sizeX && stopMerging == false; x1++)
+							{
+								unsigned int colour1 = pMatrix->m_pColour[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+								unsigned int mask1 = pMatrix->m_pVisibilityMask[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+								int merged1 = l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+
+								if ((merged1 & MergedSide_Z_Negative) == MergedSide_Z_Negative)
+								{
+									stopMerging = true;
+									continue;
+								}
+								if ((mask1 & 32) != 32)
+								{
+									stopMerging = true;
+									continue;
+								}
+								if (colour1 != colour)
+								{
+									stopMerging = true;
+									continue;
+								}
+
+								increaseX++;
+								l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)] |= MergedSide_Z_Negative;
+							}
+
+							stopMerging = false;
+							int increaseY = 0;
+							for (unsigned int y1 = y + 1; y1 < pMatrix->m_sizeY && stopMerging == false; y1++)
+							{
+								unsigned int colour1 = pMatrix->m_pColour[x + pMatrix->m_sizeX * (y1 + pMatrix->m_sizeY * z)];
+								unsigned int mask1 = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y1 + pMatrix->m_sizeY * z)];
+								int merged1 = l_merged[x + pMatrix->m_sizeX * (y1 + pMatrix->m_sizeY * z)];
+
+								if ((merged1 & MergedSide_Z_Negative) == MergedSide_Z_Negative)
+								{
+									stopMerging = true;
+									continue;
+								}
+								if ((mask1 & 32) != 32)
+								{
+									stopMerging = true;
+									continue;
+								}
+								if (colour1 != colour)
+								{
+									stopMerging = true;
+									continue;
+								}
+
+								bool stopMergingX = false;
+								for (unsigned int xAdd = 0; xAdd <= increaseX && stopMergingX == false; xAdd++)
+								{
+									unsigned int x1 = x + xAdd;
+
+									unsigned int colour1 = pMatrix->m_pColour[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+									unsigned int mask1 = pMatrix->m_pVisibilityMask[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+									int merged1 = l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+
+									if ((merged1 & MergedSide_Z_Negative) == MergedSide_Z_Negative)
+									{
+										stopMergingX = true;
+										continue;
+									}
+									if ((mask1 & 32) != 32)
+									{
+										stopMergingX = true;
+										continue;
+									}
+									if (colour1 != colour)
+									{
+										stopMergingX = true;
+										continue;
+									}
+								}
+
+								if(stopMergingX == true)
+								{
+									stopMerging = true;
+									continue;
+								}
+
+								increaseY++;
+								l_merged[x + pMatrix->m_sizeX * (y1 + pMatrix->m_sizeY * z)] |= MergedSide_Z_Negative;
+
+								for (unsigned int xAdd = 0; xAdd < increaseX; xAdd++)
+								{
+									unsigned int x1 = x + xAdd;
+									l_merged[x1 + pMatrix->m_sizeX * (y1 + pMatrix->m_sizeY * z)] |= MergedSide_Z_Negative;
+								}
+							}
+
+							verticesBuffer[verticesCounter + 0].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 0].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 0].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 0].r = r;
+							verticesBuffer[verticesCounter + 0].g = g;
+							verticesBuffer[verticesCounter + 0].b = b;
+							verticesBuffer[verticesCounter + 0].a = 1.0f;
+							verticesBuffer[verticesCounter + 0].nx = 0.0f;
+							verticesBuffer[verticesCounter + 0].ny = 0.0f;
+							verticesBuffer[verticesCounter + 0].nz = -1.0f;
+
+							verticesBuffer[verticesCounter + 1].x = x + 0.5f + (1.0f*increaseX);
+							verticesBuffer[verticesCounter + 1].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 1].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 1].r = r;
+							verticesBuffer[verticesCounter + 1].g = g;
+							verticesBuffer[verticesCounter + 1].b = b;
+							verticesBuffer[verticesCounter + 1].a = 1.0f;
+							verticesBuffer[verticesCounter + 1].nx = 0.0f;
+							verticesBuffer[verticesCounter + 1].ny = 0.0f;
+							verticesBuffer[verticesCounter + 1].nz = -1.0f;
+
+							verticesBuffer[verticesCounter + 2].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 2].y = y + 0.5f + (1.0f*increaseY);
+							verticesBuffer[verticesCounter + 2].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 2].r = r;
+							verticesBuffer[verticesCounter + 2].g = g;
+							verticesBuffer[verticesCounter + 2].b = b;
+							verticesBuffer[verticesCounter + 2].a = 1.0f;
+							verticesBuffer[verticesCounter + 2].nx = 0.0f;
+							verticesBuffer[verticesCounter + 2].ny = 0.0f;
+							verticesBuffer[verticesCounter + 2].nz = -1.0f;
+
+							verticesBuffer[verticesCounter + 3].x = x + 0.5f + (1.0f*increaseX);
+							verticesBuffer[verticesCounter + 3].y = y + 0.5f + (1.0f*increaseY);
+							verticesBuffer[verticesCounter + 3].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 3].r = r;
+							verticesBuffer[verticesCounter + 3].g = g;
+							verticesBuffer[verticesCounter + 3].b = b;
+							verticesBuffer[verticesCounter + 3].a = 1.0f;
+							verticesBuffer[verticesCounter + 3].nx = 0.0f;
+							verticesBuffer[verticesCounter + 3].ny = 0.0f;
+							verticesBuffer[verticesCounter + 3].nz = -1.0f;
+
+							indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
+							indicesBuffer[indicesCounter + 1] = verticesCounter + 2;
+							indicesBuffer[indicesCounter + 2] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 4] = verticesCounter + 2;
+							indicesBuffer[indicesCounter + 5] = verticesCounter + 3;
+
+							indicesCounter += 6;
+							verticesCounter += 4;
+						}
 					}
-
-					if (mask == 1 && m_createInnerVoxels == false)
+				}
+			}
+		}
+		else
+		{
+			unsigned int verticesCounter = 0;
+			unsigned int indicesCounter = 0;
+			for (unsigned int x = 0; x < pMatrix->m_sizeX; x++)
+			{
+				for (unsigned int y = 0; y < pMatrix->m_sizeY; y++)
+				{
+					for (unsigned int z = 0; z < pMatrix->m_sizeZ; z++)
 					{
-						continue;
-					}
+						unsigned int colour = pMatrix->m_pColour[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+						unsigned int mask = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+						unsigned int alpha = (colour & 0xFF000000) >> 24;
+						unsigned int blue = (colour & 0x00FF0000) >> 16;
+						unsigned int green = (colour & 0x0000FF00) >> 8;
+						unsigned int red = (colour & 0x000000FF);
 
-					float r = (float)(red / 255.0f);
-					float g = (float)(green / 255.0f);
-					float b = (float)(blue / 255.0f);
+						if (mask == 0)
+						{
+							continue;
+						}
 
-					// Back
-					if (m_createInnerFaces == true || (mask & 32) == 32)
-					{
-						verticesBuffer[verticesCounter + 0].x = x + -0.5f;
-						verticesBuffer[verticesCounter + 0].y = y + -0.5f;
-						verticesBuffer[verticesCounter + 0].z = z + -0.5f;
-						verticesBuffer[verticesCounter + 0].r = r;
-						verticesBuffer[verticesCounter + 0].g = g;
-						verticesBuffer[verticesCounter + 0].b = b;
-						verticesBuffer[verticesCounter + 0].a = 1.0f;
-						verticesBuffer[verticesCounter + 0].nx = 0.0f;
-						verticesBuffer[verticesCounter + 0].ny = 0.0f;
-						verticesBuffer[verticesCounter + 0].nz = -1.0f;
+						if (mask == 1 && m_createInnerVoxels == false)
+						{
+							continue;
+						}
 
-						verticesBuffer[verticesCounter + 1].x = x + 0.5f;
-						verticesBuffer[verticesCounter + 1].y = y + -0.5f;
-						verticesBuffer[verticesCounter + 1].z = z + -0.5f;
-						verticesBuffer[verticesCounter + 1].r = r;
-						verticesBuffer[verticesCounter + 1].g = g;
-						verticesBuffer[verticesCounter + 1].b = b;
-						verticesBuffer[verticesCounter + 1].a = 1.0f;
-						verticesBuffer[verticesCounter + 1].nx = 0.0f;
-						verticesBuffer[verticesCounter + 1].ny = 0.0f;
-						verticesBuffer[verticesCounter + 1].nz = -1.0f;
+						float r = (float)(red / 255.0f);
+						float g = (float)(green / 255.0f);
+						float b = (float)(blue / 255.0f);
 
-						verticesBuffer[verticesCounter + 2].x = x + -0.5f;
-						verticesBuffer[verticesCounter + 2].y = y + 0.5f;
-						verticesBuffer[verticesCounter + 2].z = z + -0.5f;
-						verticesBuffer[verticesCounter + 2].r = r;
-						verticesBuffer[verticesCounter + 2].g = g;
-						verticesBuffer[verticesCounter + 2].b = b;
-						verticesBuffer[verticesCounter + 2].a = 1.0f;
-						verticesBuffer[verticesCounter + 2].nx = 0.0f;
-						verticesBuffer[verticesCounter + 2].ny = 0.0f;
-						verticesBuffer[verticesCounter + 2].nz = -1.0f;
+						// Back
+						if (m_createInnerFaces == true || (mask & 32) == 32)
+						{
+							verticesBuffer[verticesCounter + 0].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 0].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 0].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 0].r = r;
+							verticesBuffer[verticesCounter + 0].g = g;
+							verticesBuffer[verticesCounter + 0].b = b;
+							verticesBuffer[verticesCounter + 0].a = 1.0f;
+							verticesBuffer[verticesCounter + 0].nx = 0.0f;
+							verticesBuffer[verticesCounter + 0].ny = 0.0f;
+							verticesBuffer[verticesCounter + 0].nz = -1.0f;
 
-						verticesBuffer[verticesCounter + 3].x = x + 0.5f;
-						verticesBuffer[verticesCounter + 3].y = y + 0.5f;
-						verticesBuffer[verticesCounter + 3].z = z + -0.5f;
-						verticesBuffer[verticesCounter + 3].r = r;
-						verticesBuffer[verticesCounter + 3].g = g;
-						verticesBuffer[verticesCounter + 3].b = b;
-						verticesBuffer[verticesCounter + 3].a = 1.0f;
-						verticesBuffer[verticesCounter + 3].nx = 0.0f;
-						verticesBuffer[verticesCounter + 3].ny = 0.0f;
-						verticesBuffer[verticesCounter + 3].nz = -1.0f;
+							verticesBuffer[verticesCounter + 1].x = x + 0.5f;
+							verticesBuffer[verticesCounter + 1].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 1].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 1].r = r;
+							verticesBuffer[verticesCounter + 1].g = g;
+							verticesBuffer[verticesCounter + 1].b = b;
+							verticesBuffer[verticesCounter + 1].a = 1.0f;
+							verticesBuffer[verticesCounter + 1].nx = 0.0f;
+							verticesBuffer[verticesCounter + 1].ny = 0.0f;
+							verticesBuffer[verticesCounter + 1].nz = -1.0f;
 
-						indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
-						indicesBuffer[indicesCounter + 1] = verticesCounter + 2;
-						indicesBuffer[indicesCounter + 2] = verticesCounter + 1;
-						indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
-						indicesBuffer[indicesCounter + 4] = verticesCounter + 2;
-						indicesBuffer[indicesCounter + 5] = verticesCounter + 3;
+							verticesBuffer[verticesCounter + 2].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 2].y = y + 0.5f;
+							verticesBuffer[verticesCounter + 2].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 2].r = r;
+							verticesBuffer[verticesCounter + 2].g = g;
+							verticesBuffer[verticesCounter + 2].b = b;
+							verticesBuffer[verticesCounter + 2].a = 1.0f;
+							verticesBuffer[verticesCounter + 2].nx = 0.0f;
+							verticesBuffer[verticesCounter + 2].ny = 0.0f;
+							verticesBuffer[verticesCounter + 2].nz = -1.0f;
 
-						indicesCounter += 6;
-						verticesCounter += 4;
-					}
+							verticesBuffer[verticesCounter + 3].x = x + 0.5f;
+							verticesBuffer[verticesCounter + 3].y = y + 0.5f;
+							verticesBuffer[verticesCounter + 3].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 3].r = r;
+							verticesBuffer[verticesCounter + 3].g = g;
+							verticesBuffer[verticesCounter + 3].b = b;
+							verticesBuffer[verticesCounter + 3].a = 1.0f;
+							verticesBuffer[verticesCounter + 3].nx = 0.0f;
+							verticesBuffer[verticesCounter + 3].ny = 0.0f;
+							verticesBuffer[verticesCounter + 3].nz = -1.0f;
 
-					// Front
-					if (m_createInnerFaces == true || (mask & 64) == 64)
-					{
-						verticesBuffer[verticesCounter + 0].x = x + -0.5f;
-						verticesBuffer[verticesCounter + 0].y = y + -0.5f;
-						verticesBuffer[verticesCounter + 0].z = z + 0.5f;
-						verticesBuffer[verticesCounter + 0].r = r;
-						verticesBuffer[verticesCounter + 0].g = g;
-						verticesBuffer[verticesCounter + 0].b = b;
-						verticesBuffer[verticesCounter + 0].a = 1.0f;
-						verticesBuffer[verticesCounter + 0].nx = 0.0f;
-						verticesBuffer[verticesCounter + 0].ny = 0.0f;
-						verticesBuffer[verticesCounter + 0].nz = 1.0f;
+							indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
+							indicesBuffer[indicesCounter + 1] = verticesCounter + 2;
+							indicesBuffer[indicesCounter + 2] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 4] = verticesCounter + 2;
+							indicesBuffer[indicesCounter + 5] = verticesCounter + 3;
 
-						verticesBuffer[verticesCounter + 1].x = x + 0.5f;
-						verticesBuffer[verticesCounter + 1].y = y + -0.5f;
-						verticesBuffer[verticesCounter + 1].z = z + 0.5f;
-						verticesBuffer[verticesCounter + 1].r = r;
-						verticesBuffer[verticesCounter + 1].g = g;
-						verticesBuffer[verticesCounter + 1].b = b;
-						verticesBuffer[verticesCounter + 1].a = 1.0f;
-						verticesBuffer[verticesCounter + 1].nx = 0.0f;
-						verticesBuffer[verticesCounter + 1].ny = 0.0f;
-						verticesBuffer[verticesCounter + 1].nz = 1.0f;
+							indicesCounter += 6;
+							verticesCounter += 4;
+						}
 
-						verticesBuffer[verticesCounter + 2].x = x + -0.5f;
-						verticesBuffer[verticesCounter + 2].y = y + 0.5f;
-						verticesBuffer[verticesCounter + 2].z = z + 0.5f;
-						verticesBuffer[verticesCounter + 2].r = r;
-						verticesBuffer[verticesCounter + 2].g = g;
-						verticesBuffer[verticesCounter + 2].b = b;
-						verticesBuffer[verticesCounter + 2].a = 1.0f;
-						verticesBuffer[verticesCounter + 2].nx = 0.0f;
-						verticesBuffer[verticesCounter + 2].ny = 0.0f;
-						verticesBuffer[verticesCounter + 2].nz = 1.0f;
+						// Front
+						if (m_createInnerFaces == true || (mask & 64) == 64)
+						{
+							verticesBuffer[verticesCounter + 0].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 0].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 0].z = z + 0.5f;
+							verticesBuffer[verticesCounter + 0].r = r;
+							verticesBuffer[verticesCounter + 0].g = g;
+							verticesBuffer[verticesCounter + 0].b = b;
+							verticesBuffer[verticesCounter + 0].a = 1.0f;
+							verticesBuffer[verticesCounter + 0].nx = 0.0f;
+							verticesBuffer[verticesCounter + 0].ny = 0.0f;
+							verticesBuffer[verticesCounter + 0].nz = 1.0f;
 
-						verticesBuffer[verticesCounter + 3].x = x + 0.5f;
-						verticesBuffer[verticesCounter + 3].y = y + 0.5f;
-						verticesBuffer[verticesCounter + 3].z = z + 0.5f;
-						verticesBuffer[verticesCounter + 3].r = r;
-						verticesBuffer[verticesCounter + 3].g = g;
-						verticesBuffer[verticesCounter + 3].b = b;
-						verticesBuffer[verticesCounter + 3].a = 1.0f;
-						verticesBuffer[verticesCounter + 3].nx = 0.0f;
-						verticesBuffer[verticesCounter + 3].ny = 0.0f;
-						verticesBuffer[verticesCounter + 3].nz = 1.0f;
+							verticesBuffer[verticesCounter + 1].x = x + 0.5f;
+							verticesBuffer[verticesCounter + 1].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 1].z = z + 0.5f;
+							verticesBuffer[verticesCounter + 1].r = r;
+							verticesBuffer[verticesCounter + 1].g = g;
+							verticesBuffer[verticesCounter + 1].b = b;
+							verticesBuffer[verticesCounter + 1].a = 1.0f;
+							verticesBuffer[verticesCounter + 1].nx = 0.0f;
+							verticesBuffer[verticesCounter + 1].ny = 0.0f;
+							verticesBuffer[verticesCounter + 1].nz = 1.0f;
 
-						indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
-						indicesBuffer[indicesCounter + 1] = verticesCounter + 1;
-						indicesBuffer[indicesCounter + 2] = verticesCounter + 2;
-						indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
-						indicesBuffer[indicesCounter + 4] = verticesCounter + 3;
-						indicesBuffer[indicesCounter + 5] = verticesCounter + 2;
+							verticesBuffer[verticesCounter + 2].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 2].y = y + 0.5f;
+							verticesBuffer[verticesCounter + 2].z = z + 0.5f;
+							verticesBuffer[verticesCounter + 2].r = r;
+							verticesBuffer[verticesCounter + 2].g = g;
+							verticesBuffer[verticesCounter + 2].b = b;
+							verticesBuffer[verticesCounter + 2].a = 1.0f;
+							verticesBuffer[verticesCounter + 2].nx = 0.0f;
+							verticesBuffer[verticesCounter + 2].ny = 0.0f;
+							verticesBuffer[verticesCounter + 2].nz = 1.0f;
 
-						indicesCounter += 6;
-						verticesCounter += 4;
-					}
+							verticesBuffer[verticesCounter + 3].x = x + 0.5f;
+							verticesBuffer[verticesCounter + 3].y = y + 0.5f;
+							verticesBuffer[verticesCounter + 3].z = z + 0.5f;
+							verticesBuffer[verticesCounter + 3].r = r;
+							verticesBuffer[verticesCounter + 3].g = g;
+							verticesBuffer[verticesCounter + 3].b = b;
+							verticesBuffer[verticesCounter + 3].a = 1.0f;
+							verticesBuffer[verticesCounter + 3].nx = 0.0f;
+							verticesBuffer[verticesCounter + 3].ny = 0.0f;
+							verticesBuffer[verticesCounter + 3].nz = 1.0f;
 
-					// Left
-					if (m_createInnerFaces == true || (mask & 4) == 4)
-					{
-						verticesBuffer[verticesCounter + 0].x = x + -0.5f;
-						verticesBuffer[verticesCounter + 0].y = y + -0.5f;
-						verticesBuffer[verticesCounter + 0].z = z + -0.5f;
-						verticesBuffer[verticesCounter + 0].r = r;
-						verticesBuffer[verticesCounter + 0].g = g;
-						verticesBuffer[verticesCounter + 0].b = b;
-						verticesBuffer[verticesCounter + 0].a = 1.0f;
-						verticesBuffer[verticesCounter + 0].nx = -1.0f;
-						verticesBuffer[verticesCounter + 0].ny = 0.0f;
-						verticesBuffer[verticesCounter + 0].nz = 0.0f;
+							indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
+							indicesBuffer[indicesCounter + 1] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 2] = verticesCounter + 2;
+							indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 4] = verticesCounter + 3;
+							indicesBuffer[indicesCounter + 5] = verticesCounter + 2;
 
-						verticesBuffer[verticesCounter + 1].x = x + -0.5f;
-						verticesBuffer[verticesCounter + 1].y = y + -0.5f;
-						verticesBuffer[verticesCounter + 1].z = z + 0.5f;
-						verticesBuffer[verticesCounter + 1].r = r;
-						verticesBuffer[verticesCounter + 1].g = g;
-						verticesBuffer[verticesCounter + 1].b = b;
-						verticesBuffer[verticesCounter + 1].a = 1.0f;
-						verticesBuffer[verticesCounter + 1].nx = -1.0f;
-						verticesBuffer[verticesCounter + 1].ny = 0.0f;
-						verticesBuffer[verticesCounter + 1].nz = 0.0f;
+							indicesCounter += 6;
+							verticesCounter += 4;
+						}
 
-						verticesBuffer[verticesCounter + 2].x = x + -0.5f;
-						verticesBuffer[verticesCounter + 2].y = y + 0.5f;
-						verticesBuffer[verticesCounter + 2].z = z + -0.5f;
-						verticesBuffer[verticesCounter + 2].r = r;
-						verticesBuffer[verticesCounter + 2].g = g;
-						verticesBuffer[verticesCounter + 2].b = b;
-						verticesBuffer[verticesCounter + 2].a = 1.0f;
-						verticesBuffer[verticesCounter + 2].nx = -1.0f;
-						verticesBuffer[verticesCounter + 2].ny = 0.0f;
-						verticesBuffer[verticesCounter + 2].nz = 0.0f;
+						// Left
+						if (m_createInnerFaces == true || (mask & 4) == 4)
+						{
+							verticesBuffer[verticesCounter + 0].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 0].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 0].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 0].r = r;
+							verticesBuffer[verticesCounter + 0].g = g;
+							verticesBuffer[verticesCounter + 0].b = b;
+							verticesBuffer[verticesCounter + 0].a = 1.0f;
+							verticesBuffer[verticesCounter + 0].nx = -1.0f;
+							verticesBuffer[verticesCounter + 0].ny = 0.0f;
+							verticesBuffer[verticesCounter + 0].nz = 0.0f;
 
-						verticesBuffer[verticesCounter + 3].x = x + -0.5f;
-						verticesBuffer[verticesCounter + 3].y = y + 0.5f;
-						verticesBuffer[verticesCounter + 3].z = z + 0.5f;
-						verticesBuffer[verticesCounter + 3].r = r;
-						verticesBuffer[verticesCounter + 3].g = g;
-						verticesBuffer[verticesCounter + 3].b = b;
-						verticesBuffer[verticesCounter + 3].a = 1.0f;
-						verticesBuffer[verticesCounter + 3].nx = -1.0f;
-						verticesBuffer[verticesCounter + 3].ny = 0.0f;
-						verticesBuffer[verticesCounter + 3].nz = 0.0f;
+							verticesBuffer[verticesCounter + 1].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 1].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 1].z = z + 0.5f;
+							verticesBuffer[verticesCounter + 1].r = r;
+							verticesBuffer[verticesCounter + 1].g = g;
+							verticesBuffer[verticesCounter + 1].b = b;
+							verticesBuffer[verticesCounter + 1].a = 1.0f;
+							verticesBuffer[verticesCounter + 1].nx = -1.0f;
+							verticesBuffer[verticesCounter + 1].ny = 0.0f;
+							verticesBuffer[verticesCounter + 1].nz = 0.0f;
 
-						indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
-						indicesBuffer[indicesCounter + 1] = verticesCounter + 1;
-						indicesBuffer[indicesCounter + 2] = verticesCounter + 2;
-						indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
-						indicesBuffer[indicesCounter + 4] = verticesCounter + 3;
-						indicesBuffer[indicesCounter + 5] = verticesCounter + 2;
+							verticesBuffer[verticesCounter + 2].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 2].y = y + 0.5f;
+							verticesBuffer[verticesCounter + 2].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 2].r = r;
+							verticesBuffer[verticesCounter + 2].g = g;
+							verticesBuffer[verticesCounter + 2].b = b;
+							verticesBuffer[verticesCounter + 2].a = 1.0f;
+							verticesBuffer[verticesCounter + 2].nx = -1.0f;
+							verticesBuffer[verticesCounter + 2].ny = 0.0f;
+							verticesBuffer[verticesCounter + 2].nz = 0.0f;
 
-						indicesCounter += 6;
-						verticesCounter += 4;
-					}
+							verticesBuffer[verticesCounter + 3].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 3].y = y + 0.5f;
+							verticesBuffer[verticesCounter + 3].z = z + 0.5f;
+							verticesBuffer[verticesCounter + 3].r = r;
+							verticesBuffer[verticesCounter + 3].g = g;
+							verticesBuffer[verticesCounter + 3].b = b;
+							verticesBuffer[verticesCounter + 3].a = 1.0f;
+							verticesBuffer[verticesCounter + 3].nx = -1.0f;
+							verticesBuffer[verticesCounter + 3].ny = 0.0f;
+							verticesBuffer[verticesCounter + 3].nz = 0.0f;
 
-					// Right
-					if (m_createInnerFaces == true || (mask & 2) == 2)
-					{
-						verticesBuffer[verticesCounter + 0].x = x + 0.5f;
-						verticesBuffer[verticesCounter + 0].y = y + -0.5f;
-						verticesBuffer[verticesCounter + 0].z = z + -0.5f;
-						verticesBuffer[verticesCounter + 0].r = r;
-						verticesBuffer[verticesCounter + 0].g = g;
-						verticesBuffer[verticesCounter + 0].b = b;
-						verticesBuffer[verticesCounter + 0].a = 1.0f;
-						verticesBuffer[verticesCounter + 0].nx = 1.0f;
-						verticesBuffer[verticesCounter + 0].ny = 0.0f;
-						verticesBuffer[verticesCounter + 0].nz = 0.0f;
+							indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
+							indicesBuffer[indicesCounter + 1] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 2] = verticesCounter + 2;
+							indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 4] = verticesCounter + 3;
+							indicesBuffer[indicesCounter + 5] = verticesCounter + 2;
 
-						verticesBuffer[verticesCounter + 1].x = x + 0.5f;
-						verticesBuffer[verticesCounter + 1].y = y + -0.5f;
-						verticesBuffer[verticesCounter + 1].z = z + 0.5f;
-						verticesBuffer[verticesCounter + 1].r = r;
-						verticesBuffer[verticesCounter + 1].g = g;
-						verticesBuffer[verticesCounter + 1].b = b;
-						verticesBuffer[verticesCounter + 1].a = 1.0f;
-						verticesBuffer[verticesCounter + 1].nx = 1.0f;
-						verticesBuffer[verticesCounter + 1].ny = 0.0f;
-						verticesBuffer[verticesCounter + 1].nz = 0.0f;
+							indicesCounter += 6;
+							verticesCounter += 4;
+						}
 
-						verticesBuffer[verticesCounter + 2].x = x + 0.5f;
-						verticesBuffer[verticesCounter + 2].y = y + 0.5f;
-						verticesBuffer[verticesCounter + 2].z = z + -0.5f;
-						verticesBuffer[verticesCounter + 2].r = r;
-						verticesBuffer[verticesCounter + 2].g = g;
-						verticesBuffer[verticesCounter + 2].b = b;
-						verticesBuffer[verticesCounter + 2].a = 1.0f;
-						verticesBuffer[verticesCounter + 2].nx = 1.0f;
-						verticesBuffer[verticesCounter + 2].ny = 0.0f;
-						verticesBuffer[verticesCounter + 2].nz = 0.0f;
+						// Right
+						if (m_createInnerFaces == true || (mask & 2) == 2)
+						{
+							verticesBuffer[verticesCounter + 0].x = x + 0.5f;
+							verticesBuffer[verticesCounter + 0].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 0].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 0].r = r;
+							verticesBuffer[verticesCounter + 0].g = g;
+							verticesBuffer[verticesCounter + 0].b = b;
+							verticesBuffer[verticesCounter + 0].a = 1.0f;
+							verticesBuffer[verticesCounter + 0].nx = 1.0f;
+							verticesBuffer[verticesCounter + 0].ny = 0.0f;
+							verticesBuffer[verticesCounter + 0].nz = 0.0f;
 
-						verticesBuffer[verticesCounter + 3].x = x + 0.5f;
-						verticesBuffer[verticesCounter + 3].y = y + 0.5f;
-						verticesBuffer[verticesCounter + 3].z = z + 0.5f;
-						verticesBuffer[verticesCounter + 3].r = r;
-						verticesBuffer[verticesCounter + 3].g = g;
-						verticesBuffer[verticesCounter + 3].b = b;
-						verticesBuffer[verticesCounter + 3].a = 1.0f;
-						verticesBuffer[verticesCounter + 3].nx = 1.0f;
-						verticesBuffer[verticesCounter + 3].ny = 0.0f;
-						verticesBuffer[verticesCounter + 3].nz = 0.0f;
+							verticesBuffer[verticesCounter + 1].x = x + 0.5f;
+							verticesBuffer[verticesCounter + 1].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 1].z = z + 0.5f;
+							verticesBuffer[verticesCounter + 1].r = r;
+							verticesBuffer[verticesCounter + 1].g = g;
+							verticesBuffer[verticesCounter + 1].b = b;
+							verticesBuffer[verticesCounter + 1].a = 1.0f;
+							verticesBuffer[verticesCounter + 1].nx = 1.0f;
+							verticesBuffer[verticesCounter + 1].ny = 0.0f;
+							verticesBuffer[verticesCounter + 1].nz = 0.0f;
 
-						indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
-						indicesBuffer[indicesCounter + 1] = verticesCounter + 2;
-						indicesBuffer[indicesCounter + 2] = verticesCounter + 1;
-						indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
-						indicesBuffer[indicesCounter + 4] = verticesCounter + 2;
-						indicesBuffer[indicesCounter + 5] = verticesCounter + 3;
+							verticesBuffer[verticesCounter + 2].x = x + 0.5f;
+							verticesBuffer[verticesCounter + 2].y = y + 0.5f;
+							verticesBuffer[verticesCounter + 2].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 2].r = r;
+							verticesBuffer[verticesCounter + 2].g = g;
+							verticesBuffer[verticesCounter + 2].b = b;
+							verticesBuffer[verticesCounter + 2].a = 1.0f;
+							verticesBuffer[verticesCounter + 2].nx = 1.0f;
+							verticesBuffer[verticesCounter + 2].ny = 0.0f;
+							verticesBuffer[verticesCounter + 2].nz = 0.0f;
 
-						indicesCounter += 6;
-						verticesCounter += 4;
-					}
+							verticesBuffer[verticesCounter + 3].x = x + 0.5f;
+							verticesBuffer[verticesCounter + 3].y = y + 0.5f;
+							verticesBuffer[verticesCounter + 3].z = z + 0.5f;
+							verticesBuffer[verticesCounter + 3].r = r;
+							verticesBuffer[verticesCounter + 3].g = g;
+							verticesBuffer[verticesCounter + 3].b = b;
+							verticesBuffer[verticesCounter + 3].a = 1.0f;
+							verticesBuffer[verticesCounter + 3].nx = 1.0f;
+							verticesBuffer[verticesCounter + 3].ny = 0.0f;
+							verticesBuffer[verticesCounter + 3].nz = 0.0f;
 
-					// Top
-					if (m_createInnerFaces == true || (mask & 8) == 8)
-					{
-						verticesBuffer[verticesCounter + 0].x = x + -0.5f;
-						verticesBuffer[verticesCounter + 0].y = y + 0.5f;
-						verticesBuffer[verticesCounter + 0].z = z + 0.5f;
-						verticesBuffer[verticesCounter + 0].r = r;
-						verticesBuffer[verticesCounter + 0].g = g;
-						verticesBuffer[verticesCounter + 0].b = b;
-						verticesBuffer[verticesCounter + 0].a = 1.0f;
-						verticesBuffer[verticesCounter + 0].nx = 0.0f;
-						verticesBuffer[verticesCounter + 0].ny = 1.0f;
-						verticesBuffer[verticesCounter + 0].nz = 0.0f;
+							indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
+							indicesBuffer[indicesCounter + 1] = verticesCounter + 2;
+							indicesBuffer[indicesCounter + 2] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 4] = verticesCounter + 2;
+							indicesBuffer[indicesCounter + 5] = verticesCounter + 3;
 
-						verticesBuffer[verticesCounter + 1].x = x + 0.5f;
-						verticesBuffer[verticesCounter + 1].y = y + 0.5f;
-						verticesBuffer[verticesCounter + 1].z = z + 0.5f;
-						verticesBuffer[verticesCounter + 1].r = r;
-						verticesBuffer[verticesCounter + 1].g = g;
-						verticesBuffer[verticesCounter + 1].b = b;
-						verticesBuffer[verticesCounter + 1].a = 1.0f;
-						verticesBuffer[verticesCounter + 1].nx = 0.0f;
-						verticesBuffer[verticesCounter + 1].ny = 1.0f;
-						verticesBuffer[verticesCounter + 1].nz = 0.0f;
+							indicesCounter += 6;
+							verticesCounter += 4;
+						}
 
-						verticesBuffer[verticesCounter + 2].x = x + -0.5f;
-						verticesBuffer[verticesCounter + 2].y = y + 0.5f;
-						verticesBuffer[verticesCounter + 2].z = z + -0.5f;
-						verticesBuffer[verticesCounter + 2].r = r;
-						verticesBuffer[verticesCounter + 2].g = g;
-						verticesBuffer[verticesCounter + 2].b = b;
-						verticesBuffer[verticesCounter + 2].a = 1.0f;
-						verticesBuffer[verticesCounter + 2].nx = 0.0f;
-						verticesBuffer[verticesCounter + 2].ny = 1.0f;
-						verticesBuffer[verticesCounter + 2].nz = 0.0f;
+						// Top
+						if (m_createInnerFaces == true || (mask & 8) == 8)
+						{
+							verticesBuffer[verticesCounter + 0].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 0].y = y + 0.5f;
+							verticesBuffer[verticesCounter + 0].z = z + 0.5f;
+							verticesBuffer[verticesCounter + 0].r = r;
+							verticesBuffer[verticesCounter + 0].g = g;
+							verticesBuffer[verticesCounter + 0].b = b;
+							verticesBuffer[verticesCounter + 0].a = 1.0f;
+							verticesBuffer[verticesCounter + 0].nx = 0.0f;
+							verticesBuffer[verticesCounter + 0].ny = 1.0f;
+							verticesBuffer[verticesCounter + 0].nz = 0.0f;
 
-						verticesBuffer[verticesCounter + 3].x = x + 0.5f;
-						verticesBuffer[verticesCounter + 3].y = y + 0.5f;
-						verticesBuffer[verticesCounter + 3].z = z + -0.5f;
-						verticesBuffer[verticesCounter + 3].r = r;
-						verticesBuffer[verticesCounter + 3].g = g;
-						verticesBuffer[verticesCounter + 3].b = b;
-						verticesBuffer[verticesCounter + 3].a = 1.0f;
-						verticesBuffer[verticesCounter + 3].nx = 0.0f;
-						verticesBuffer[verticesCounter + 3].ny = 1.0f;
-						verticesBuffer[verticesCounter + 3].nz = 0.0f;
+							verticesBuffer[verticesCounter + 1].x = x + 0.5f;
+							verticesBuffer[verticesCounter + 1].y = y + 0.5f;
+							verticesBuffer[verticesCounter + 1].z = z + 0.5f;
+							verticesBuffer[verticesCounter + 1].r = r;
+							verticesBuffer[verticesCounter + 1].g = g;
+							verticesBuffer[verticesCounter + 1].b = b;
+							verticesBuffer[verticesCounter + 1].a = 1.0f;
+							verticesBuffer[verticesCounter + 1].nx = 0.0f;
+							verticesBuffer[verticesCounter + 1].ny = 1.0f;
+							verticesBuffer[verticesCounter + 1].nz = 0.0f;
 
-						indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
-						indicesBuffer[indicesCounter + 1] = verticesCounter + 1;
-						indicesBuffer[indicesCounter + 2] = verticesCounter + 2;
-						indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
-						indicesBuffer[indicesCounter + 4] = verticesCounter + 3;
-						indicesBuffer[indicesCounter + 5] = verticesCounter + 2;
+							verticesBuffer[verticesCounter + 2].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 2].y = y + 0.5f;
+							verticesBuffer[verticesCounter + 2].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 2].r = r;
+							verticesBuffer[verticesCounter + 2].g = g;
+							verticesBuffer[verticesCounter + 2].b = b;
+							verticesBuffer[verticesCounter + 2].a = 1.0f;
+							verticesBuffer[verticesCounter + 2].nx = 0.0f;
+							verticesBuffer[verticesCounter + 2].ny = 1.0f;
+							verticesBuffer[verticesCounter + 2].nz = 0.0f;
 
-						indicesCounter += 6;
-						verticesCounter += 4;
-					}
+							verticesBuffer[verticesCounter + 3].x = x + 0.5f;
+							verticesBuffer[verticesCounter + 3].y = y + 0.5f;
+							verticesBuffer[verticesCounter + 3].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 3].r = r;
+							verticesBuffer[verticesCounter + 3].g = g;
+							verticesBuffer[verticesCounter + 3].b = b;
+							verticesBuffer[verticesCounter + 3].a = 1.0f;
+							verticesBuffer[verticesCounter + 3].nx = 0.0f;
+							verticesBuffer[verticesCounter + 3].ny = 1.0f;
+							verticesBuffer[verticesCounter + 3].nz = 0.0f;
 
-					// Bottom
-					if (m_createInnerFaces == true || (mask & 16) == 16)
-					{
-						verticesBuffer[verticesCounter + 0].x = x + -0.5f;
-						verticesBuffer[verticesCounter + 0].y = y + -0.5f;
-						verticesBuffer[verticesCounter + 0].z = z + 0.5f;
-						verticesBuffer[verticesCounter + 0].r = r;
-						verticesBuffer[verticesCounter + 0].g = g;
-						verticesBuffer[verticesCounter + 0].b = b;
-						verticesBuffer[verticesCounter + 0].a = 1.0f;
-						verticesBuffer[verticesCounter + 0].nx = 0.0f;
-						verticesBuffer[verticesCounter + 0].ny = -1.0f;
-						verticesBuffer[verticesCounter + 0].nz = 0.0f;
+							indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
+							indicesBuffer[indicesCounter + 1] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 2] = verticesCounter + 2;
+							indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 4] = verticesCounter + 3;
+							indicesBuffer[indicesCounter + 5] = verticesCounter + 2;
 
-						verticesBuffer[verticesCounter + 1].x = x + 0.5f;
-						verticesBuffer[verticesCounter + 1].y = y + -0.5f;
-						verticesBuffer[verticesCounter + 1].z = z + 0.5f;
-						verticesBuffer[verticesCounter + 1].r = r;
-						verticesBuffer[verticesCounter + 1].g = g;
-						verticesBuffer[verticesCounter + 1].b = b;
-						verticesBuffer[verticesCounter + 1].a = 1.0f;
-						verticesBuffer[verticesCounter + 1].nx = 0.0f;
-						verticesBuffer[verticesCounter + 1].ny = -1.0f;
-						verticesBuffer[verticesCounter + 1].nz = 0.0f;
+							indicesCounter += 6;
+							verticesCounter += 4;
+						}
 
-						verticesBuffer[verticesCounter + 2].x = x + -0.5f;
-						verticesBuffer[verticesCounter + 2].y = y + -0.5f;
-						verticesBuffer[verticesCounter + 2].z = z + -0.5f;
-						verticesBuffer[verticesCounter + 2].r = r;
-						verticesBuffer[verticesCounter + 2].g = g;
-						verticesBuffer[verticesCounter + 2].b = b;
-						verticesBuffer[verticesCounter + 2].a = 1.0f;
-						verticesBuffer[verticesCounter + 2].nx = 0.0f;
-						verticesBuffer[verticesCounter + 2].ny = -1.0f;
-						verticesBuffer[verticesCounter + 2].nz = 0.0f;
+						// Bottom
+						if (m_createInnerFaces == true || (mask & 16) == 16)
+						{
+							verticesBuffer[verticesCounter + 0].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 0].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 0].z = z + 0.5f;
+							verticesBuffer[verticesCounter + 0].r = r;
+							verticesBuffer[verticesCounter + 0].g = g;
+							verticesBuffer[verticesCounter + 0].b = b;
+							verticesBuffer[verticesCounter + 0].a = 1.0f;
+							verticesBuffer[verticesCounter + 0].nx = 0.0f;
+							verticesBuffer[verticesCounter + 0].ny = -1.0f;
+							verticesBuffer[verticesCounter + 0].nz = 0.0f;
 
-						verticesBuffer[verticesCounter + 3].x = x + 0.5f;
-						verticesBuffer[verticesCounter + 3].y = y + -0.5f;
-						verticesBuffer[verticesCounter + 3].z = z + -0.5f;
-						verticesBuffer[verticesCounter + 3].r = r;
-						verticesBuffer[verticesCounter + 3].g = g;
-						verticesBuffer[verticesCounter + 3].b = b;
-						verticesBuffer[verticesCounter + 3].a = 1.0f;
-						verticesBuffer[verticesCounter + 3].nx = 0.0f;
-						verticesBuffer[verticesCounter + 3].ny = -1.0f;
-						verticesBuffer[verticesCounter + 3].nz = 0.0f;
+							verticesBuffer[verticesCounter + 1].x = x + 0.5f;
+							verticesBuffer[verticesCounter + 1].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 1].z = z + 0.5f;
+							verticesBuffer[verticesCounter + 1].r = r;
+							verticesBuffer[verticesCounter + 1].g = g;
+							verticesBuffer[verticesCounter + 1].b = b;
+							verticesBuffer[verticesCounter + 1].a = 1.0f;
+							verticesBuffer[verticesCounter + 1].nx = 0.0f;
+							verticesBuffer[verticesCounter + 1].ny = -1.0f;
+							verticesBuffer[verticesCounter + 1].nz = 0.0f;
 
-						indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
-						indicesBuffer[indicesCounter + 1] = verticesCounter + 2;
-						indicesBuffer[indicesCounter + 2] = verticesCounter + 1;
-						indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
-						indicesBuffer[indicesCounter + 4] = verticesCounter + 2;
-						indicesBuffer[indicesCounter + 5] = verticesCounter + 3;
+							verticesBuffer[verticesCounter + 2].x = x + -0.5f;
+							verticesBuffer[verticesCounter + 2].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 2].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 2].r = r;
+							verticesBuffer[verticesCounter + 2].g = g;
+							verticesBuffer[verticesCounter + 2].b = b;
+							verticesBuffer[verticesCounter + 2].a = 1.0f;
+							verticesBuffer[verticesCounter + 2].nx = 0.0f;
+							verticesBuffer[verticesCounter + 2].ny = -1.0f;
+							verticesBuffer[verticesCounter + 2].nz = 0.0f;
 
-						indicesCounter += 6;
-						verticesCounter += 4;
+							verticesBuffer[verticesCounter + 3].x = x + 0.5f;
+							verticesBuffer[verticesCounter + 3].y = y + -0.5f;
+							verticesBuffer[verticesCounter + 3].z = z + -0.5f;
+							verticesBuffer[verticesCounter + 3].r = r;
+							verticesBuffer[verticesCounter + 3].g = g;
+							verticesBuffer[verticesCounter + 3].b = b;
+							verticesBuffer[verticesCounter + 3].a = 1.0f;
+							verticesBuffer[verticesCounter + 3].nx = 0.0f;
+							verticesBuffer[verticesCounter + 3].ny = -1.0f;
+							verticesBuffer[verticesCounter + 3].nz = 0.0f;
+
+							indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
+							indicesBuffer[indicesCounter + 1] = verticesCounter + 2;
+							indicesBuffer[indicesCounter + 2] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
+							indicesBuffer[indicesCounter + 4] = verticesCounter + 2;
+							indicesBuffer[indicesCounter + 5] = verticesCounter + 3;
+
+							indicesCounter += 6;
+							verticesCounter += 4;
+						}
 					}
 				}
 			}

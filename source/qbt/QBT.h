@@ -23,6 +23,17 @@
 #include <string>
 using namespace std;
 
+enum MergedSide
+{
+	MergedSide_None = 0,
+
+	MergedSide_X_Positive = 1,
+	MergedSide_X_Negative = 2,
+	MergedSide_Y_Positive = 4,
+	MergedSide_Y_Negative = 8,
+	MergedSide_Z_Positive = 16,
+	MergedSide_Z_Negative = 32,
+};
 
 class QBTMatrix
 {
