@@ -19,7 +19,7 @@ enum test_enum {
 
 bool wireframe = false;
 bool lighting = true;
-bool shadows = true;
+bool shadows = false;
 bool innerVoxels = false;
 bool innerFaces = false;
 bool mergeFaces = false;
