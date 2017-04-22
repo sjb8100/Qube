@@ -17,10 +17,10 @@
 - [x] Don't create vertices when there will be no connected triangles/faces.
 - [x] Add light and material GUI modifiers.
 - [x] Add light movement.
+- [x] Add face merging or face optimizations.
 - [ ] Add better logging and output for errors and information.
 - [ ] Better media support, maybe add SDL lib support?
 - [ ] Build nanogui on linux to fix linux build.
-- [ ] Add face merging or face optimizations.
 - [ ] Add voxel information to GUI window also (size, scale, pivot, position, etc).
 - [ ] Draw bounding boxes for matrices.
 - [ ] Ability to select individual matrice and show context information in the GUI.
