@@ -782,6 +782,214 @@ void QBT::SetVisibilityInformation()
 								pMatrix->m_numTriangles += 2;
 							}
 						}
+
+						// Top
+						if (m_createInnerFaces == true || (mask & 8) == 8)
+						{
+							if ((merged & MergedSide_Y_Positive) != MergedSide_Y_Positive)
+							{
+								bool stopMerging = false;
+								int increaseZ = 0;
+								for (unsigned int z1 = z + 1; z1 < pMatrix->m_sizeZ && stopMerging == false; z1++)
+								{
+									unsigned int colour1 = pMatrix->m_pColour[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+									unsigned int mask1 = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+									int merged1 = l_merged[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+
+									if ((merged1 & MergedSide_Y_Positive) == MergedSide_Y_Positive)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if ((mask1 & 8) != 8)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if (colour1 != colour)
+									{
+										stopMerging = true;
+										continue;
+									}
+
+									increaseZ++;
+									l_merged[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)] |= MergedSide_Y_Positive;
+								}
+
+								stopMerging = false;
+								int increaseX = 0;
+								for (unsigned int x1 = x + 1; x1 < pMatrix->m_sizeX && stopMerging == false; x1++)
+								{
+									unsigned int colour1 = pMatrix->m_pColour[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+									unsigned int mask1 = pMatrix->m_pVisibilityMask[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+									int merged1 = l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+
+									if ((merged1 & MergedSide_Y_Positive) == MergedSide_Y_Positive)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if ((mask1 & 8) != 8)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if (colour1 != colour)
+									{
+										stopMerging = true;
+										continue;
+									}
+
+									bool stopMergingZ = false;
+									for (int zAdd = 1; zAdd <= increaseZ && stopMergingZ == false; zAdd++)
+									{
+										unsigned int z1 = z + zAdd;
+
+										unsigned int colour1 = pMatrix->m_pColour[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+										unsigned int mask1 = pMatrix->m_pVisibilityMask[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+										int merged1 = l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+
+										if ((merged1 & MergedSide_Y_Positive) == MergedSide_Y_Positive)
+										{
+											stopMergingZ = true;
+											continue;
+										}
+										if ((mask1 & 8) != 8)
+										{
+											stopMergingZ = true;
+											continue;
+										}
+										if (colour1 != colour)
+										{
+											stopMergingZ = true;
+											continue;
+										}
+									}
+
+									if (stopMergingZ == true)
+									{
+										stopMerging = true;
+										continue;
+									}
+
+									increaseX++;
+									l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)] |= MergedSide_Y_Positive;
+
+									for (int zAdd = 1; zAdd <= increaseZ; zAdd++)
+									{
+										unsigned int z1 = z + zAdd;
+										l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)] |= MergedSide_Y_Positive;
+									}
+								}
+
+								pMatrix->m_numVertices += 4;
+								pMatrix->m_numTriangles += 2;
+							}
+						}
+
+						// Bottom
+						if (m_createInnerFaces == true || (mask & 16) == 16)
+						{
+							if ((merged & MergedSide_Y_Negative) != MergedSide_Y_Negative)
+							{
+								bool stopMerging = false;
+								int increaseZ = 0;
+								for (unsigned int z1 = z + 1; z1 < pMatrix->m_sizeZ && stopMerging == false; z1++)
+								{
+									unsigned int colour1 = pMatrix->m_pColour[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+									unsigned int mask1 = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+									int merged1 = l_merged[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+
+									if ((merged1 & MergedSide_Y_Negative) == MergedSide_Y_Negative)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if ((mask1 & 16) != 16)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if (colour1 != colour)
+									{
+										stopMerging = true;
+										continue;
+									}
+
+									increaseZ++;
+									l_merged[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)] |= MergedSide_Y_Negative;
+								}
+
+								stopMerging = false;
+								int increaseX = 0;
+								for (unsigned int x1 = x + 1; x1 < pMatrix->m_sizeX && stopMerging == false; x1++)
+								{
+									unsigned int colour1 = pMatrix->m_pColour[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+									unsigned int mask1 = pMatrix->m_pVisibilityMask[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+									int merged1 = l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+
+									if ((merged1 & MergedSide_Y_Negative) == MergedSide_Y_Negative)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if ((mask1 & 16) != 16)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if (colour1 != colour)
+									{
+										stopMerging = true;
+										continue;
+									}
+
+									bool stopMergingZ = false;
+									for (int zAdd = 1; zAdd <= increaseZ && stopMergingZ == false; zAdd++)
+									{
+										unsigned int z1 = z + zAdd;
+
+										unsigned int colour1 = pMatrix->m_pColour[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+										unsigned int mask1 = pMatrix->m_pVisibilityMask[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+										int merged1 = l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+
+										if ((merged1 & MergedSide_Y_Negative) == MergedSide_Y_Negative)
+										{
+											stopMergingZ = true;
+											continue;
+										}
+										if ((mask1 & 16) != 16)
+										{
+											stopMergingZ = true;
+											continue;
+										}
+										if (colour1 != colour)
+										{
+											stopMergingZ = true;
+											continue;
+										}
+									}
+
+									if (stopMergingZ == true)
+									{
+										stopMerging = true;
+										continue;
+									}
+
+									increaseX++;
+									l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)] |= MergedSide_Y_Negative;
+
+									for (int zAdd = 1; zAdd <= increaseZ; zAdd++)
+									{
+										unsigned int z1 = z + zAdd;
+										l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)] |= MergedSide_Y_Negative;
+									}
+								}
+
+								pMatrix->m_numVertices += 4;
+								pMatrix->m_numTriangles += 2;
+							}
+						}
 					}
 				}
 			}
@@ -1521,6 +1729,316 @@ void QBT::CreateStaticRenderBuffers()
 								verticesBuffer[verticesCounter + 3].a = 1.0f;
 								verticesBuffer[verticesCounter + 3].nx = 1.0f;
 								verticesBuffer[verticesCounter + 3].ny = 0.0f;
+								verticesBuffer[verticesCounter + 3].nz = 0.0f;
+
+								indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
+								indicesBuffer[indicesCounter + 1] = verticesCounter + 2;
+								indicesBuffer[indicesCounter + 2] = verticesCounter + 1;
+								indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
+								indicesBuffer[indicesCounter + 4] = verticesCounter + 2;
+								indicesBuffer[indicesCounter + 5] = verticesCounter + 3;
+
+								indicesCounter += 6;
+								verticesCounter += 4;
+							}
+						}
+
+						// Top
+						if (m_createInnerFaces == true || (mask & 8) == 8)
+						{
+							if ((merged & MergedSide_Y_Positive) != MergedSide_Y_Positive)
+							{
+								bool stopMerging = false;
+								int increaseZ = 0;
+								for (unsigned int z1 = z + 1; z1 < pMatrix->m_sizeZ && stopMerging == false; z1++)
+								{
+									unsigned int colour1 = pMatrix->m_pColour[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+									unsigned int mask1 = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+									int merged1 = l_merged[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+
+									if ((merged1 & MergedSide_Y_Positive) == MergedSide_Y_Positive)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if ((mask1 & 8) != 8)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if (colour1 != colour)
+									{
+										stopMerging = true;
+										continue;
+									}
+
+									increaseZ++;
+									l_merged[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)] |= MergedSide_Y_Positive;
+								}
+
+								stopMerging = false;
+								int increaseX = 0;
+								for (unsigned int x1 = x + 1; x1 < pMatrix->m_sizeX && stopMerging == false; x1++)
+								{
+									unsigned int colour1 = pMatrix->m_pColour[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+									unsigned int mask1 = pMatrix->m_pVisibilityMask[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+									int merged1 = l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+
+									if ((merged1 & MergedSide_Y_Positive) == MergedSide_Y_Positive)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if ((mask1 & 8) != 8)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if (colour1 != colour)
+									{
+										stopMerging = true;
+										continue;
+									}
+
+									bool stopMergingZ = false;
+									for (int zAdd = 1; zAdd <= increaseZ && stopMergingZ == false; zAdd++)
+									{
+										unsigned int z1 = z + zAdd;
+
+										unsigned int colour1 = pMatrix->m_pColour[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+										unsigned int mask1 = pMatrix->m_pVisibilityMask[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+										int merged1 = l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+
+										if ((merged1 & MergedSide_Y_Positive) == MergedSide_Y_Positive)
+										{
+											stopMergingZ = true;
+											continue;
+										}
+										if ((mask1 & 8) != 8)
+										{
+											stopMergingZ = true;
+											continue;
+										}
+										if (colour1 != colour)
+										{
+											stopMergingZ = true;
+											continue;
+										}
+									}
+
+									if (stopMergingZ == true)
+									{
+										stopMerging = true;
+										continue;
+									}
+
+									increaseX++;
+									l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)] |= MergedSide_Y_Positive;
+
+									for (int zAdd = 1; zAdd <= increaseZ; zAdd++)
+									{
+										unsigned int z1 = z + zAdd;
+										l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)] |= MergedSide_Y_Positive;
+									}
+								}
+
+								verticesBuffer[verticesCounter + 0].x = x + -0.5f;
+								verticesBuffer[verticesCounter + 0].y = y + 0.5f;
+								verticesBuffer[verticesCounter + 0].z = z + 0.5f + (1.0f*increaseZ);
+								verticesBuffer[verticesCounter + 0].r = r;
+								verticesBuffer[verticesCounter + 0].g = g;
+								verticesBuffer[verticesCounter + 0].b = b;
+								verticesBuffer[verticesCounter + 0].a = 1.0f;
+								verticesBuffer[verticesCounter + 0].nx = 0.0f;
+								verticesBuffer[verticesCounter + 0].ny = 1.0f;
+								verticesBuffer[verticesCounter + 0].nz = 0.0f;
+
+								verticesBuffer[verticesCounter + 1].x = x + 0.5f + (1.0f*increaseX);
+								verticesBuffer[verticesCounter + 1].y = y + 0.5f;
+								verticesBuffer[verticesCounter + 1].z = z + 0.5f + (1.0f*increaseZ);
+								verticesBuffer[verticesCounter + 1].r = r;
+								verticesBuffer[verticesCounter + 1].g = g;
+								verticesBuffer[verticesCounter + 1].b = b;
+								verticesBuffer[verticesCounter + 1].a = 1.0f;
+								verticesBuffer[verticesCounter + 1].nx = 0.0f;
+								verticesBuffer[verticesCounter + 1].ny = 1.0f;
+								verticesBuffer[verticesCounter + 1].nz = 0.0f;
+
+								verticesBuffer[verticesCounter + 2].x = x + -0.5f;
+								verticesBuffer[verticesCounter + 2].y = y + 0.5f;
+								verticesBuffer[verticesCounter + 2].z = z + -0.5f;
+								verticesBuffer[verticesCounter + 2].r = r;
+								verticesBuffer[verticesCounter + 2].g = g;
+								verticesBuffer[verticesCounter + 2].b = b;
+								verticesBuffer[verticesCounter + 2].a = 1.0f;
+								verticesBuffer[verticesCounter + 2].nx = 0.0f;
+								verticesBuffer[verticesCounter + 2].ny = 1.0f;
+								verticesBuffer[verticesCounter + 2].nz = 0.0f;
+
+								verticesBuffer[verticesCounter + 3].x = x + 0.5f + (1.0f*increaseX);
+								verticesBuffer[verticesCounter + 3].y = y + 0.5f;
+								verticesBuffer[verticesCounter + 3].z = z + -0.5f;
+								verticesBuffer[verticesCounter + 3].r = r;
+								verticesBuffer[verticesCounter + 3].g = g;
+								verticesBuffer[verticesCounter + 3].b = b;
+								verticesBuffer[verticesCounter + 3].a = 1.0f;
+								verticesBuffer[verticesCounter + 3].nx = 0.0f;
+								verticesBuffer[verticesCounter + 3].ny = 1.0f;
+								verticesBuffer[verticesCounter + 3].nz = 0.0f;
+
+								indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
+								indicesBuffer[indicesCounter + 1] = verticesCounter + 1;
+								indicesBuffer[indicesCounter + 2] = verticesCounter + 2;
+								indicesBuffer[indicesCounter + 3] = verticesCounter + 1;
+								indicesBuffer[indicesCounter + 4] = verticesCounter + 3;
+								indicesBuffer[indicesCounter + 5] = verticesCounter + 2;
+
+								indicesCounter += 6;
+								verticesCounter += 4;
+							}
+						}
+
+						// Bottom
+						if (m_createInnerFaces == true || (mask & 16) == 16)
+						{
+							if ((merged & MergedSide_Y_Negative) != MergedSide_Y_Negative)
+							{
+								bool stopMerging = false;
+								int increaseZ = 0;
+								for (unsigned int z1 = z + 1; z1 < pMatrix->m_sizeZ && stopMerging == false; z1++)
+								{
+									unsigned int colour1 = pMatrix->m_pColour[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+									unsigned int mask1 = pMatrix->m_pVisibilityMask[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+									int merged1 = l_merged[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+
+									if ((merged1 & MergedSide_Y_Negative) == MergedSide_Y_Negative)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if ((mask1 & 16) != 16)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if (colour1 != colour)
+									{
+										stopMerging = true;
+										continue;
+									}
+
+									increaseZ++;
+									l_merged[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)] |= MergedSide_Y_Negative;
+								}
+
+								stopMerging = false;
+								int increaseX = 0;
+								for (unsigned int x1 = x + 1; x1 < pMatrix->m_sizeX && stopMerging == false; x1++)
+								{
+									unsigned int colour1 = pMatrix->m_pColour[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+									unsigned int mask1 = pMatrix->m_pVisibilityMask[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+									int merged1 = l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
+
+									if ((merged1 & MergedSide_Y_Negative) == MergedSide_Y_Negative)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if ((mask1 & 16) != 16)
+									{
+										stopMerging = true;
+										continue;
+									}
+									if (colour1 != colour)
+									{
+										stopMerging = true;
+										continue;
+									}
+
+									bool stopMergingZ = false;
+									for (int zAdd = 1; zAdd <= increaseZ && stopMergingZ == false; zAdd++)
+									{
+										unsigned int z1 = z + zAdd;
+
+										unsigned int colour1 = pMatrix->m_pColour[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+										unsigned int mask1 = pMatrix->m_pVisibilityMask[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+										int merged1 = l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)];
+
+										if ((merged1 & MergedSide_Y_Negative) == MergedSide_Y_Negative)
+										{
+											stopMergingZ = true;
+											continue;
+										}
+										if ((mask1 & 16) != 16)
+										{
+											stopMergingZ = true;
+											continue;
+										}
+										if (colour1 != colour)
+										{
+											stopMergingZ = true;
+											continue;
+										}
+									}
+
+									if (stopMergingZ == true)
+									{
+										stopMerging = true;
+										continue;
+									}
+
+									increaseX++;
+									l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)] |= MergedSide_Y_Negative;
+
+									for (int zAdd = 1; zAdd <= increaseZ; zAdd++)
+									{
+										unsigned int z1 = z + zAdd;
+										l_merged[x1 + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z1)] |= MergedSide_Y_Negative;
+									}
+								}
+
+								verticesBuffer[verticesCounter + 0].x = x + -0.5f;
+								verticesBuffer[verticesCounter + 0].y = y + -0.5f;
+								verticesBuffer[verticesCounter + 0].z = z + 0.5f + (1.0f*increaseZ);
+								verticesBuffer[verticesCounter + 0].r = r;
+								verticesBuffer[verticesCounter + 0].g = g;
+								verticesBuffer[verticesCounter + 0].b = b;
+								verticesBuffer[verticesCounter + 0].a = 1.0f;
+								verticesBuffer[verticesCounter + 0].nx = 0.0f;
+								verticesBuffer[verticesCounter + 0].ny = -1.0f;
+								verticesBuffer[verticesCounter + 0].nz = 0.0f;
+
+								verticesBuffer[verticesCounter + 1].x = x + 0.5f + (1.0f*increaseX);
+								verticesBuffer[verticesCounter + 1].y = y + -0.5f;
+								verticesBuffer[verticesCounter + 1].z = z + 0.5f + (1.0f*increaseZ);
+								verticesBuffer[verticesCounter + 1].r = r;
+								verticesBuffer[verticesCounter + 1].g = g;
+								verticesBuffer[verticesCounter + 1].b = b;
+								verticesBuffer[verticesCounter + 1].a = 1.0f;
+								verticesBuffer[verticesCounter + 1].nx = 0.0f;
+								verticesBuffer[verticesCounter + 1].ny = -1.0f;
+								verticesBuffer[verticesCounter + 1].nz = 0.0f;
+
+								verticesBuffer[verticesCounter + 2].x = x + -0.5f;
+								verticesBuffer[verticesCounter + 2].y = y + -0.5f;
+								verticesBuffer[verticesCounter + 2].z = z + -0.5f;
+								verticesBuffer[verticesCounter + 2].r = r;
+								verticesBuffer[verticesCounter + 2].g = g;
+								verticesBuffer[verticesCounter + 2].b = b;
+								verticesBuffer[verticesCounter + 2].a = 1.0f;
+								verticesBuffer[verticesCounter + 2].nx = 0.0f;
+								verticesBuffer[verticesCounter + 2].ny = -1.0f;
+								verticesBuffer[verticesCounter + 2].nz = 0.0f;
+
+								verticesBuffer[verticesCounter + 3].x = x + 0.5f + (1.0f*increaseX);
+								verticesBuffer[verticesCounter + 3].y = y + -0.5f;
+								verticesBuffer[verticesCounter + 3].z = z + -0.5f;
+								verticesBuffer[verticesCounter + 3].r = r;
+								verticesBuffer[verticesCounter + 3].g = g;
+								verticesBuffer[verticesCounter + 3].b = b;
+								verticesBuffer[verticesCounter + 3].a = 1.0f;
+								verticesBuffer[verticesCounter + 3].nx = 0.0f;
+								verticesBuffer[verticesCounter + 3].ny = -1.0f;
 								verticesBuffer[verticesCounter + 3].nz = 0.0f;
 
 								indicesBuffer[indicesCounter + 0] = verticesCounter + 0;
