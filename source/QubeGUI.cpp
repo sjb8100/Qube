@@ -233,6 +233,9 @@ void QubeGame::CreateGUI()
 	m_pDefaultLight->m_diffuse = Colour(m_pDiffuseButton->backgroundColor().r(), m_pDiffuseButton->backgroundColor().g(), m_pDiffuseButton->backgroundColor().b());
 	m_pDefaultLight->m_specular = Colour(m_pSpecularButton->backgroundColor().r(), m_pSpecularButton->backgroundColor().g(), m_pSpecularButton->backgroundColor().b());
 
+	l = new Label(m_pLightWindow, "Shininess", "arial");
+	l->setPosition(Vector2i(10, 161));
+
 	Slider *slider = new Slider(m_pLightWindow);
 	slider->setValue(0.0625f);
 	slider->setFixedWidth(80);
