@@ -59,23 +59,22 @@ void QubeGame::Render()
 	// Set viewport
 	m_pRenderer->SetViewport(m_pDefaultViewport);
 
+	// Reset line drawing
 	m_pRenderer->ResetLines();
-
+	
+	// Draw Axis
 	m_pRenderer->DrawLine(vec3(0.0f, 0.0f, 0.0f), vec3(5.0f, 0.0f, 0.0f), Colour(1.0f, 0.0f, 0.0f), Colour(1.0f, 0.0f, 0.0f));
 	m_pRenderer->DrawLine(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 5.0f, 0.0f), Colour(0.0f, 1.0f, 0.0f), Colour(0.0f, 1.0f, 0.0f));
 	m_pRenderer->DrawLine(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 5.0f), Colour(0.0f, 0.0f, 1.0f), Colour(0.0f, 0.0f, 1.0f));
 
-	//for (int i = 0; i < 1; i++)
-	//{
-	//	m_pRenderer->DrawCube(vec3(i, 0.0f, 0.0f), 1.0f, 1.0f, 1.0f, Colour(1.0f, 1.0f, 1.0f));
-	//}
-
+	// Draw light
 	m_pRenderer->DrawCube(m_pDefaultLight->m_position, 1.0f, 1.0f, 1.0f, m_pDefaultLight->m_diffuse);
-
-	m_pRenderer->RenderLines(m_pGameCamera);
 
 	// Render the QBT file
 	m_pQBTFile->Render(m_pGameCamera, m_pDefaultLight);
+
+	// Render lines
+	m_pRenderer->RenderLines(m_pGameCamera);
 
 	// Render nanovg
 	RenderNanoVG();
@@ -91,8 +90,9 @@ void QubeGame::Render()
 	float gpuTimes[3];
 	unsigned int n = stopGPUTimer(&m_gpuTimer, gpuTimes, 3);
 	for (unsigned int i = 0; i < n; i++)
+	{
 		updateGraph(&m_gpuGraph, gpuTimes[i]);
-
+	}
 
 	// Pass render call to the window class, allow to swap buffers
 	m_pQubeWindow->Render();
