@@ -20,6 +20,7 @@ enum test_enum {
 bool wireframe = false;
 bool lighting = true;
 bool shadows = false;
+bool boundingBox = false;
 bool innerVoxels = false;
 bool innerFaces = false;
 bool mergeFaces = false;
@@ -64,6 +65,11 @@ void QubeGame::CreateGUI()
 	cb->setTooltip("Shadows rendering.");
 	cb->setFontSize(14);
 	cb->setPosition(Vector2i(20, 169));
+	cb = new CheckBox(m_pControlsWindow, "Bounding Box", [](bool state) { boundingBox = state; });
+	cb->setChecked(shadows);
+	cb->setTooltip("Bounding box rendering.");
+	cb->setFontSize(14);
+	cb->setPosition(Vector2i(20, 191));	
 	cb = new CheckBox(m_pControlsWindow, "Inner Voxels");
 	cb->setChecked(innerVoxels);
 	cb->setCallback([&](bool state)
@@ -74,7 +80,7 @@ void QubeGame::CreateGUI()
 	});
 	cb->setTooltip("Render the inner voxels.");
 	cb->setFontSize(14);
-	cb->setPosition(Vector2i(20, 191));
+	cb->setPosition(Vector2i(20, 213));
 	cb = new CheckBox(m_pControlsWindow, "Inner Faces");
 	cb->setChecked(innerFaces);
 	cb->setCallback([&](bool state)
@@ -85,7 +91,7 @@ void QubeGame::CreateGUI()
 	});
 	cb->setTooltip("Render the inner faces.");
 	cb->setFontSize(14);
-	cb->setPosition(Vector2i(20, 213));
+	cb->setPosition(Vector2i(20, 235));
 	cb = new CheckBox(m_pControlsWindow, "Face Merging");
 	cb->setChecked(mergeFaces);
 	cb->setCallback([&](bool state)
@@ -96,13 +102,13 @@ void QubeGame::CreateGUI()
 	});
 	cb->setTooltip("Voxel face merging.");
 	cb->setFontSize(14);
-	cb->setPosition(Vector2i(20, 235));
+	cb->setPosition(Vector2i(20, 257));
 
 	l = new Label(m_pControlsWindow, "File Operations", "arial");
-	l->setPosition(Vector2i(10, 267));
+	l->setPosition(Vector2i(10, 287));
 	Button *b = new Button(m_pControlsWindow, "Open");
 	b->setFontSize(18);
-	b->setPosition(Vector2i(20, 288));
+	b->setPosition(Vector2i(20, 308));
 	b->setCallback([&]
 	{
 		string fileName = file_dialog({ { "qbt", "Qubicle Binary Tree" } }, false);
@@ -114,7 +120,7 @@ void QubeGame::CreateGUI()
 	});
 	b = new Button(m_pControlsWindow, "Save");
 	b->setFontSize(18);
-	b->setPosition(Vector2i(85, 288));
+	b->setPosition(Vector2i(85, 308));
 	b->setCallback([&]
 	{
 		string fileName = file_dialog({ { "qbt", "Qubicle Binary Tree" }, }, true);
@@ -260,6 +266,7 @@ void QubeGame::UpdateGUI()
 {
 	m_pQBTFile->SetWireframeMode(wireframe);
 	m_pQBTFile->SetUseLighting(lighting);
+	m_pQBTFile->SetBoundingBoxRendering(boundingBox);
 	m_pQBTFile->SetCreateInnerVoxels(innerVoxels);
 	m_pQBTFile->SetCreateInnerFaces(innerFaces);
 	m_pQBTFile->SetMergeFaces(mergeFaces);

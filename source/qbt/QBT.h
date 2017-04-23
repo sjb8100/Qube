@@ -121,6 +121,7 @@ public:
 	void SetWireframeMode(bool wireframe);
 	bool GetWireframeMode();
 	void SetUseLighting(bool lighting);
+	void SetBoundingBoxRendering(bool boundingBox);
 
 	// Creation optimizations
 	void SetCreateInnerVoxels(bool innerVoxels);
@@ -129,6 +130,7 @@ public:
 
 	// Render
 	void Render(Camera* pCamera, Light* pLight);
+	void RenderBoundingBox(Camera* pCamera, Light* pLight);
 
 protected:
 	/* Protected methods */
@@ -165,6 +167,7 @@ private:
 	// Rendering modes
 	bool m_wireframeRender;
 	bool m_useLighting;
+	bool m_boundingBox;
 
 	// Creation optimizations
 	bool m_createInnerVoxels;
