@@ -368,7 +368,7 @@ void QBT::SetVisibilityInformation()
 						int merged = l_merged[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
 
 						// Back
-						if (m_createInnerFaces == true || (mask & 32) == 32)
+						if ((mask & 32) == 32)
 						{
 							if ((merged & MergedSide_Z_Negative) != MergedSide_Z_Negative)
 							{
@@ -472,7 +472,7 @@ void QBT::SetVisibilityInformation()
 						}
 
 						// Front
-						if (m_createInnerFaces == true || (mask & 64) == 64)
+						if ((mask & 64) == 64)
 						{
 							if ((merged & MergedSide_Z_Positive) != MergedSide_Z_Positive)
 							{
@@ -576,7 +576,7 @@ void QBT::SetVisibilityInformation()
 						}
 
 						// Left
-						if (m_createInnerFaces == true || (mask & 4) == 4)
+						if ((mask & 4) == 4)
 						{
 							if ((merged & MergedSide_X_Negative) != MergedSide_X_Negative)
 							{
@@ -680,7 +680,7 @@ void QBT::SetVisibilityInformation()
 						}
 
 						// Right
-						if (m_createInnerFaces == true || (mask & 2) == 2)
+						if ((mask & 2) == 2)
 						{
 							if ((merged & MergedSide_X_Positive) != MergedSide_X_Positive)
 							{
@@ -784,7 +784,7 @@ void QBT::SetVisibilityInformation()
 						}
 
 						// Top
-						if (m_createInnerFaces == true || (mask & 8) == 8)
+						if ((mask & 8) == 8)
 						{
 							if ((merged & MergedSide_Y_Positive) != MergedSide_Y_Positive)
 							{
@@ -888,7 +888,7 @@ void QBT::SetVisibilityInformation()
 						}
 
 						// Bottom
-						if (m_createInnerFaces == true || (mask & 16) == 16)
+						if ((mask & 16) == 16)
 						{
 							if ((merged & MergedSide_Y_Negative) != MergedSide_Y_Negative)
 							{
@@ -1124,7 +1124,7 @@ void QBT::CreateStaticRenderBuffers()
 						int merged = l_merged[x + pMatrix->m_sizeX * (y + pMatrix->m_sizeY * z)];
 
 						// Back
-						if (m_createInnerFaces == true || (mask & 32) == 32)
+						if ((mask & 32) == 32)
 						{
 							if ((merged & MergedSide_Z_Negative) != MergedSide_Z_Negative)
 							{
@@ -1279,7 +1279,7 @@ void QBT::CreateStaticRenderBuffers()
 						}
 
 						// Front
-						if (m_createInnerFaces == true || (mask & 64) == 64)
+						if ((mask & 64) == 64)
 						{
 							if ((merged & MergedSide_Z_Positive) != MergedSide_Z_Positive)
 							{
@@ -1434,7 +1434,7 @@ void QBT::CreateStaticRenderBuffers()
 						}
 
 						// Left
-						if (m_createInnerFaces == true || (mask & 4) == 4)
+						if ((mask & 4) == 4)
 						{
 							if ((merged & MergedSide_X_Negative) != MergedSide_X_Negative)
 							{
@@ -1589,7 +1589,7 @@ void QBT::CreateStaticRenderBuffers()
 						}
 
 						// Right
-						if (m_createInnerFaces == true || (mask & 2) == 2)
+						if ((mask & 2) == 2)
 						{
 							if ((merged & MergedSide_X_Positive) != MergedSide_X_Positive)
 							{
@@ -1744,7 +1744,7 @@ void QBT::CreateStaticRenderBuffers()
 						}
 
 						// Top
-						if (m_createInnerFaces == true || (mask & 8) == 8)
+						if ((mask & 8) == 8)
 						{
 							if ((merged & MergedSide_Y_Positive) != MergedSide_Y_Positive)
 							{
@@ -1899,7 +1899,7 @@ void QBT::CreateStaticRenderBuffers()
 						}
 
 						// Bottom
-						if (m_createInnerFaces == true || (mask & 16) == 16)
+						if ((mask & 16) == 16)
 						{
 							if ((merged & MergedSide_Y_Negative) != MergedSide_Y_Negative)
 							{
