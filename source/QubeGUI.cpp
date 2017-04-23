@@ -24,7 +24,7 @@ bool innerVoxels = false;
 bool innerFaces = false;
 bool mergeFaces = false;
 bool lightMovement = false;
-bool lightColorLock = true;
+bool lightColorLock = false;
 
 void QubeGame::CreateGUI()
 {
@@ -143,7 +143,7 @@ void QubeGame::CreateGUI()
 	l->setPosition(Vector2i(20, 84));
 	l->setFontSize(14);
 	m_pAmbientButton = new PopupButton(m_pLightWindow, "", 0);
-	m_pAmbientButton->setBackgroundColor(Color(255, 255, 255, 255));
+	m_pAmbientButton->setBackgroundColor(Color(50, 50, 50, 255));
 	m_pAmbientButton->setFontSize(16);
 	m_pAmbientButton->setFixedSize(Vector2i(80, 20));
 	m_pAmbientButton->setPosition(Vector2i(80, 82));
@@ -171,7 +171,7 @@ void QubeGame::CreateGUI()
 	l->setPosition(Vector2i(20, 108));
 	l->setFontSize(14);
 	m_pDiffuseButton = new PopupButton(m_pLightWindow, "", 0);
-	m_pDiffuseButton->setBackgroundColor(Color(255, 255, 255, 255));
+	m_pDiffuseButton->setBackgroundColor(Color(204, 204, 204, 255));
 	m_pDiffuseButton->setFontSize(16);
 	m_pDiffuseButton->setFixedSize(Vector2i(80, 20));
 	m_pDiffuseButton->setPosition(Vector2i(80, 106));
@@ -199,7 +199,7 @@ void QubeGame::CreateGUI()
 	l->setPosition(Vector2i(20, 132));
 	l->setFontSize(14);
 	m_pSpecularButton = new PopupButton(m_pLightWindow, "", 0);
-	m_pSpecularButton->setBackgroundColor(Color(255, 255, 255, 255));
+	m_pSpecularButton->setBackgroundColor(Color(200, 200, 200, 255));
 	m_pSpecularButton->setFontSize(16);
 	m_pSpecularButton->setFixedSize(Vector2i(80, 20));
 	m_pSpecularButton->setPosition(Vector2i(80, 130));
@@ -221,6 +221,11 @@ void QubeGame::CreateGUI()
 			m_pDefaultLight->m_diffuse = Colour(value.r(), value.g(), value.b());
 		}
 	});
+
+	// Set initial colours
+	m_pDefaultLight->m_ambient = Colour(m_pAmbientButton->backgroundColor().r(), m_pAmbientButton->backgroundColor().g(), m_pAmbientButton->backgroundColor().b());
+	m_pDefaultLight->m_diffuse = Colour(m_pDiffuseButton->backgroundColor().r(), m_pDiffuseButton->backgroundColor().g(), m_pDiffuseButton->backgroundColor().b());
+	m_pDefaultLight->m_specular = Colour(m_pSpecularButton->backgroundColor().r(), m_pSpecularButton->backgroundColor().g(), m_pSpecularButton->backgroundColor().b());
 
 	Slider *slider = new Slider(m_pLightWindow);
 	slider->setValue(0.0625f);
