@@ -272,9 +272,13 @@ private:
 	Label *m_pMatricesInformationLabel;
 	Label *m_pVerticesInformationLabel;
 	Label *m_pTrianglesInformationLabel;
-	PopupButton *m_pAmbientButton;
-	PopupButton *m_pDiffuseButton;
-	PopupButton *m_pSpecularButton;
+	PopupButton *m_pAmbientButton_Light;
+	PopupButton *m_pDiffuseButton_Light;
+	PopupButton *m_pSpecularButton_Light;
+	PopupButton *m_pAmbientButton_Material;
+	PopupButton *m_pDiffuseButton_Material;
+	PopupButton *m_pSpecularButton_Material;
+	PopupButton *m_pEmissionButton_Material;
 
 	// QBT File
 	QBT* m_pQBTFile;
