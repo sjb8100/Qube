@@ -28,4 +28,4 @@
 - [ ] Add gamma correction and GUI toggle.
 - [ ] Add Blinn-Phong lighting model and GUI toggle.
 - [ ] Add shadow rendering.
-
+- [ ] Add emission material functionality to models.
