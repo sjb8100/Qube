@@ -38,8 +38,9 @@ QBT::QBT(Renderer* pRenderer)
 	m_createInnerFaces = false;
 	m_mergeFaces = false;
 
-	// Shader
+	// Shaders
 	m_pPositionColorNormalShader = new Shader("media/shaders/PositionColorNormal.vertex", "media/shaders/PositionColorNormal.fragment");
+	m_pNormalDrawingShader = new Shader("media/shaders/NormalDrawing.vertex", "media/shaders/NormalDrawing.fragment", "media/shaders/NormalDrawing.geometry");
 }
 
 QBT::~QBT()

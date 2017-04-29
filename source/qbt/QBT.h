@@ -174,8 +174,9 @@ private:
 	bool m_createInnerFaces;
 	bool m_mergeFaces;
 
-	// Shader
+	// Shaders
 	Shader* m_pPositionColorNormalShader;
+	Shader* m_pNormalDrawingShader;
 
 	// Renderer
 	Renderer* m_pRenderer;
