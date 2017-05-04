@@ -350,9 +350,18 @@ void QubeGame::CreateGUI()
 	//m_pQBTFile->SetMaterialEmission(Colour(m_pEmissionButton_Material->backgroundColor().r(), m_pEmissionButton_Material->backgroundColor().g(), m_pEmissionButton_Material->backgroundColor().b()));
 	//m_pQBTFile->SetMaterialShininess(64.0f);
 
+	m_pMatrixWindow = new Window(m_pNanoGUIScreen, "Matrix");
+	m_pMatrixWindow->setSize(Vector2i(175, 350));
+	m_pMatrixWindow->setPosition(Vector2i(210, 500));
+
+	m_pMatricesCombo = new ComboBox(m_pMatrixWindow);
+	m_pMatricesCombo->setItems({ "Item 1", "Item 2", "Item 3" });
+	m_pMatricesCombo->setPosition(Vector2i(5, 33));
+
 	// Initial visibility for GUI
 	m_pControlsWindow->setVisible(true);
 	m_pLightWindow->setVisible(true);
+	m_pMatrixWindow->setVisible(true);
 	m_pNanoGUIScreen->setVisible(true);
 	m_pNanoGUIScreen->performLayout();
 }
