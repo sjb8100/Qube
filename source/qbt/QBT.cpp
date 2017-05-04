@@ -2662,7 +2662,6 @@ void QBT::RenderBoundingBox(Camera* pCamera, Light* pLight)
 		float z1 = 0.0f;
 		float z2 = (float)pMatrix->m_sizeZ;
 		vec3 center(pMatrix->m_positionX - 0.5f, pMatrix->m_positionY - 0.5f, pMatrix->m_positionZ - 0.5f);
-		vec3 pivot(pMatrix->m_pivotX, pMatrix->m_pivotY, pMatrix->m_pivotZ);
 
 		m_pRenderer->DrawLine(center + vec3(x1, y1, z1), center + vec3(x2, y1, z1), Colour(1.0f, 1.0f, 0.0f), Colour(1.0f, 1.0f, 0.0f));
 		m_pRenderer->DrawLine(center + vec3(x1, y2, z1), center + vec3(x2, y2, z1), Colour(1.0f, 1.0f, 0.0f), Colour(1.0f, 1.0f, 0.0f));
