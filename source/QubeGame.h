@@ -269,9 +269,11 @@ private:
 	Screen *m_pNanoGUIScreen;
 	Window *m_pControlsWindow;
 	Window *m_pLightWindow;
+	Window *m_pMatrixWindow;
 	Label *m_pMatricesInformationLabel;
 	Label *m_pVerticesInformationLabel;
 	Label *m_pTrianglesInformationLabel;
+	ComboBox* m_pMatricesCombo;
 	PopupButton *m_pAmbientButton_Light;
 	PopupButton *m_pDiffuseButton_Light;
 	PopupButton *m_pSpecularButton_Light;
